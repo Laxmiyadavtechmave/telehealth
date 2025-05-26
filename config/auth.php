@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -37,11 +36,27 @@ return [
 
     'guards' => [
         'web' => [
+            // Superadmin
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'clinic' => [
+            'driver' => 'session',
+            'provider' => 'clinics',
+        ],
+        'doctor' => [
+            'driver' => 'session',
+            'provider' => 'doctors',
+        ],
+        'patient' => [
+            'driver' => 'session',
+            'provider' => 'patients',
+        ],
+        'pharmacy' => [
+            'driver' => 'session',
+            'provider' => 'pharmacies',
+        ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -64,7 +79,22 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
+        'clinics' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Clinic::class,
+        ],
+        'doctors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Doctor::class,
+        ],
+        'patients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Patient::class,
+        ],
+        'pharmacies' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pharmacy::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -111,5 +141,4 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
-
 ];
