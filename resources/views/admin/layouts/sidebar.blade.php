@@ -83,29 +83,7 @@
                  <div class="custom-tooltip">Reports</div>
              </div>
 
-
-
-             {{-- <div class="custom-menu-item">
-                        <a href="##">
-                            <div class="custom-icon">
-                                <iconify-icon icon="hugeicons:logout-square-02"></iconify-icon>
-                            </div>
-                        </a>
-
-                        <div class="tooltip-line">
-                            <!-- Image placed at starting point of the line -->
-                            <div class="tooltip-dot-glow"></div>
-
-                            <svg viewBox="0 0 130 60">
-                                <path d="M0,30 L60,30 L90,0 L130,0" />
-                            </svg>
-                        </div>
-
-                        <!-- Tooltip -->
-                        <div class="custom-tooltip">Logout</div>
-                    </div> --}}
-
-             <form method="POST" action="{{ route('superadmin.logout') }}" id="logout-form">
+            <form method="POST" action="{{ route('superadmin.logout') }}" id="logout-form">
                  @csrf
                  <div class="custom-menu-item" onclick="document.getElementById('logout-form').submit()"
                      style="cursor: pointer;">

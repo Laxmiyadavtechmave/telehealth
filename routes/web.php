@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\{AuthController, HomeController};
+use App\Http\Controllers\Admin\{AuthController, HomeController,ClinicController};
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,8 +24,11 @@ Route::prefix('superadmin')
             Route::prefix('doctors')
                 ->name('doctors.')
                 ->group(function () {
-                    Route::get('doctors', [HomeController::class, 'doctors'])->name('list');
+                    Route::get('/', [HomeController::class, 'doctors'])->name('list');
                     Route::get('details', [HomeController::class, 'doctorDetail'])->name('detail');
                 });
+
+                Route::resource('clinic', ClinicController::class);
+                Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
         });
     });
