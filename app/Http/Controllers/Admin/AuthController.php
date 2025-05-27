@@ -7,13 +7,18 @@ use Illuminate\Http\Request;
 use Auth;
 class AuthController extends Controller
 {
-   public function showLoginForm()
+    public function showLoginForm()
     {
         return view('admin.auth.login');
     }
 
     public function login(Request $request)
     {
+        // Validate input
+        $request->validate([
+            'email' => 'required|email|exists:users',
+            'password' => 'required|string|min:6',
+        ]);
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
