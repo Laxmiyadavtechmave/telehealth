@@ -274,7 +274,9 @@
             </div>
 
             <div class="login-body">
-                <form action="javascript:void(0)">
+                <form action="{{ route('superadmin.login.submit') }}" method="post" class="form needs-validation"
+                    novalidate>
+                    @csrf
                     <div class="loginformcontent">
 
                         <!-- Login Form -->
@@ -286,22 +288,31 @@
                             <div class="logform_fields">
                                 <div class="form-group Iconinp_Group">
                                     <label class="form-label">Email Address</label>
-                                    <input type="text" class="form-control ">
+                                    <input type="text" name="email" id="email" value="{{ old('email') }}"
+                                        class="form-control" autocomplete="off" required>
                                     <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
                                     </iconify-icon>
+                                    @error('email')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group password-group Iconinp_Group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" id="password" class="pass-input form-control"
-                                        placeholder="********" style="width: 100%; padding-right: 40px;" />
+                                    <input type="password" name="password" id="password" class="pass-input form-control"
+                                        placeholder="********" style="width: 100%; padding-right: 40px;"
+                                        autocomplete="new-password" required />
                                     <iconify-icon icon="mdi:eye" id="togglePassword"></iconify-icon>
+                                    @error('password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                             </div>
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="form-check form-check-md mb-0">
-                                    <input class="form-check-input" id="remember_me" type="checkbox">
+                                    <input class="form-check-input" name="remember" id="remember_me" type="checkbox"
+                                        {{ old('remember') ? 'checked' : '' }}>
                                     <label for="remember_me" class="form-check-label mt-0">Remember Me</label>
                                 </div>
                                 <div class="text-end">
@@ -313,33 +324,6 @@
                             </div>
                         </div>
 
-                        <!-- Forgot Password Container (Initially Hidden) -->
-                        <div class="forgot_Container" style="display: none;">
-                            <div class="text-center mb-3 formtitle_login">
-                                <h2 class="mb-2">Forgot password?</h2>
-                                <p class="mb-0">If you forgot your password, we’ll email you instructions to reset it.
-                                </p>
-                            </div>
-                            <div class="logform_fields">
-                                <div class="form-group Iconinp_Group">
-                                    <label class="form-label">Email Address</label>
-                                    <input type="text" class="form-control ">
-                                    <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
-                                    </iconify-icon>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary w-100 forgotlink_send">Send Link</button>
-                            </div>
-                        </div>
-
-                        <!-- Success Message (Initially Hidden) -->
-                        <div class="success-message" style="display: none;">
-                            <img src="{{ asset('admin/assets/img/newimages/successtic.gif') }}" alt="Success">
-                            <h2>Password link sent</h2>
-                            <p>Please check your inbox for the reset link.</p>
-                            <button type="submit" class="btn back-to-login">Back to Login</button>
-                        </div>
 
                     </div>
                 </form>
@@ -373,43 +357,7 @@
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
     <!-- iconify icon -->
     <script src="{{ asset('admin/assets/js/iconify.js') }}"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Hide forgot password and success message initially
-            document.querySelector(".forgot_Container").style.display = "none";
-            document.querySelector(".success-message").style.display = "none";
-            // Handle Forgot Password Click
-            document.querySelector(".forgotpassword").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".loginformContainer").style.display = "none";
-                document.querySelector(".forgot_Container").style.display = "block";
-            });
-            // Handle Send Link Click
-            document.querySelector(".forgotlink_send").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".forgot_Container").style.display = "none";
-                document.querySelector(".success-message").style.display = "block";
-            });
-            // Handle Back to Login Click
-            document.querySelector(".back-to-login").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".success-message").style.display = "none";
-                document.querySelector(".loginformContainer").style.display = "block";
-            });
-            // Toggle Password Visibility
-            document.querySelector(".toggle-password").addEventListener("click", function() {
-                let passwordInput = document.querySelector(".pass-input");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    this.setAttribute("icon", "iconamoon:eye-off-light");
-                } else {
-                    passwordInput.type = "password";
-                    this.setAttribute("icon", "iconamoon:eye-light");
-                }
-            });
-        });
-    </script>
+    <script src="{{ asset('js/form-validation.js') }}"></script>
 
     <script>
         const passwordInput = document.getElementById("password");
