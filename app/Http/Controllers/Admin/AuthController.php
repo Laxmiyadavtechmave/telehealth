@@ -17,20 +17,22 @@ class AuthController extends Controller
         // Validate input
         $request->validate([
             'email' => 'required|email|exists:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required',
         ]);
         $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             return redirect()->intended('/superadmin/dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials']);
+        return redirect()->back()->with('error', 'Invalid email and password')->withInput();
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/superadmin/login');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }
