@@ -60,7 +60,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     isValid = false;
                 }
+            } else if (type === "email") {
+                const emailVal = field.val();
+                const emailRegex =
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                if (!emailRegex.test(emailVal)) {
+                    field.addClass("is-invalid");
+                    if (!field.next(".invalid-feedback").length) {
+                        field.after(
+                            '<div class="invalid-feedback">Please enter a valid email address.</div>'
+                        );
+                    }
+                    isValid = false;
+                    return;
+                }
             }
+
             // Check other inputs (e.g., text, email, textarea)
             else {
                 if (!field.val()) {
