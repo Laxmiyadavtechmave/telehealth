@@ -11,19 +11,19 @@
     <title>Login - Tele Health Super Admin</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/assets/img/newimages/logoicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/img/newimages/logoicon.png') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
     <!-- Pe7 CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/icons/themify/themify.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/icons/themify/themify.css') }}">
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/custom.css') }}">
 
     <style>
         .success-message img {
@@ -163,7 +163,7 @@
         }
 
         .login-header {
-            background-image: linear-gradient(to bottom, #e9f4fe75, #f8f6ff00), url({{ asset('admin/assets/img/newimages/Digital-Product-Hero-BG.png') }});
+            background-image: linear-gradient(to bottom, #e9f4fe75, #f8f6ff00), url({{ asset('admin/img/newimages/Digital-Product-Hero-BG.png') }});
             background-size: cover;
             height: 100px;
             display: flex;
@@ -261,7 +261,7 @@
 <body class="account-page">
 
     <div id="global-loader">
-        <div class="whirly-loader"> <img src="{{ asset('admin/assets/img/newimages/logoicon.png') }}" alt="loader">
+        <div class="whirly-loader"> <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="loader">
         </div>
 
     </div>
@@ -271,7 +271,7 @@
         <div class="LoginformWrap">
 
             <div class="login-header">
-                <img src="{{ asset('admin/assets/img/newimages/transparentlogo-tele.png') }}" class="img-fluid"
+                <img src="{{ asset('admin/img/newimages/transparentlogo-tele.png') }}" class="img-fluid"
                     alt="Logo">
             </div>
 
@@ -349,19 +349,19 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{ asset('admin/assets/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('admin/js/jquery-3.7.1.min.js') }}"></script>
 
     <!-- Feather Icon JS -->
-    <script src="{{ asset('admin/assets/js/feather.min.js') }}"></script>
+    <script src="{{ asset('admin/js/feather.min.js') }}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="{{ asset('admin/assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('admin/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Custom JS -->
-    <script src="{{ asset('admin/assets/js/theme-script.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/script.js') }}"></script>
+    <script src="{{ asset('admin/js/theme-script.js') }}"></script>
+    <script src="{{ asset('admin/js/script.js') }}"></script>
     <!-- iconify icon -->
-    <script src="{{ asset('admin/assets/js/iconify.js') }}"></script>
+    <script src="{{ asset('admin/js/iconify.js') }}"></script>
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
 
     <script>

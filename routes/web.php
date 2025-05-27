@@ -19,7 +19,7 @@ Route::prefix('superadmin')
             Route::post('login', [AuthController::class, 'login'])->name('login.submit');
         });
         Route::middleware('auth:web')->group(function () {
-            Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
+            Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
             Route::get('patients', [HomeController::class, 'patients'])->name('patients');
             Route::prefix('doctors')

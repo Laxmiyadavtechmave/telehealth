@@ -14,33 +14,33 @@
     <title>Tele Health Super Admin</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/assets/img/newimages/logoicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/img/newimages/logoicon.png') }}">
 
     <!-- Theme Script js -->
     <script src="assets/js/theme-script.js" type=""></script>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
     <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/tabler-icons/tabler-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/tabler-icons/tabler-icons.css') }}">
     <!-- Datetimepicker CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap-datetimepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap-datetimepicker.min.css') }}">
 
     <!-- Daterangepikcer CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/daterangepicker/daterangepicker.css') }}">
 
     <!-- animation CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/animate.css') }}">
 
     <!-- Select2 CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/select2/css/select2.min.css') }}">
 
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Feathericon CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/feather.css') }}">
 
     <link href="{{ asset('admin/vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet"
         type="text/css" />
@@ -48,17 +48,17 @@
         rel="stylesheet" type="text/css" />
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/custom.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/modernstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/css/modernstyle.css') }}">
 
 </head>
 
 <body class="mini-sidebar">
     <div id="global-loader">
-        <div class="whirly-loader"> <img src="{{ asset('admin/assets/img/newimages/logoicon.png') }}" alt="">
+        <div class="whirly-loader"> <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
         </div>
 
     </div>
