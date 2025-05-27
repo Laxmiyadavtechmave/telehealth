@@ -11,7 +11,7 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
     <meta name="robots" content="">
-    <title>Tele Health Super Admin</title>
+    <title>@yield('title', 'Tele Health Super Admin')</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/img/newimages/logoicon.png') }}">
