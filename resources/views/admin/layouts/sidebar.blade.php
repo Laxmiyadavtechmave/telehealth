@@ -5,7 +5,7 @@
          <div class="sidetopMenus_wrap">
              <!-- Tooltip Menu Item -->
              <div class="custom-menu-item">
-                 <a href="index.php">
+                 <a href="{{ route('superadmin.dashboard') }}">
                      <div class="custom-icon">
                          <iconify-icon icon="mynaui:home"></iconify-icon>
                      </div>
@@ -25,7 +25,7 @@
              </div>
              <!-- Tooltip Menu Item -->
              <div class="custom-menu-item">
-                 <a href="users.php">
+                 <a href="{{ route('superadmin.user.index') }}">
                      <div class="custom-icon">
                          <iconify-icon icon="prime:users"></iconify-icon>
                      </div>
@@ -46,7 +46,7 @@
 
              <!-- Tooltip Menu Item -->
              <div class="custom-menu-item">
-                 <a href="user-permission.php">
+                 <a href="{{ route('superadmin.role.index') }}">
                      <div class="custom-icon">
                          <iconify-icon icon="oui:app-users-roles"></iconify-icon>
                      </div>

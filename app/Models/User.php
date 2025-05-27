@@ -14,16 +14,29 @@ class User extends Authenticatable
     use HasFactory, Notifiable,HasRoles;
 
     // protected $guard_name = 'web'; // important
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
+        'custom_id',
         'name',
         'email',
         'password',
+        'dial_code',
+        'phone',
+        'img',
+        'address_line_1',
+        'address_line_2',
+        'country',
+        'state',
+        'city',
+        'pin_code',
+        'role_name',
+        'otp',
+        'status',
     ];
 
     /**
