@@ -4,13 +4,13 @@
     <!-- Logo -->
     <div class="header-left">
         <a href="{{route('superadmin.dashboard')}}" class="logo logo-normal">
-            <img src="{{asset('admin/assets/img/newimages/logoicon.png')}}" alt="">
+            <img src="{{asset('admin/img/newimages/logoicon.png')}}" alt="">
         </a>
         <a href="index.php" class="logo logo-white">
-            <img src="{{asset('admin/assets/img/logo-white.png')}}" alt="">
+            <img src="{{asset('admin/img/logo-white.png')}}" alt="">
         </a>
         <a href="index.php" class="logo-small">
-            <img src="{{asset('admin/assets/img/newimages/logoicon.png')}}" alt="">
+            <img src="{{asset('admin/img/newimages/logoicon.png')}}" alt="">
         </a>
 
     </div>
@@ -139,7 +139,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{asset('admin/img/newimages/userdummy.png')}}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">John Doe</span> added
@@ -156,7 +156,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{asset('admin/img/newimages/userdummy.png')}}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Tarah
@@ -174,7 +174,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{asset('admin/img/newimages/userdummy.png')}}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Misty Tison</span>
@@ -192,7 +192,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{asset('admin/img/newimages/userdummy.png')}}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Rolland Webber</span>
@@ -210,7 +210,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{asset('admin/img/newimages/userdummy.png')}}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Bernardo
