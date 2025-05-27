@@ -261,7 +261,9 @@
 <body class="account-page">
 
     <div id="global-loader">
-        <div class="whirly-loader"> </div>
+        <div class="whirly-loader"> <img src="{{ asset('admin/assets/img/newimages/logoicon.png') }}" alt="loader">
+        </div>
+
     </div>
 
     <div class="main-wrapper">
@@ -288,8 +290,10 @@
                             <div class="logform_fields">
                                 <div class="form-group Iconinp_Group">
                                     <label class="form-label">Email Address</label>
-                                    <input type="text" name="email" id="email" value="{{ old('email') }}"
-                                        class="form-control" autocomplete="off" required>
+                                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off" required
+                                        pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" title="Please enter a valid email">
+
                                     <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
                                     </iconify-icon>
                                     @error('email')
@@ -299,9 +303,10 @@
 
                                 <div class="form-group password-group Iconinp_Group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" name="password" id="password" class="pass-input form-control"
-                                        placeholder="********" style="width: 100%; padding-right: 40px;"
-                                        autocomplete="new-password" required />
+                                    <input type="password" name="password" id="password"
+                                        class="pass-input form-control" placeholder="********" min="6"
+                                        style="width: 100%; padding-right: 40px;" autocomplete="new-password"
+                                        required />
                                     <iconify-icon icon="mdi:eye" id="togglePassword"></iconify-icon>
                                     @error('password')
                                         <small class="text-danger">{{ $message }}</small>
@@ -357,7 +362,7 @@
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
     <!-- iconify icon -->
     <script src="{{ asset('admin/assets/js/iconify.js') }}"></script>
-    <script src="{{ asset('js/form-validation.js') }}"></script>
+    <script src="{{ asset('common/js/form-validation.js') }}"></script>
 
     <script>
         const passwordInput = document.getElementById("password");
@@ -365,7 +370,6 @@
         toggleIcon.addEventListener("click", function() {
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
             passwordInput.setAttribute("type", type);
-            // Change icon accordingly
             toggleIcon.setAttribute("icon", type === "password" ? "mdi:eye" : "mdi:eye-off");
         });
     </script>
