@@ -3,14 +3,14 @@
 
     <!-- Logo -->
     <div class="header-left">
-        <a href="{{route('superadmin.dashboard')}}" class="logo logo-normal">
-            <img src="{{asset('admin/assets/img/newimages/logoicon.png')}}" alt="">
+        <a href="{{ route('superadmin.dashboard') }}" class="logo logo-normal">
+            <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
         </a>
         <a href="index.php" class="logo logo-white">
-            <img src="{{asset('admin/assets/img/logo-white.png')}}" alt="">
+            <img src="{{ asset('admin/img/logo-white.png') }}" alt="">
         </a>
         <a href="index.php" class="logo-small">
-            <img src="{{asset('admin/assets/img/newimages/logoicon.png')}}" alt="">
+            <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
         </a>
 
     </div>
@@ -32,12 +32,12 @@
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item ">
-                            <a class="nav-link " href="{{route('superadmin.patients')}}" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('superadmin.patients') }}" aria-expanded="false">
                                 Patients
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="{{route('superadmin.doctors.list')}}" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('superadmin.doctors.list') }}" aria-expanded="false">
                                 Doctors / Specialists
                             </a>
                         </li>
@@ -139,7 +139,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{ asset('admin/img/newimages/userdummy.png') }}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">John Doe</span> added
@@ -156,7 +156,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{ asset('admin/img/newimages/userdummy.png') }}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Tarah
@@ -174,7 +174,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{ asset('admin/img/newimages/userdummy.png') }}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Misty Tison</span>
@@ -192,7 +192,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{ asset('admin/img/newimages/userdummy.png') }}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Rolland Webber</span>
@@ -210,7 +210,7 @@
                             <a href="activitiesjavascript:void(0);">
                                 <div class="media d-flex">
                                     <span class="avatar flex-shrink-0">
-                                        <img alt="" src="{{asset('admin/assets/img/newimages/userdummy.png')}}">
+                                        <img alt="" src="{{ asset('admin/img/newimages/userdummy.png') }}">
                                     </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Bernardo
@@ -252,8 +252,8 @@
                         </div>
 
                         <div class="pro-user-name ms-1">
-                            <h2>Admin A</h2>
-                            <p class="user_mail_id">admin@gmail.com</p>
+                            <h2>{{ auth()->user()->name ?? '' }}</h2>
+                            <p class="user_mail_id">{{ auth()->user()->email ?? '' }}</p>
                         </div>
                     </div>
 
@@ -262,9 +262,20 @@
                     <iconify-icon icon="si:user-duotone"></iconify-icon><span>My Account</span>
                 </a>
 
-                <a href="login.php" class="dropdown-item notify-item">
+                {{-- <a href="login.php" class="dropdown-item notify-item">
                     <iconify-icon icon="hugeicons:logout-square-02"></iconify-icon><span>Logout</span>
+                </a> --}}
+                <a href="#" class="dropdown-item notify-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <iconify-icon icon="hugeicons:logout-square-02"></iconify-icon>
+                    <span>Logout</span>
                 </a>
+
+                <!-- Hidden Logout Form -->
+                <form id="logout-form" action="{{ route('superadmin.logout') }}" method="POST"
+                    style="display: none;">
+                    @csrf
+                </form>
             </div>
         </li>
     </ul>
