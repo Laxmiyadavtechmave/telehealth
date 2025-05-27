@@ -6,10 +6,10 @@
         <a href="{{ route('superadmin.dashboard') }}" class="logo logo-normal">
             <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
         </a>
-        <a href="index.php" class="logo logo-white">
+        <a href="{{ route('superadmin.dashboard') }}" class="logo logo-white">
             <img src="{{ asset('admin/img/logo-white.png') }}" alt="">
         </a>
-        <a href="index.php" class="logo-small">
+        <a href="{{ route('superadmin.dashboard') }}" class="logo-small">
             <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
         </a>
 
@@ -42,12 +42,12 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="nurse.php" aria-expanded="false">
+                            <a class="nav-link " href="" aria-expanded="false">
                                 Nurses
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="pharmacy.php" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('superadmin.pharmacists.index') }}" aria-expanded="false">
                                 Pharmacists
                             </a>
                         </li>
@@ -258,7 +258,7 @@
                     </div>
 
                 </div>
-                <a href="profile.php" class="dropdown-item notify-item">
+                <a href="{{ route('superadmin.profile') }}" class="dropdown-item notify-item">
                     <iconify-icon icon="si:user-duotone"></iconify-icon><span>My Account</span>
                 </a>
 

@@ -2,7 +2,7 @@
 @section('content')
 <div class="page-wrapper">
     <div class="content">
-      
+
         <div class="rightSideWrapper">
             <div
                 class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
@@ -75,7 +75,7 @@
                         <div class="col-lg-2 col-sm-6 col-12">
                             <div class="input-blocks">
                             <iconify-icon icon="hugeicons:clinic" class="info-img"></iconify-icon>
-                          
+
                             <select class="select">
                                 <option selected disabled>Select Clinic</option>
                                 <option>HealthCare Clinic</option>
@@ -98,13 +98,13 @@
                                     <option>Inactive</option>
                                 </select>
                             </div>
-                        </div>			
+                        </div>
 
 
                                 </div>
                             </div>
                         </div>
-                        <!-- 
+                        <!--
                     <div class="col-lg-4">
                         <div class="rightPrFilters">
                             <div class="input-icon mb-2 position-relative">
@@ -141,7 +141,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td><a href="nurse-detail.php">#NUR001</a></td>
+                                <td><a href="{{ route('superadmin.nurse.show', $nurse->id ?? 1) }}">#NUR001</a></td>
                                 <td>Mille William</td>
                                 <td>Female</td>
                                 <td>+1 555-123-4567</td>
@@ -330,9 +330,9 @@
                             </tr>
 
 
-                           
 
-                            
+
+
 
                                 <!-- Add more Doctor rows as needed -->
                             </tbody>
