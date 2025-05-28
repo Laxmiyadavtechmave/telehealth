@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class Clinic extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes,HasRoles;
+
+    protected $guard_name = 'clinic'; // important
+
 
     protected $fillable = ['clinic_id', 'name', 'email', 'password', 'license_no', 'valid_from', 'valid_to', 'phone', 'web_url', 'address1', 'address2', 'city', 'country', 'postal_code', 'map_link', 'extra', 'status'];
 

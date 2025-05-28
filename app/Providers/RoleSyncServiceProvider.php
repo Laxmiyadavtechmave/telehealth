@@ -21,13 +21,13 @@ class RoleSyncServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-     
-        Permission::created(function ($permission) {
-            $superadminRole = Role::where('name', 'Superadmin')->first();
-            if ($superadminRole) {
-                $superadminRole->givePermissionTo($permission);
-            }
-        });
-   
+
+        // Permission::created(function ($permission) {
+        //     $superadminRole = Role::where('name', 'Superadmin')->first();
+        //     if ($superadminRole) {
+        //         $superadminRole->givePermissionTo($permission);
+        //     }
+        // });
+
     }
 }

@@ -2,6 +2,8 @@
 
 return [
 
+    'guards' => ['web', 'clinic'],
+
     'models' => [
 
         /*

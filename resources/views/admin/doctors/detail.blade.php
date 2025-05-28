@@ -1,4 +1,7 @@
 @extends('admin.layouts.app')
+
+@section('title', 'Tele Health Super Admin | Detail-Doctor')
+
 @section('content')
 
 <div class="page-wrapper">
@@ -22,7 +25,7 @@
                         <a href="#"><iconify-icon icon="mi:call"></iconify-icon></a>
                         <a href="#"><iconify-icon icon="lucide:video"></iconify-icon></a>
                         <a href="#" data-bs-toggle="offcanvas" data-bs-target="#PatientChat" aria-controls="offcanvasRight"><iconify-icon icon="proicons:chat"></iconify-icon></a>
-                       </div>                   
+                       </div>
                   </div> -->
                   <ul class="tophead_action">
                     <li>
@@ -59,7 +62,7 @@
                     </div>
                 </div>
             </div>
-           
+
 
 
             <div class="card doc-profile-card">
@@ -75,13 +78,13 @@
                                 <p>08/04/1959 (64y) Male • Doctor ID : #DOC002</p>
                                 <p>BDS, MDS - Oral &amp; Maxillofacial Surgery</p>
                                 <p>Cardiology, Psychiatry</p>
-                               
+
                             </div>
                         </div>
                         <div class="doc-info-right">
                         <div class="middle-info CommonCardPT">
-                            
-                           
+
+
                             <div class="InfoDt">
                                 <iconify-icon icon="ion:location-outline"></iconify-icon> 900 Oak Ridge CIR, Brighton, MI 48116
                             </div>
@@ -99,7 +102,7 @@
                     <!-- <h6 class="ContactInfo">Professional Details</h6> -->
 
                     <!-- <div class="InfoDt">
-                    <iconify-icon icon="hugeicons:new-job"></iconify-icon> 
+                    <iconify-icon icon="hugeicons:new-job"></iconify-icon>
                     </div> -->
                     <div class="InfoDt">
                     <iconify-icon icon="hugeicons:license-third-party"></iconify-icon> MD1234567 (07 May, 2020 - 07 May, 2030)
@@ -116,7 +119,7 @@
                 </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -131,7 +134,7 @@
                                 <div class="LeftSide">
                                     <h6 class="DoctorName">Monday - Friday</h6>
                                 </div>
-                                
+
                             </div>
                             <div class="DateInfo">
                                 <span>
@@ -145,7 +148,7 @@
                                 <div class="LeftSide">
                                     <h6 class="DoctorName">Saturday</h6>
                                 </div>
-                                
+
                             </div>
                             <div class="DateInfo">
                                 <span>
@@ -159,7 +162,7 @@
                                 <div class="LeftSide">
                                     <h6 class="DoctorName">Sunday</h6>
                                 </div>
-                                
+
                             </div>
                             <div class="DateInfo">
                                 <span class="badge badge-soft-danger">
@@ -170,7 +173,7 @@
                         </div>
                     </div>
                 </div>
-               
+
             </div>
             <div class="col-lg-4">
             <div class="row DoctorCardOverview">
@@ -189,8 +192,8 @@
                                             <p class="text-slate-500 dark:text-zink-200">Total Patients</p>
                                         </div>
                                     </div>
-                                
-                                
+
+
                                 </div>
                             </div><!--end col-->
                         </div>
@@ -206,8 +209,8 @@
                                         <p class="text-slate-500 dark:text-zink-200">Video Appointments</p>
                                     </div>
                                     </div>
-                                
-                                    
+
+
                                 </div>
                             </div><!--end col-->
                         </div>
@@ -223,8 +226,8 @@
                                             <p class="text-slate-500 dark:text-zink-200">Audio Appointments</p>
                                         </div>
                                     </div>
-                                
-                                
+
+
                                 </div>
                             </div><!--end col-->
                         </div>
@@ -240,7 +243,7 @@
                                             <p class="text-slate-500 dark:text-zink-200">Physical Appointments</p>
                                         </div>
                                     </div>
-                
+
                                 </div>
                             </div><!--end col-->
                         </div>
@@ -285,9 +288,9 @@
 
                     </div>
                 </div>
-                   
 
-                
+
+
             </div>
             <div class="col-lg-5">
             <div class="clinic-loc">
@@ -311,7 +314,7 @@
 							<h5 class="card-title">
 							<div class="cardheader_TITIcon">
 								<iconify-icon icon="material-symbols-light:overview-outline"></iconify-icon>
-							 </div>	
+							 </div>
 							Activity Overview</h5>
 						</div>
 
