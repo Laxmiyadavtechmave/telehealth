@@ -27,7 +27,7 @@ class RoleController extends Controller
 
     public function create() {
 
-        $permissions = Permission::all();
+        $permissions = Permission::where('guard_name','web')->get();
         return view('admin.role.create-role-permission',compact('permissions') );
 
     }
@@ -107,8 +107,9 @@ class RoleController extends Controller
     public function edit( $id ) {
         // dd($id);
         $roleId = decrypt($id);
-        $role = Role::findOrFail( $roleId );
-        $permissions = Permission::all();
+        $role = Role::where('guard_name','web')->findOrFail( $roleId );
+        $permissions = Permission::where('guard_name','web')->get();
+        // dd($permissions);
         return view('admin.role.edit-role-permission', compact( 'role', 'permissions' ) );
     }
 
@@ -120,7 +121,7 @@ class RoleController extends Controller
         try {
             // Decrypt the role ID
             $roleId = decrypt($id);
-            $role = Role::findOrFail($roleId);
+            $role = Role::where('guard_name','web')->findOrFail($roleId);
 
             // Single validation rule for all roles
             $validator = Validator::make($request->all(), [
@@ -178,13 +179,13 @@ class RoleController extends Controller
 
     function assignAdminPermissions()
     {
-        $adminRole = Role::where( 'name', "Superadmin" )->first();
+        $adminRole = Role::where('guard_name','web')->where( 'name', "Superadmin" )->first();
 
         if ( !$adminRole ) {
             throw new \Exception('Superadmin role not found.');
         }
 
-        $adminPermissions = Permission::pluck('name')->toArray();
+        $adminPermissions = Permission::where('guard_name','web')->pluck('name')->toArray();
 
         $adminRole->syncPermissions( $adminPermissions );
     }

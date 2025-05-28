@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Clinic;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ class UserController extends Controller
                         ->where('status','Active')
                             ->where('guard_name','web')
                                 ->get();
-        return view('admin.users.index',compact('users' ,'roles'));
+        return view('clinic.users.index',compact('users' ,'roles'));
     }
 
     /**
@@ -59,7 +59,7 @@ class UserController extends Controller
 
 
         DB::beginTransaction();
-        $customId = $this->generateCustomUniqueId('users','custom_id','US', 6);
+        $customId = $this->generateCustomUniqueId('users','custom_id','CU', 6);
         $data['custom_id'] = $customId;
         $data['status'] = 'Active';
         $user = User::create($data); // Use appropriate model based on role

@@ -97,7 +97,7 @@
                     <div class="my-0">
                         <h2 class="mb-1 flexpagetitle">
                             <div class="backbtnwrap">
-                                <a href="{{ route('superadmin.role.index') }}">
+                                <a href="{{ route('clinic.role.index') }}">
                                     <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
                                 </a>
                             </div>
@@ -175,7 +175,7 @@
                                         <div class="col-lg-12 mb-5">
                                             <div class="accordion rolePermission" id="accordionExample">
                                                 @php
-                                                    $permissions = Spatie\Permission\Models\Permission::all()
+                                                    $permissions = Spatie\Permission\Models\Permission::where('guard_name','clinic')->get()
                                                         ->groupBy('category')
                                                         ->map(function ($category) {
                                                             return $category->groupBy('subcategory');
