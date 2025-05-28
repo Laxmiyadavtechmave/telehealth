@@ -57,8 +57,11 @@
             });
         });
 
-
-        initializeTimePickers();
+        if (!isEditPage) {
+                initializeTimePickers();
+        }else{
+            ReinitializeTimePickers();
+        }
     });
 
     // Copy slots from sourceDay to other days except those marked Not Available
