@@ -189,8 +189,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                         <div class="ItemContainerTop">
@@ -261,23 +259,17 @@
                                                                         <label for="map_link">Google Maps Link
                                                                             <span>*</span></label>
                                                                         <input type="text"
-                                                                            placeholder="Google Maps Link" id="map_link"
+                                                                            placeholder="Google Maps Link" name="map_link"
                                                                             id="map_link" required
                                                                             value="{{ old('map_link') }}"
                                                                             class="form-control">
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
                                                         </div>
-
-
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -290,297 +282,82 @@
                                             <div class="col-lg-12">
                                                 <div class="card mb-0">
                                                     <div class="card-body">
+                                                        @php
+                                                            $weekDays = [
+                                                                'monday',
+                                                                'tuesday',
+                                                                'wednesday',
+                                                                'thursday',
+                                                                'friday',
+                                                                'saturday',
+                                                                'sunday',
+                                                            ];
+                                                        @endphp
                                                         <div class="WeekDays_row">
                                                             <ul class="nav nav-tabs" id="weekTabs" role="tablist">
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link active" id="monday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#monday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="monday"
-                                                                        aria-selected="true">Monday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="tuesday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#tuesday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="tuesday"
-                                                                        aria-selected="false">Tuesday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="wednesday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#wednesday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="wednesday"
-                                                                        aria-selected="false">Wednesday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="thursday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#thursday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="thursday"
-                                                                        aria-selected="false">Thursday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="friday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#friday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="friday"
-                                                                        aria-selected="false">Friday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="saturday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#saturday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="saturday"
-                                                                        aria-selected="false">Saturday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="sunday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#sunday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="sunday"
-                                                                        aria-selected="false">Sunday</button>
-                                                                </li>
+                                                                @foreach ($weekDays as $index => $day)
+                                                                    <li class="nav-item" role="presentation">
+                                                                        <button
+                                                                            class="nav-link {{ $index === 0 ? 'active' : '' }}"
+                                                                            id="{{ $day }}-tab"
+                                                                            data-bs-toggle="tab"
+                                                                            data-bs-target="#{{ $day }}"
+                                                                            type="button" role="tab"
+                                                                            aria-controls="{{ $day }}"
+                                                                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
+                                                                            {{ ucfirst($day) }}
+                                                                        </button>
+                                                                    </li>
+                                                                @endforeach
+
                                                             </ul>
                                                         </div>
                                                         <div class="tab-content" id="weekTabContent">
-                                                            <div class="tab-pane fade show active" id="monday"
-                                                                role="tabpanel" aria-labelledby="monday-tab">
+                                                            @foreach ($weekDays as $index => $day)
+                                                                <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
+                                                                    id="{{ $day }}" role="tabpanel"
+                                                                    aria-labelledby="{{ $day }}-tab">
 
-                                                                <div class="day-row" id="monday">
+                                                                    <div class="day-row" id="{{ $day }}">
+                                                                        <div class="time-slots"
+                                                                            id="{{ $day }}-slots"></div>
 
-                                                                    <div class="time-slots" id="monday-slots">
-
-                                                                    </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
+                                                                        <div class="form-group applyonallcheckbbox">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input apply-all"
+                                                                                    id="applyAll{{ ucfirst($day) }}">
+                                                                                <label class="form-check-label"
+                                                                                    for="applyAll{{ ucfirst($day) }}">
+                                                                                    Do you want to apply this on all days
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="NotAvailable{{ $index + 1 }}">
+                                                                                <label class="form-check-label" name="not_available[{{$day}}]" 
+                                                                                    for="NotAvailable{{ $index + 1 }}">
+                                                                                    Not Available
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable1">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable1">Not Available</label>
-                                                                        </div>
+
+                                                                        <button type="button"
+                                                                            class="add-button addMultislot_button"
+                                                                            onclick="addSlot('{{ $day }}')">
+                                                                            <iconify-icon
+                                                                                icon="basil:add-outline"></iconify-icon>
+                                                                            Add Time
+                                                                        </button>
                                                                     </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('monday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="tuesday" role="tabpanel"
-                                                                aria-labelledby="tuesday-tab">
+                                                            @endforeach
 
-                                                                <div class="day-row" id="tuesday">
-
-                                                                    <div class="time-slots" id="tuesday-slots">
-
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllTuesday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllTuesday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable2">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable2">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('tuesday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="wednesday" role="tabpanel"
-                                                                aria-labelledby="wednesday-tab">
-
-                                                                <div class="day-row" id="wednesday">
-
-                                                                    <div class="time-slots" id="wednesday-slots">
-
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllWednesday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllWednesday">Do you want to
-                                                                                apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable3">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable3">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('wednesday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="thursday" role="tabpanel"
-                                                                aria-labelledby="thursday-tab">
-
-                                                                <div class="day-row" id="thursday">
-
-                                                                    <div class="time-slots" id="thursday-slots">
-
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllThursday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllThursday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable4">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable4">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('thursday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="friday" role="tabpanel"
-                                                                aria-labelledby="friday-tab">
-
-                                                                <div class="day-row" id="friday">
-
-                                                                    <div class="time-slots" id="friday-slots">
-
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllFriday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllFriday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable5">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable5">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('friday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="saturday" role="tabpanel"
-                                                                aria-labelledby="saturday-tab">
-
-                                                                <div class="day-row" id="saturday">
-
-                                                                    <div class="time-slots" id="saturday-slots">
-
-                                                                    </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllSaturday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllSaturday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable6">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable6">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('saturday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="sunday" role="tabpanel"
-                                                                aria-labelledby="sunday-tab">
-
-                                                                <div class="day-row" id="sunday">
-
-                                                                    <div class="time-slots" id="sunday-slots">
-
-                                                                    </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllSunday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllSunday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable7">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable7">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('sunday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
-
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -634,12 +411,9 @@
                                                                     name="extra[twitter]">
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -703,12 +477,9 @@
                     </form>
 
                 </div>
-
             </div>
         </div>
-
     </div>
-
 
     <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -821,251 +592,6 @@
 
             reader.readAsDataURL(file);
         });
-
-        /***************************** clinic schedules *******************/
-        let applyAllSourceDay = null;
-
-        $(document).ready(function() {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-
-            // Apply All Checkbox
-            $('.apply-all').on('change', function() {
-                const dayId = $(this).closest('.day-row').attr('id');
-
-                if ($(this).is(':checked')) {
-                    applyAllSourceDay = dayId;
-
-                    setTimeout(() => {
-                        copyTimeSlotsToAllDays(dayId);
-
-                        // Check Apply on all other days too (visually only)
-                        days.forEach(day => {
-                            if (day !== dayId && !$('#NotAvailable' + (days.indexOf(day) +
-                                    1)).is(':checked')) {
-                                $('#applyAll' + capitalize(day)).prop('checked', true);
-                            }
-                        });
-                    }, 100); // Delay in milliseconds
-                } else {
-                    applyAllSourceDay = null;
-
-                    // Uncheck apply-all everywhere
-                    days.forEach(day => {
-                        $('#applyAll' + capitalize(day)).prop('checked', false);
-                    });
-                }
-            });
-
-
-            // Handle Not Available checkbox
-            days.forEach((day, index) => {
-                addSlot(day);
-                $('#NotAvailable' + (index + 1)).on('change', function() {
-                    const $slots = $('#' + day + '-slots');
-                    const $addButton = $('#' + day + ' .addMultislot_button');
-                    const $applyAll = $('#applyAll' + capitalize(day));
-
-                    if ($(this).is(':checked')) {
-                        $slots.hide();
-                        $addButton.prop('disabled', true);
-                        $applyAll.prop('checked', false).prop('disabled', true);
-                    } else {
-                        $slots.show();
-                        $addButton.prop('disabled', false);
-                        $applyAll.prop('disabled', false);
-                    }
-                });
-            });
-
-
-            initializeTimePickers();
-        });
-
-
-
-        // Copy slots from sourceDay to other days except those marked Not Available
-        function copyTimeSlotsToAllDays(sourceDay) {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-
-            const $sourceSlots = $('#' + sourceDay + '-slots .time-slot');
-            const slotsData = [];
-
-            // Extract actual time values from the Flatpickr fields
-            $sourceSlots.each(function() {
-                const fromTime = $(this).find('.from-time').val();
-                const toTime = $(this).find('.to-time').val();
-                slotsData.push({
-                    from: fromTime,
-                    to: toTime
-                });
-            });
-
-            // Apply to all other days
-            days.forEach((day, index) => {
-                if (day !== sourceDay && !$('#NotAvailable' + (index + 1)).is(':checked')) {
-                    const $target = $('#' + day + '-slots');
-                    $target.empty(); // Clear old slots
-
-                    slotsData.forEach(slot => {
-                        const slotHTML = `
-                    <div class="time-slot">
-                        <input type="text" class="form-control from-time" value="${slot.from}"> to
-                        <input type="text" class="form-control to-time" value="${slot.to}">
-                        <button class="deleteslot" onclick="removeSlot(this)">
-                            <iconify-icon icon="proicons:delete"></iconify-icon>
-                        </button>
-                    </div>
-                `;
-                        $target.append(slotHTML);
-                    });
-                }
-            });
-
-            initializeTimePickers();
-        }
-
-
-        // Add new time slot respecting Not Available
-        function addSlot(day) {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const index = days.indexOf(day) + 1;
-
-            if ($('#NotAvailable' + index).is(':checked')) {
-                alert(`${capitalize(day)} is marked as Not Available.`);
-                return;
-            }
-
-            applyAllSourceDay = null;
-            days.forEach(d => {
-                $('#applyAll' + capitalize(d)).prop('checked', false);
-            });
-
-
-            const $container = $('#' + day + '-slots');
-            $container.append(`
-        <div class="time-slot">
-            <input type="text" class="flatpickr-input form-control from-time"> to
-            <input type="text" class="flatpickr-input form-control to-time">
-            <button class="deleteslot" onclick="removeSlot(this)"><iconify-icon icon="proicons:delete"></iconify-icon></button>
-        </div>
-    `);
-            initializeTimePickers();
-
-            // If apply-all is active and current day is the source, propagate to others
-            if (applyAllSourceDay === day) {
-                copyTimeSlotsToAllDays(day);
-            }
-        }
-
-        function removeSlot(button) {
-            $(button).closest('.time-slot').remove();
-        }
-
-        function capitalize(word) {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        }
-
-        // Initialize flatpickr on all inputs not yet initialized
-        function initializeTimePickers() {
-            $('.from-time').each(function() {
-                if (!$(this).hasClass('flatpickr-initialized')) {
-                    flatpickr(this, {
-                        enableTime: true,
-                        noCalendar: true,
-                        dateFormat: "h:i K",
-                        defaultDate: "09:00", // Default start time
-                        minuteIncrement: 1,
-                        onChange: validateTimeSlot
-                    });
-                    $(this).addClass('flatpickr-initialized');
-                }
-            });
-
-            $('.to-time').each(function() {
-                if (!$(this).hasClass('flatpickr-initialized')) {
-                    flatpickr(this, {
-                        enableTime: true,
-                        noCalendar: true,
-                        dateFormat: "h:i K",
-                        defaultDate: "17:00", // Default end time
-                        minuteIncrement: 1,
-                        onChange: validateTimeSlot
-                    });
-                    $(this).addClass('flatpickr-initialized');
-                }
-            });
-        }
-
-        function validateTimeSlot(selectedDates, dateStr, instance) {
-            const $slot = $(instance.element).closest('.time-slot');
-            const from = $slot.find('.from-time').val();
-            const to = $slot.find('.to-time').val();
-
-            if (from && to) {
-                const fromTime = parseTime(from);
-                const toTime = parseTime(to);
-
-                if (fromTime >= toTime) {
-                    Swal.fire({
-                        toast: true,
-                        icon: 'error',
-                        title: 'End time must be after start time!',
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        timerProgressBar: true,
-                        background: '#fff',
-                        color: '#333',
-                    });
-                    $(instance.element).val('');
-                }
-            }
-        }
-
-        function parseTime(timeStr) {
-            const [time, meridian] = timeStr.split(' ');
-            let [hours, minutes] = time.split(':').map(Number);
-
-            if (meridian === 'PM' && hours !== 12) hours += 12;
-            if (meridian === 'AM' && hours === 12) hours = 0;
-
-            return hours * 60 + minutes;
-        }
-
-
-        let debounceTimer = null;
-
-        $(document).on('change', '.from-time, .to-time', function() {
-            if (!applyAllSourceDay) return;
-
-            const $sourceInput = $(this);
-            const isFrom = $sourceInput.hasClass('from-time');
-            const timeIndex = $sourceInput.closest('.time-slot').index();
-            const newValue = $sourceInput.val();
-
-            clearTimeout(debounceTimer);
-
-            debounceTimer = setTimeout(() => {
-                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-
-                days.forEach((day, index) => {
-                    if (day === applyAllSourceDay) return;
-                    if ($('#NotAvailable' + (index + 1)).is(':checked')) return;
-
-                    const $targetSlot = $('#' + day + '-slots .time-slot').eq(timeIndex);
-                    if ($targetSlot.length) {
-                        const $targetInput = isFrom ? $targetSlot.find('.from-time') : $targetSlot
-                            .find('.to-time');
-                        if ($targetInput.val() !== newValue) {
-                            $targetInput.val(newValue);
-
-                            if ($targetInput[0]._flatpickr) {
-                                $targetInput[0]._flatpickr.setDate(newValue, true);
-                            }
-                        }
-                    }
-                });
-            }, 300); // Delay ensures stability
-        });
     </script>
+    @include('admin.common.schedule-js')
 @endpush

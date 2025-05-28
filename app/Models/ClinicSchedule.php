@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClinicSchedule extends Model
 {
-     protected $fillable = ['clinic_id', 'img'];
+    protected $fillable = ['clinic_id', 'day', 'start_time', 'end_time', 'is_available'];
 }

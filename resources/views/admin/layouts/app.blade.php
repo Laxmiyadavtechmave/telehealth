@@ -66,12 +66,13 @@
     <!-- Main Wrapper -->
     <div class="main-wrapper">
         @include('admin.layouts.header')
-         @include('admin.layouts.includes.alerts')
+       
         @include('admin.layouts.sidebar')
         @yield('content')
     </div>
     @include('admin.layouts.footer')
     @stack('custom_scripts')
+    @include('admin.layouts.includes.alerts')
 </body>
 
 </html>
