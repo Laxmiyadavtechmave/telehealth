@@ -41,14 +41,13 @@
 
 @if ($errors->any())
     <script>
+        /*****************eee*************/
         document.addEventListener("DOMContentLoaded", function () {
-            const errorMessage = `{{ $errors->first() }}`; // show only first error in toast
-
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: 'warning',
-                title: errorMessage,
+                title: @json($errors->first()),
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
@@ -59,3 +58,4 @@
         });
     </script>
 @endif
+

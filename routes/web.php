@@ -8,9 +8,6 @@ use App\Http\Controllers\Clinic\NurseController;
 use App\Http\Controllers\Clinic\PatientController;
 use App\Http\Controllers\Clinic\PharmacyController as ClinicPharmacyController;
 
-
-
-
 /************  */
 Route::get('/', function () {
     return view('welcome');
@@ -29,7 +26,7 @@ Route::prefix('superadmin')
         Route::middleware('auth:web')->group(function () {
             Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-            Route::match(['get','put'],'profile',[AuthController::class,'profile'])->name('profile');
+            Route::match(['get', 'put'], 'profile', [AuthController::class, 'profile'])->name('profile');
             Route::get('patients', [HomeController::class, 'patients'])->name('patients');
             Route::prefix('doctors')
                 ->name('doctors.')
@@ -37,6 +34,11 @@ Route::prefix('superadmin')
                     Route::get('/', [HomeController::class, 'doctors'])->name('list');
                     Route::get('details', [HomeController::class, 'doctorDetail'])->name('detail');
                 });
+            
+            /************************ clinic ************/    
+            Route::resource('clinic', ClinicController::class);
+            Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
+
 
             Route::prefix('nurses')
                 ->name('nurses.')
@@ -45,24 +47,18 @@ Route::prefix('superadmin')
                     Route::get('details', [HomeController::class, 'nursesDetail'])->name('detail');
                 });
 
+            Route::resource('role', RoleController::class);
 
-                Route::resource('clinic', ClinicController::class);
-                Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
-
-                Route::resource('role', RoleController::class);
-
-                Route::prefix('user')
-                            ->name('user.')
-                            ->group(function () {
+            Route::prefix('user')
+                ->name('user.')
+                ->group(function () {
                     Route::get('users', [UserController::class, 'index'])->name('index');
                     Route::post('store', [UserController::class, 'store'])->name('store');
-                    Route::post('update-status',[UserController::class,'updateStatus'])->name('update-status');
+                    Route::post('update-status', [UserController::class, 'updateStatus'])->name('update-status');
                     Route::post('update', [UserController::class, 'update'])->name('update');
-                 });
+                });
 
-                Route::resource('pharmacists', PharmacyController::class);
-
-
+            Route::resource('pharmacists', PharmacyController::class);
         });
     });
 
