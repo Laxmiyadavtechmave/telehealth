@@ -13,7 +13,7 @@
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
                         <div class="ActionWrapper">
-                            <a href="{{ route('superadmin.role.create') }}"
+                            <a href="{{ route('clinic.role.create') }}"
                                 class="btn btn-primary d-flex align-items-center cmnaddbtn">
                                 <iconify-icon icon="icons8:plus"></iconify-icon> Create Role & permission
                             </a>

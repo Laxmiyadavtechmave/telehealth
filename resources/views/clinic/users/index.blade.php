@@ -1,5 +1,5 @@
 @extends('clinic.layouts.app')
-@section('title', 'Tele Health Clinic Admin | dashboard')
+@section('title', 'Tele Health Clinic Admin | User')
 @section('content')
 
 <div class="page-wrapper">
@@ -143,7 +143,7 @@
  Window Style Add System User Modal End Here
 ---------------------------------------------->
 <div class="WindowsStyleModal">
-    <form action="{{ route('superadmin.user.store') }}" id="newUser" method="POST" novalidate>
+    <form action="{{ route('clinic.user.store') }}" id="newUser" method="POST" novalidate>
      @csrf
         <div class="modal fade" id="user_add" tabindex="-1" aria-labelledby="HelpPopupLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -231,7 +231,7 @@
  Window Style Edit System User Modal End Here
 ---------------------------------------------->
 <div class="WindowsStyleModal">
-    <form action="{{ route('superadmin.user.update') }}" id="updateUser" method="POST" novalidate>
+    <form action="{{ route('clinic.user.update') }}" id="updateUser" method="POST" novalidate>
      @csrf
         <div class="modal fade" id="user_edit" tabindex="-1" aria-labelledby="HelpPopupLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -668,7 +668,7 @@ $(document).on('click', '.status-option', function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '{{ route("superadmin.user.update-status") }}',
+                url: '{{ route("clinic.user.update-status") }}',
                 type: 'POST',
                 data: {
                     user_id: userId,

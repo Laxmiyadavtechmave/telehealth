@@ -59,7 +59,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{route('superadmin.clinic.index')}}">Clinics List</a></li>
-                                <li><a class="dropdown-item" href="#">Add New Clinic</a></li>
+                                <li><a class="dropdown-item" href="{{ route('superadmin.clinic.create') }}">Add New Clinic</a></li>
 
 
                             </ul>

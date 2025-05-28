@@ -6,6 +6,8 @@ use App\Http\Controllers\Clinic\DoctorController;
 use App\Http\Controllers\Clinic\HomeController as ClinicHomeController;
 use App\Http\Controllers\Clinic\NurseController;
 use App\Http\Controllers\Clinic\PatientController;
+use App\Http\Controllers\Clinic\RoleController as ClinicRoleController;
+use App\Http\Controllers\Clinic\UserController as ClinicUserController;
 use App\Http\Controllers\Clinic\PharmacyController as ClinicPharmacyController;
 
 /************  */
@@ -34,8 +36,8 @@ Route::prefix('superadmin')
                     Route::get('/', [HomeController::class, 'doctors'])->name('list');
                     Route::get('details', [HomeController::class, 'doctorDetail'])->name('detail');
                 });
-            
-            /************************ clinic ************/    
+
+            /************************ clinic ************/
             Route::resource('clinic', ClinicController::class);
             Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
 
@@ -62,6 +64,8 @@ Route::prefix('superadmin')
         });
     });
 
+
+ /************************ clinic panel ************/
 Route::middleware('auth_redirect:clinic')->group(function () {
 
     Route::prefix('clinic')
@@ -72,6 +76,19 @@ Route::middleware('auth_redirect:clinic')->group(function () {
                         Route::resource('nurse',NurseController::class);
                         Route::resource('patient',PatientController::class);
                         Route::resource('pharmacy',ClinicPharmacyController::class);
+
+                        Route::prefix('user')
+                                ->name('user.')
+                                    ->group(function () {
+                                        Route::get('users', [ClinicUserController::class, 'index'])->name('index');
+                                        Route::post('store', [ClinicUserController::class, 'store'])->name('store');
+                                        Route::post('update-status', [ClinicUserController::class, 'updateStatus'])->name('update-status');
+                                        Route::post('update', [ClinicUserController::class, 'update'])->name('update');
+                                    });
+
+                        Route::resource('role', ClinicRoleController::class);
                 });
+
+
 
 });

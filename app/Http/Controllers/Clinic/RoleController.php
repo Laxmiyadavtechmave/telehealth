@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Clinic;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class RoleController extends Controller
         // }
 
         $roles = Role::where('guard_name','clinic')->orderByDesc('created_at')->get();
-        return view('admin.role.role-permission', compact( 'roles' ) );
+        return view('clinic.role.role-permission', compact( 'roles' ) );
     }
 
     /**
@@ -28,7 +28,7 @@ class RoleController extends Controller
     public function create() {
 
         $permissions = Permission::where('guard_name','clinic')->get();
-        return view('admin.role.create-role-permission',compact('permissions') );
+        return view('clinic.role.create-role-permission',compact('permissions') );
 
     }
 
@@ -61,7 +61,7 @@ class RoleController extends Controller
             }
 
             DB::beginTransaction();
-            $admin_id = Auth::guard('web')->id();
+            $admin_id = Auth::guard('clinic')->id();
             // Create the role
             $role = Role::create( [
                 'name' => trim($request->name),
@@ -110,7 +110,7 @@ class RoleController extends Controller
         $roleId = decrypt($id);
         $role = Role::findOrFail( $roleId );
         $permissions = Permission::where('guard_name','clinic')->get();
-        return view('admin.role.edit-role-permission', compact( 'role', 'permissions' ) );
+        return view('clinic.role.edit-role-permission', compact( 'role', 'permissions' ) );
     }
 
     /**

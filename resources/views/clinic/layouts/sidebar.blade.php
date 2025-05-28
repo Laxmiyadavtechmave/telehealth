@@ -25,7 +25,7 @@
                     </div>
                     <!-- Tooltip Menu Item -->
                     <div class="custom-menu-item">
-                        <a href="##">
+                        <a href="{{ route('clinic.dashboard') }}">
                             <div class="custom-icon">
                                 <iconify-icon icon="prime:users"></iconify-icon>
                             </div>
@@ -46,7 +46,7 @@
 
                     <!-- Tooltip Menu Item -->
                     <div class="custom-menu-item">
-                        <a href="##">
+                        <a href="{{ route('clinic.user.index') }}">
                             <div class="custom-icon">
                                 <iconify-icon icon="oui:app-users-roles"></iconify-icon>
                             </div>
@@ -65,7 +65,7 @@
                     </div>
 
                     <div class="custom-menu-item">
-                        <a href="##">
+                        <a href="{{ route('clinic.role.index') }}">
                             <div class="custom-icon">
                                 <iconify-icon icon="hugeicons:analytics-02"></iconify-icon>
                             </div>
