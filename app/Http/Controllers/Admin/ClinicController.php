@@ -211,7 +211,7 @@ class ClinicController extends Controller
 
             //Step 6. assign role and sync permissions
             $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
-            $clinic->assignRole($request->role_name);
+            $clinic->assignRole($clinic->clinic_id);
 
             $clinicPermissions = Permission::where('guard_name', 'clinic')->get();
 
@@ -222,9 +222,8 @@ class ClinicController extends Controller
             DB::commit();
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic created successfully!');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
-            return redirect()->route('superadmin.clinic.create')->with('error', 'Something went wrong')->withInput();
+            return redirect()->route('superadmin.clinic.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -276,7 +275,6 @@ class ClinicController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             ]);
             //Step 2. save clinic
-// dd("Sdfds");
             $clinic->name = $request->clinic_name ?? '';
             $clinic->email = $request->email ?? '';
             $clinic->license_no = $request->license_no ?? '';
@@ -302,7 +300,7 @@ class ClinicController extends Controller
 
             $clinic->extra = $request->filled('extra') ? json_encode($request->extra) : null;
             $clinic->save();
-            // dd($clinic,$request->all());
+
             // Step 3: Validate and store schedule
             ClinicSchedule::where('clinic_id', $clinic->id)->delete();
             $workingHours = $request->input('working_hours', []);
@@ -352,7 +350,6 @@ class ClinicController extends Controller
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
             return redirect()->route('superadmin.clinic.edit', encrypt($id))->with('error', $e->getMessage())->withInput();
         }
     }

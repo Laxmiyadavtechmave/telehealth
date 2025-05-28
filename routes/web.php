@@ -35,7 +35,7 @@ Route::prefix('superadmin')
             
             /************************ clinic ************/    
             Route::resource('clinic', ClinicController::class);
-            Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
+            Route::get('/clinics/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
 
             Route::resource('role', RoleController::class);
 
@@ -48,6 +48,7 @@ Route::prefix('superadmin')
                     Route::post('update', [UserController::class, 'update'])->name('update');
                 });
 
-            Route::resource('pharmacists', PharmacyController::class);
+            Route::resource('pharmacies', PharmacyController::class);
+             Route::get('/pharmacy/datatable', [PharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
         });
     });
