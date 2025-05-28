@@ -81,6 +81,12 @@ document.addEventListener("DOMContentLoaded", function () {
             else {
                 if (!field.val()) {
                     field.addClass("is-invalid");
+
+                    // Add the new condition for 'phone' field
+                    if (field.attr("name") === "phone") {
+                        field.closest(".form-group").addClass("phone-error");
+                    }
+
                     if (!field.next(".invalid-feedback").length) {
                         field.after(
                             '<div class="invalid-feedback">This field is required.</div>'
@@ -125,6 +131,15 @@ document.addEventListener("DOMContentLoaded", function () {
             field.closest(".pic-holder").removeClass("is-invalid"); // Remove from parent div
         } else if (field.val()) {
             field.removeClass("is-invalid");
+        }
+
+        // Remove phone-error class if this is phone field and has value
+        if (field.attr("name") === "phone") {
+            if (field.val()) {
+                field.closest(".form-group").removeClass("phone-error");
+            } else {
+                field.closest(".form-group").addClass("phone-error");
+            }
         }
     });
 });
