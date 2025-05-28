@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Tele Health Super Admin | Doctors')
 @section('content')
     <div class="page-wrapper">
         <div class="content">

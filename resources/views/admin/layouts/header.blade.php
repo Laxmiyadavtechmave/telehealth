@@ -42,7 +42,7 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('superadmin.nurses.list') }}" aria-expanded="false">
                                 Nurses
                             </a>
                         </li>

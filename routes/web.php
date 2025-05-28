@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Admin\NurseController;
-use App\Http\Controllers\Admin\DoctorController;
-use App\Http\Controllers\Admin\{AuthController, HomeController, PharmacyController, RoleController, UserController, ClinicController};
+use App\Http\Controllers\Admin\{AuthController, HomeController , PharmacyController, RoleController,UserController,ClinicController};
+use App\Http\Controllers\Clinic\DoctorController;
+use App\Http\Controllers\Clinic\HomeController as ClinicHomeController;
+use App\Http\Controllers\Clinic\NurseController;
+use App\Http\Controllers\Clinic\PatientController;
+use App\Http\Controllers\Clinic\PharmacyController as ClinicPharmacyController;
 
 /************  */
 Route::get('/', function () {
@@ -37,6 +39,14 @@ Route::prefix('superadmin')
             Route::resource('clinic', ClinicController::class);
             Route::get('/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
 
+
+            Route::prefix('nurses')
+                ->name('nurses.')
+                ->group(function () {
+                    Route::get('/', [HomeController::class, 'nurses'])->name('list');
+                    Route::get('details', [HomeController::class, 'nursesDetail'])->name('detail');
+                });
+
             Route::resource('role', RoleController::class);
 
             Route::prefix('user')
@@ -51,3 +61,17 @@ Route::prefix('superadmin')
             Route::resource('pharmacists', PharmacyController::class);
         });
     });
+
+Route::middleware('auth_redirect:clinic')->group(function () {
+
+    Route::prefix('clinic')
+        ->name('clinic.')
+            ->group(function () {
+                        Route::get('dashboard', [ClinicHomeController::class, 'dashboard'])->name('dashboard');
+                        Route::resource('doctor',DoctorController::class);
+                        Route::resource('nurse',NurseController::class);
+                        Route::resource('patient',PatientController::class);
+                        Route::resource('pharmacy',ClinicPharmacyController::class);
+                });
+
+});
