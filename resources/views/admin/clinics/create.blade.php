@@ -31,9 +31,11 @@
                     </div>
                 </div>
                 <div class="tablemaincard_nopaddingleftright">
-                    <form action="{{ route('superadmin.clinic.store') }}" class="form needs-validation" method="post"
-                        enctype="multipart/form-data" novalidate>
+                    <form id="clinicForm" action="{{ route('superadmin.clinic.store') }}" class="form needs-validation"
+                        method="post" enctype="multipart/form-data" novalidate>
                         @csrf
+                        <input type="file" id="finalImageInput" name="documents[]" multiple hidden>
+
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -336,8 +338,9 @@
                                                                             <div class="form-check">
                                                                                 <input type="checkbox"
                                                                                     class="form-check-input"
-                                                                                    id="NotAvailable{{ $index + 1 }}">
-                                                                                <label class="form-check-label" name="not_available[{{$day}}]" 
+                                                                                    id="NotAvailable{{ $index + 1 }}"
+                                                                                    name="not_available[{{ $day }}]">
+                                                                                <label class="form-check-label"
                                                                                     for="NotAvailable{{ $index + 1 }}">
                                                                                     Not Available
                                                                                 </label>
@@ -592,6 +595,472 @@
             };
 
             reader.readAsDataURL(file);
+        });
+
+        /******************************** clinic gallery ****************************/
+
+        // const uploadAreaNew = document.getElementById("uploadAreaNew");
+        // const imageInputNew = document.getElementById("imageInputNew");
+        // const imageGalleryNew = document.getElementById("imageGalleryNew");
+        // const uploadLoaderNew = document.getElementById("uploadLoaderNew");
+        // const addImageBtnNew = document.getElementById("addImageBtnNew");
+        // const addImagesLinkNew = document.querySelector("[data-bs-target='#uploadModalNew']");
+        // let uploadedFilesNew = [];
+        // let finalImagesArray = [];
+
+        // imageGalleryNew.style.display = "none";
+
+        // // Drag & Drop
+        // uploadAreaNew.addEventListener("dragover", (event) => {
+        //     event.preventDefault();
+        //     uploadAreaNew.classList.add("drag-over");
+        // });
+
+        // uploadAreaNew.addEventListener("dragleave", () => {
+        //     uploadAreaNew.classList.remove("drag-over");
+        // });
+
+        // uploadAreaNew.addEventListener("drop", (event) => {
+        //     event.preventDefault();
+        //     uploadAreaNew.classList.remove("drag-over");
+        //     const files = event.dataTransfer.files;
+        //     if (files && files.length > 0) {
+        //         Array.from(files).forEach((file) => {
+        //             const validTypes = [
+        //                 "image/",
+        //                 "application/pdf",
+        //                 "application/msword",
+        //                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        //             ];
+        //             if (
+        //                 (validTypes.some(type => file.type.startsWith(type)) || file.name.endsWith(
+        //                     ".doc") || file.name.endsWith(".docx")) &&
+        //                 !uploadedFilesNew.includes(file)
+        //             ) {
+        //                 uploadedFilesNew.push(file);
+        //             }
+        //         });
+        //         showPreviewNew(uploadedFilesNew);
+        //     }
+        // });
+
+        // // Click to Upload
+        // uploadAreaNew.addEventListener("click", () => {
+        //     imageInputNew.click();
+        // });
+
+        // imageInputNew.addEventListener("change", (event) => {
+        //     const files = event.target.files;
+        //     if (files && files.length > 0) {
+        //         Array.from(files).forEach((file) => {
+        //             const validTypes = [
+        //                 "image/",
+        //                 "application/pdf",
+        //                 "application/msword",
+        //                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        //             ];
+        //             if (
+        //                 (validTypes.some(type => file.type.startsWith(type)) || file.name.endsWith(
+        //                     ".doc") || file.name.endsWith(".docx")) &&
+        //                 !uploadedFilesNew.includes(file)
+        //             ) {
+        //                 uploadedFilesNew.push(file);
+        //             }
+        //         });
+        //         showPreviewNew(uploadedFilesNew);
+        //     }
+        // });
+
+        // function showPreviewNew(files) {
+        //     uploadAreaNew.innerHTML = ""; // Clear previous previews
+        //     files.forEach((file) => {
+        //         const fileDiv = document.createElement("div");
+        //         fileDiv.style.marginBottom = "10px";
+        //         fileDiv.style.border = "1px solid #ccc";
+        //         fileDiv.style.padding = "5px";
+
+        //         const fileName = document.createElement("p");
+        //         fileName.textContent = file.name;
+        //         fileName.style.fontSize = "14px";
+        //         fileName.style.margin = "5px 0";
+
+        //         if (file.type.startsWith("image/")) {
+        //             const reader = new FileReader();
+        //             reader.onload = (e) => {
+        //                 const img = document.createElement("img");
+        //                 img.src = e.target.result;
+        //                 img.style.width = "100%";
+        //                 img.style.border = "1px solid #ccc";
+        //                 fileDiv.appendChild(img);
+        //                 fileDiv.appendChild(fileName);
+        //             };
+        //             reader.readAsDataURL(file);
+        //         } else {
+        //             const img = document.createElement("img");
+        //             img.style.width = "50px";
+        //             img.style.marginRight = "10px";
+
+        //             if (file.name.endsWith(".pdf")) {
+        //                 img.src = "{{ asset('common/img/file.png') }}";
+        //             } else if (file.name.endsWith(".doc") || file.name.endsWith(".docx")) {
+        //                 img.src = "{{ asset('common/img/docx-file.png') }}";
+        //             } else {
+        //                 img.src = ""; // fallback (optional)
+        //             }
+
+        //             fileDiv.appendChild(img);
+        //             fileDiv.appendChild(fileName);
+        //         }
+
+        //         uploadAreaNew.appendChild(fileDiv);
+        //     });
+        // }
+
+
+        // addImageBtnNew.addEventListener("click", () => {
+        //     if (uploadedFilesNew.length === 0) {
+        //         alert("Please upload at least one file first.");
+        //         return;
+        //     }
+
+        //     uploadLoaderNew.style.display = "block";
+
+        //     uploadedFilesNew.forEach((file, index) => {
+        //         setTimeout(() => {
+        //             // Only push unique files
+        //             if (!finalImagesArray.includes(file)) {
+        //                 finalImagesArray.push(file);
+        //             }
+
+        //             const container = document.createElement("div");
+        //             container.classList.add("image-container");
+
+        //             if (file.type.startsWith("image/")) {
+        //                 const reader = new FileReader();
+        //                 reader.onload = (e) => {
+        //                     const img = document.createElement("img");
+        //                     img.src = e.target.result;
+        //                     img.style.width = "100px";
+        //                     img.style.marginRight = "10px";
+
+        //                     const removeBtn = document.createElement("button");
+        //                     removeBtn.classList.add("remove-btn");
+        //                     removeBtn.innerHTML = "×";
+        //                     removeBtn.addEventListener("click", () => {
+        //                         container.remove();
+        //                         finalImagesArray = finalImagesArray.filter(f => f !==
+        //                             file); // Remove from final array
+        //                         checkAndHideGallery();
+        //                     });
+
+        //                     container.appendChild(img);
+        //                     container.appendChild(removeBtn);
+        //                     imageGalleryNew.appendChild(container);
+        //                     imageGalleryNew.style.display = "flex";
+        //                 };
+        //                 reader.readAsDataURL(file);
+        //             } else {
+        //                 const fileWrapper = document.createElement("div");
+        //                 fileWrapper.style.display = "flex";
+        //                 fileWrapper.style.alignItems = "center";
+        //                 fileWrapper.style.border = "1px solid #ccc";
+        //                 fileWrapper.style.padding = "5px";
+        //                 fileWrapper.style.flexDirection = "column";
+        //                 fileWrapper.style.textAlign = "center";
+
+        //                 const img = document.createElement("img");
+        //                 img.style.width = "60px";
+        //                 img.style.marginRight = "10px";
+
+        //                 if (file.name.endsWith(".pdf")) {
+        //                     img.src = "{{ asset('common/img/file.png') }}";
+        //                 } else if (file.name.endsWith(".doc") || file.name.endsWith(".docx")) {
+        //                     img.src = "{{ asset('common/img/docx-file.png') }}";
+        //                 }
+
+        //                 const fileText = document.createElement("span");
+        //                 fileText.textContent = file.name;
+        //                 fileText.style.fontSize = "12px";
+        //                 fileText.style.lineHeight = "13px";
+        //                 fileText.style.marginTop = "10px";
+
+        //                 const removeBtn = document.createElement("button");
+        //                 removeBtn.classList.add("remove-btn");
+        //                 removeBtn.innerHTML = "×";
+        //                 removeBtn.style.marginLeft = "10px";
+        //                 removeBtn.addEventListener("click", () => {
+        //                     container.remove();
+        //                     finalImagesArray = finalImagesArray.filter(f => f !==
+        //                     file); // Remove from final array
+        //                     checkAndHideGallery();
+        //                 });
+
+        //                 fileWrapper.appendChild(img);
+        //                 fileWrapper.appendChild(fileText);
+        //                 container.appendChild(fileWrapper);
+        //                 container.appendChild(removeBtn);
+        //                 imageGalleryNew.appendChild(container);
+        //                 imageGalleryNew.style.display = "flex";
+        //             }
+        //         }, index * 2000);
+        //     });
+
+        //     setTimeout(() => {
+        //         uploadLoaderNew.style.display = "none";
+        //         uploadedFilesNew = [];
+        //         uploadAreaNew.innerHTML = "Drag & drop images here or click to upload";
+        //         const modal = bootstrap.Modal.getInstance(document.getElementById("uploadModalNew"));
+        //         modal.hide();
+        //         addImagesLinkNew.style.display = "none";
+        //     }, uploadedFilesNew.length * 2000);
+        // });
+
+
+        // function checkAndHideGallery() {
+        //     if (imageGalleryNew.childElementCount === 0) {
+        //         imageGalleryNew.style.display = "none";
+        //     }
+        // }
+
+
+        // $('form').on('submit', function(e) {
+        //     const dataTransfer = new DataTransfer();
+        //     finalImagesArray.forEach((file) => {
+        //         dataTransfer.items.add(file);
+        //     });
+        //     document.getElementById("finalImageInput").files = dataTransfer.files;
+        // });
+
+        const uploadAreaNew = document.getElementById("uploadAreaNew");
+        const imageInputNew = document.getElementById("imageInputNew");
+        const imageGalleryNew = document.getElementById("imageGalleryNew");
+        const uploadLoaderNew = document.getElementById("uploadLoaderNew");
+        const addImageBtnNew = document.getElementById("addImageBtnNew");
+        const addImagesLinkNew = document.querySelector("[data-bs-target='#uploadModalNew']");
+        let uploadedFilesNew = [];
+        let finalImagesArray = [];
+
+        imageGalleryNew.style.display = "none";
+
+        const MAX_FILES = 7;
+        const MAX_SIZE_MB = 5;
+
+        // Helper
+        function isValidFile(file) {
+            const validTypes = [
+                "image/",
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ];
+            return (
+                (validTypes.some(type => file.type.startsWith(type)) ||
+                    file.name.endsWith(".doc") || file.name.endsWith(".docx"))
+            );
+        }
+
+        // Drag & Drop
+        uploadAreaNew.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.add("drag-over");
+        });
+
+        uploadAreaNew.addEventListener("dragleave", () => {
+            uploadAreaNew.classList.remove("drag-over");
+        });
+
+        uploadAreaNew.addEventListener("drop", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.remove("drag-over");
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // Click to Upload
+        uploadAreaNew.addEventListener("click", () => {
+            imageInputNew.click();
+        });
+
+        imageInputNew.addEventListener("change", (event) => {
+            const files = event.target.files;
+            handleFiles(files);
+        });
+
+        // Handle File Uploads
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+
+            const newFiles = Array.from(files);
+            for (let file of newFiles) {
+                if (!isValidFile(file)) {
+                    alert(`${file.name} is not a valid file type.`);
+                    continue;
+                }
+
+                if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                    alert(`${file.name} exceeds the 5MB limit.`);
+                    continue;
+                }
+
+                if (uploadedFilesNew.length >= MAX_FILES) {
+                    alert(`You can upload a maximum of ${MAX_FILES} files.`);
+                    break;
+                }
+
+                if (!uploadedFilesNew.includes(file)) {
+                    uploadedFilesNew.push(file);
+                }
+            }
+
+            showPreviewNew(uploadedFilesNew);
+        }
+
+        // Show Preview
+        function showPreviewNew(files) {
+            uploadAreaNew.innerHTML = ""; // Clear previous previews
+            files.forEach((file) => {
+                const fileDiv = document.createElement("div");
+                fileDiv.style.marginBottom = "10px";
+                fileDiv.style.border = "1px solid #ccc";
+                fileDiv.style.padding = "5px";
+
+                const fileName = document.createElement("p");
+                fileName.textContent = file.name;
+                fileName.style.fontSize = "14px";
+                fileName.style.margin = "5px 0";
+
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.style.width = "100%";
+                        img.style.border = "1px solid #ccc";
+                        fileDiv.appendChild(img);
+                        fileDiv.appendChild(fileName);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    const img = document.createElement("img");
+                    img.style.width = "50px";
+                    img.style.marginRight = "10px";
+                    img.src = file.name.endsWith(".pdf") ?
+                        "{{ asset('common/img/file.png') }}" :
+                        "{{ asset('common/img/docx-file.png') }}";
+                    fileDiv.appendChild(img);
+                    fileDiv.appendChild(fileName);
+                }
+
+                uploadAreaNew.appendChild(fileDiv);
+            });
+        }
+
+        // Final Submit Preview
+        addImageBtnNew.addEventListener("click", () => {
+            if (uploadedFilesNew.length === 0) {
+                alert("Please upload at least one file first.");
+                return;
+            }
+
+            uploadLoaderNew.style.display = "block";
+
+            uploadedFilesNew.forEach((file, index) => {
+                setTimeout(() => {
+                    if (!finalImagesArray.includes(file)) {
+                        finalImagesArray.push(file);
+                    }
+
+                    const container = document.createElement("div");
+                    container.classList.add("image-container");
+
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.createElement("img");
+                            img.src = e.target.result;
+                            img.style.width = "100px";
+                            img.style.marginRight = "10px";
+
+                            const removeBtn = document.createElement("button");
+                            removeBtn.classList.add("remove-btn");
+                            removeBtn.innerHTML = "×";
+                            removeBtn.addEventListener("click", () => {
+                                container.remove();
+                                finalImagesArray = finalImagesArray.filter(f => f !==
+                                    file);
+                                checkAndHideGallery();
+                            });
+
+                            container.appendChild(img);
+                            container.appendChild(removeBtn);
+                            imageGalleryNew.appendChild(container);
+                            imageGalleryNew.style.display = "flex";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        const fileWrapper = document.createElement("div");
+                        fileWrapper.style.display = "flex";
+                        fileWrapper.style.alignItems = "center";
+                        fileWrapper.style.border = "1px solid #ccc";
+                        fileWrapper.style.padding = "5px";
+                        fileWrapper.style.flexDirection = "column";
+                        fileWrapper.style.textAlign = "center";
+
+                        const img = document.createElement("img");
+                        img.style.width = "60px";
+                        img.style.marginRight = "10px";
+                        img.src = file.name.endsWith(".pdf") ?
+                            "{{ asset('common/img/file.png') }}" :
+                            "{{ asset('common/img/docx-file.png') }}";
+
+                        const fileText = document.createElement("span");
+                        fileText.textContent = file.name;
+                        fileText.style.fontSize = "12px";
+                        fileText.style.lineHeight = "13px";
+                        fileText.style.marginTop = "10px";
+
+                        const removeBtn = document.createElement("button");
+                        removeBtn.classList.add("remove-btn");
+                        removeBtn.innerHTML = "×";
+                        removeBtn.style.marginLeft = "10px";
+                        removeBtn.addEventListener("click", () => {
+                            container.remove();
+                            finalImagesArray = finalImagesArray.filter(f => f !== file);
+                            checkAndHideGallery();
+                        });
+
+                        fileWrapper.appendChild(img);
+                        fileWrapper.appendChild(fileText);
+                        container.appendChild(fileWrapper);
+                        container.appendChild(removeBtn);
+                        imageGalleryNew.appendChild(container);
+                        imageGalleryNew.style.display = "flex";
+                    }
+                }, index * 2000);
+            });
+
+            setTimeout(() => {
+                uploadLoaderNew.style.display = "none";
+                uploadedFilesNew = [];
+                uploadAreaNew.innerHTML = "Drag & drop images here or click to upload";
+                const modal = bootstrap.Modal.getInstance(document.getElementById("uploadModalNew"));
+                modal.hide();
+                addImagesLinkNew.style.display = "none";
+            }, uploadedFilesNew.length * 2000);
+        });
+
+        function checkAndHideGallery() {
+            if (imageGalleryNew.childElementCount === 0) {
+                imageGalleryNew.style.display = "none";
+            }
+        }
+
+        $('form').on('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            finalImagesArray.forEach((file) => {
+                dataTransfer.items.add(file);
+            });
+            document.getElementById("finalImageInput").files = dataTransfer.files;
         });
     </script>
     @include('admin.common.schedule-js')

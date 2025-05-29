@@ -33,26 +33,16 @@
                                 <div class="leftprFilters">
                                     <div class="row">
                                         <div class="col-lg-3 col-sm-6 col-12">
-                                            <div class="input-blocks InputFilter">
-                                                <i data-feather="search" class="info-img"></i>
-                                                <input type="text" class="form-control"
-                                                    placeholder="Search by Pharmacy Name & Id">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-6 col-12">
                                             <div class="input-blocks">
                                                 <iconify-icon icon="hugeicons:clinic" class="info-img"></iconify-icon>
 
-                                                <select class="select">
+                                                <select class="select" id="clinic_id" name="clinic_id">
                                                     <option selected disabled>Select Clinic</option>
-                                                    <option>HealthCare Clinic</option>
-                                                    <option>Sunrise Medical Center</option>
-                                                    <option>Prime Wellness Clinic</option>
-                                                    <option>CityCare Health</option>
-                                                    <option>Greenfield Medical Center</option>
-                                                    <option>NorthStar Health</option>
-                                                    <option>BlueSky Clinic</option>
-                                                    <option>MountainView Medical</option>
+                                                    @isset($clinics)
+                                                        @foreach ($clinics as $rec)
+                                                            <option value="{{ $rec->id ?? '' }}">{{ $rec->name ?? '' }}</option>
+                                                        @endforeach
+                                                    @endisset
                                                 </select>
                                             </div>
                                         </div>
@@ -61,10 +51,10 @@
                                             <div class="input-blocks">
                                                 <iconify-icon icon="ic:baseline-mode-standby"
                                                     class="info-img"></iconify-icon>
-                                                <select class="select">
+                                                <select class="select" id="status" name="status">
                                                     <option disabled selected>Select Status</option>
-                                                    <option>Active</option>
-                                                    <option>Inactive</option>
+                                                    <option value="active">Active</option>
+                                                    <option value="inactive">Inactive</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -75,8 +65,17 @@
                                                     </iconify-icon>
                                                 </span>
                                                 <input type="text" class="form-control date-range bookingrange"
-                                                    placeholder="dd/mm/yyyy - dd/mm/yyyy">
+                                                    placeholder="dd/mm/yyyy - dd/mm/yyyy" name="daterange" id="daterange">
                                             </div>
+                                        </div>
+
+                                        <div class="col-lg-2 d-flex align-items-center gap-2">
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                id="validateSearchForm">Search</button>
+                                            <a href="{{ route('superadmin.pharmacies.index') }}"
+                                                class="btn btn-default commonCancleButton">
+                                                <span>Reset</span>
+                                            </a>
                                         </div>
 
                                     </div>
@@ -92,6 +91,7 @@
                             <table id="pharmacy_table" class="table nowrap w-100">
                                 <thead>
                                     <tr>
+                                        <th hidden>ID</th>
                                         <th>Pharmacy ID</th>
                                         <th>Pharmacy Name</th>
                                         <th>Mobile No.</th>
@@ -104,9 +104,9 @@
                                         <th class="no-sort">Action</th>
                                     </tr>
                                 </thead>
-                               <tbody>
+                                <tbody>
 
-                               </tbody>
+                                </tbody>
                             </table>
                         </div>
 
@@ -123,6 +123,12 @@
     <script>
         $(document).ready(function() {
             const columns = [{
+                    data: 'id',
+                    name: 'id',
+                    orderable: false,
+                    searchable: false,
+                    visible:false
+                },{
                     data: 'pharmacy_id',
                     name: 'pharmacy_id',
                     orderable: false,
@@ -184,7 +190,45 @@
                 }
             ];
 
-             initializeDataTable('#pharmacy_table',"{{ route('superadmin.pharmacy.ajaxDataTable') }}",columns,0,{},[[0, 'desc']]);
+         
+        let table = initializeDataTable(
+                '#pharmacy_table',
+                "{{ route('superadmin.pharmacy.ajaxDataTable') }}",
+                columns,
+                0,
+                () => {
+                    return {
+                        clinic_id: $('#clinic_id').val(),
+                        status: $('#status').val(),
+                        daterange: $('#daterange').val()
+                    };
+                },
+                [
+                    [0, 'desc']
+                ]
+            );
+
+            $(document).on('click', '#validateSearchForm', function() {
+                    const clinic_id = document.getElementById('clinic_id').value;
+                    const status = document.getElementById('status').value;
+                    const daterange = document.getElementById('daterange').value;
+
+                    if (!clinic_id && !status && !daterange) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Please select at least one filter to search.',
+                        });
+                        return false;
+                    }
+
+                    // Reload DataTable with new filter values
+                    table.ajax.reload();
+
+                    return false; // prevent form submission
+            });
         });
     </script>
 @endpush

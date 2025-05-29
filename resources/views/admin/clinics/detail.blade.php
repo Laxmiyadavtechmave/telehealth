@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Tele Health Super Admin | Pharmacy Detail')
+@section('title', 'Tele Health Super Admin | Clinic Detail')
 @section('content')
     <style>
         .RightSideContainer {
@@ -17,11 +17,11 @@
                 <div class="my-auto ">
                     <h2 class="mb-1 flexpagetitle">
                         <div class="backbtnwrap">
-                            <a href="{{ route('superadmin.pharmacies.index') }}">
+                            <a href="{{ route('superadmin.clinic.index') }}">
                                 <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
                             </a>
                         </div>
-                        Pharmacy Details
+                        Clinic Details
                     </h2>
                 </div>
                 <div class="d-flex  right-content align-items-center flex-wrap ">
@@ -31,11 +31,10 @@
                             <div class="enquiryDate">
                                 <iconify-icon icon="ion:calendar-outline"></iconify-icon> Added On : <div
                                     class="Onboarddate">
-                                    {{ $pharmacy->created_at->format('d M,Y H:i a') }}</div>
+                                    {{ $clinic->created_at->format('d M,Y H:i a') }}</div>
 
                             </div>
                         </li>
-
 
                     </ul>
                     <div class="head-icons ms-2 mb-0">
@@ -61,30 +60,31 @@
 
                                                         $image = '';
                                                         if (
-                                                            $pharmacy->img &&
+                                                            $clinic->img &&
                                                             Illuminate\Support\Facades\Storage::disk('public')->exists(
-                                                                $pharmacy->img,
+                                                                $clinic->img,
                                                             )
                                                         ) {
-                                                            $image = env('IMAGE_ROOT') . $pharmacy->img;
+                                                            $image = env('IMAGE_ROOT') . $clinic->img;
                                                         }
 
                                                     @endphp
                                                     @if (!empty($image))
                                                         <img src="{{ $image ?? '' }}" alt="img" id="blah">
                                                     @endif
+
                                                 </div>
                                                 <div class="profile-contentname">
-                                                    <h2>{{ $pharmacy->name ?? '' }}</h2>
+                                                    <h2>{{ $clinic->name ?? '' }}</h2>
                                                     <p><a
-                                                            href="mailto:{{ $pharmacy->email ?? '' }}">{{ $pharmacy->email ?? '' }}</a>
+                                                            href="mailto:{{ $clinic->email ?? '' }}">{{ $clinic->email ?? '' }}</a>
                                                     </p>
                                                 </div>
                                             </div>
 
                                             <div class="copy-container">
-                                                <span>Pharmacy ID:</span>
-                                                <div class="user-id" id="userID">{{ $pharmacy->pharmacy_id ?? '' }}</div>
+                                                <span>Clinic ID:</span>
+                                                <div class="user-id" id="userID">#{{ $clinic->clinic_id ?? '' }}</div>
                                             </div>
 
                                             <div id="sidebar-menu5" class="sidebar-menu">
@@ -99,7 +99,7 @@
                                                     <button class="nav-link text-start" id="man-password-tab"
                                                         data-bs-toggle="pill" data-bs-target="#man-password" type="button"
                                                         role="tab" aria-controls="man-password" aria-selected="false">
-                                                        <iconify-icon icon="ion:location-outline"></iconify-icon> Pharmacy
+                                                        <iconify-icon icon="ion:location-outline"></iconify-icon> Clinic
                                                         Location
                                                     </button>
                                                     <button class="nav-link text-start" id="main-team-tab"
@@ -115,7 +115,19 @@
                                                         All
                                                         Documents
                                                     </button>
-
+                                                    <button class="nav-link text-start" id="main-Stores-tab"
+                                                        data-bs-toggle="pill" data-bs-target="#main-Stores" type="button"
+                                                        role="tab" aria-controls="main-Stores" aria-selected="false">
+                                                        <iconify-icon icon="mynaui:link-solid"></iconify-icon>
+                                                        Social Media Links
+                                                    </button>
+                                                    <button class="nav-link text-start" id="DoctorsListing-tab"
+                                                        data-bs-toggle="pill" data-bs-target="#DoctorsListing"
+                                                        type="button" role="tab" aria-controls="DoctorsListing"
+                                                        aria-selected="false">
+                                                        <iconify-icon icon="healthicons:doctor-male-outline"></iconify-icon>
+                                                        All Doctors
+                                                    </button>
 
                                                 </div>
 
@@ -136,23 +148,23 @@
                                                     <div class="card-title-head">
                                                         <h6><span> <iconify-icon
                                                                     icon="carbon:building"></iconify-icon></span>
-                                                            Pharmacy Information</h6>
+                                                            Clinic Information</h6>
                                                     </div>
 
                                                     <div class="row">
 
                                                         <div class="col-md-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label">Pharmacy Name</label>
+                                                                <label class="form-label">Clinic Name</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $pharmacy->name ?? '' }}" readonly disabled>
+                                                                    value="{{ $clinic->name ?? '' }}" readonly disabled>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label">License Number </label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $pharmacy->license_no ?? '' }}" readonly
+                                                                    value="{{ $clinic->license_no ?? '' }}" readonly
                                                                     disabled>
                                                             </div>
                                                         </div>
@@ -160,7 +172,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Valid From </label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ !empty($pharmacy->valid_from) ? $pharmacy->valid_from->format('d M,Y') : 'N/A' }}"
+                                                                    value="{{ !empty($clinic->valid_from) ? $clinic->valid_from->format('d M,Y') : 'N/A' }}"
                                                                     readonly disabled>
                                                             </div>
                                                         </div>
@@ -168,47 +180,36 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Valid To</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ !empty($pharmacy->valid_to) ? $pharmacy->valid_to->format('d M,Y') : 'N/A' }}"
+                                                                    value="{{ !empty($clinic->valid_to) ? $clinic->valid_to->format('d M,Y') : 'N/A' }}"
                                                                     readonly disabled>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label">Email</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $pharmacy->email ?? '' }}" readonly
-                                                                    disabled>
+                                                                    value="{{ $clinic->email ?? '' }}" readonly disabled>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label">Phone No</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $pharmacy->phone ?? '' }}" readonly
-                                                                    disabled>
+                                                                    value="{{ $clinic->phone ?? '' }}" readonly disabled>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label">Pharmacy Type</label>
+                                                                <label class="form-label">Website URL</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ $pharmacy->pharmacy_type ?? '' }}" readonly
+                                                                    value="{{ $clinic->web_url ?? '' }}" readonly
                                                                     disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Clinic</label>
-                                                                <input type="text" class="form-control"
-                                                                    value="Care Plus Clinic" readonly disabled>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="mb-3">
                                                                 <label class="form-label">Description / Bio</label>
-                                                                <!-- <input type="email" class="form-control"
-                                                                                                                                        value="johndoe@example.com" readonly disabled> -->
                                                                 <textarea class="form-control" name="" id="" readonly disabled row="4">{{ $extra['description'] ?? '' }}</textarea>
                                                             </div>
                                                         </div>
@@ -220,7 +221,7 @@
                                             <div class="tab-pane" id="man-password" role="tabpanel" tabindex="0">
                                                 <div class="settings-page-wrap">
                                                     <div class="setting-title">
-                                                        <h4>Pharmacy Location</h4>
+                                                        <h4>Clinic Location</h4>
                                                     </div>
                                                     <div class="vendortab_inrdetails">
                                                         <div class="company-info">
@@ -228,7 +229,7 @@
                                                             <div class="card-title-head ">
                                                                 <h6><span><iconify-icon
                                                                             icon="ion:location-outline"></iconify-icon></span>
-                                                                    Pharmacy Address
+                                                                    Clinic Address
                                                                 </h6>
                                                             </div>
                                                             <div class="row">
@@ -236,8 +237,8 @@
                                                                     <div class="mb-3">
                                                                         <label class="form-label">Address 1</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->address1 ?? '' }}"
-                                                                            readonly disabled>
+                                                                            value="{{ $clinic->address1 ?? '' }}" readonly
+                                                                            disabled>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
@@ -245,8 +246,8 @@
                                                                         <label class="form-label">Address 2
                                                                             (optional)</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->address2 ?? '' }}"
-                                                                            readonly disabled>
+                                                                            value="{{ $clinic->address2 ?? '' }}" readonly
+                                                                            disabled>
                                                                     </div>
                                                                 </div>
 
@@ -254,15 +255,15 @@
                                                                     <div class="mb-3">
                                                                         <label class="form-label">Country</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->country ?? '' }}"
-                                                                            readonly disabled>
+                                                                            value="{{ $clinic->country ?? '' }}" readonly
+                                                                            disabled>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xl-4 col-lg-4 col-md-3">
                                                                     <div class="mb-3">
                                                                         <label class="form-label">Town/City</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->city ?? '' }}" readonly
+                                                                            value="{{ $clinic->city ?? '' }}" readonly
                                                                             disabled>
                                                                     </div>
                                                                 </div>
@@ -271,7 +272,7 @@
                                                                         <label class="form-label">Postal
                                                                             Code</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->postal_code ?? '' }}"
+                                                                            value="{{ $clinic->postal_code ?? '' }}"
                                                                             readonly disabled>
                                                                     </div>
                                                                 </div>
@@ -280,12 +281,11 @@
                                                                         <label class="form-label">Google Maps
                                                                             Link</label>
                                                                         <input type="text" class="form-control"
-                                                                            value="{{ $pharmacy->map_link ?? '' }}"
-                                                                            readonly disabled>
+                                                                            value="{{ $clinic->map_link ?? '' }}" readonly
+                                                                            disabled>
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
 
@@ -372,12 +372,12 @@
                                             <div class="tab-pane" id="main-billing" role="tabpanel"
                                                 aria-labelledby="main-billing-tab" tabindex="0">
                                                 <div class="setting-title nobtmargin">
-                                                    <h4>Pharmacy Documents</h4>
+                                                    <h4>Clinic Documents</h4>
                                                     <div
                                                         class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
 
                                                         <form id="download-selected-form" method="POST"
-                                                            action="{{ route('superadmin.pharmacy.downloadDocuments', encrypt($pharmacy->id ?? '')) }}">
+                                                            action="{{ route('superadmin.clinics.downloadDocuments', encrypt($clinic->id ?? '')) }}">
                                                             @csrf
                                                             <input type="hidden" name="document_ids"
                                                                 id="selected-documents-input">
@@ -473,7 +473,6 @@
                                                                     </tr>
                                                                 @endforeach
                                                             @endisset
-
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -499,14 +498,16 @@
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Facebook</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="" readonly disabled>
+                                                                        value="{{ $extra['facebook'] ?? '' }}" readonly
+                                                                        disabled>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Instagram</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="" readonly disabled>
+                                                                        value="{{ $extra['instagram'] ?? '' }}" readonly
+                                                                        disabled>
                                                                 </div>
                                                             </div>
 
@@ -514,74 +515,362 @@
                                                                 <div class="mb-3">
                                                                     <label class="form-label">LinkedIn</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="" readonly disabled>
+                                                                        value="{{ $extra['linkedin'] ?? '' }}" readonly
+                                                                        disabled>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-6 col-lg-4 col-md-3">
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Twitter</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="" readonly disabled>
+                                                                        value="{{ $extra['twitter'] ?? '' }}" readonly
+                                                                        disabled>
                                                                 </div>
                                                             </div>
 
                                                         </div>
 
 
-
-
-
-
                                                     </div>
 
                                                 </div>
+                                            </div>
 
-                                                <!-- <div class="text-end settings-bottom-btn">
-                                                                               <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                                                                               <button type="submit" class="btn btn-submit">Save Changes</button>
-                                                                              </div> -->
+                                            <div class="tab-pane" id="DoctorsListing" role="tabpanel"
+                                                aria-labelledby="main-Stores-tab" tabindex="0">
+
+                                                <div class="setting-title nobtmargin">
+                                                    <h4>All Doctors</h4>
+                                                    <div
+                                                        class="d-flex my-xl-auto right-content align-items-center flex-wrap row-gap-3">
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="vendortab_inrdetails all-documents">
+                                                    <table class="table common-datatable withoutActionTR nowrap w-100 ">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Doctor ID</th>
+                                                                <th>Doctor Name</th>
+                                                                <th>Mobile No.</th>
+                                                                <th>Email</th>
+                                                                <th>Specialization</th>
+                                                                <th>Experience</th>
+                                                                <th>Consultation Type</th>
+                                                                <th>Status</th>
+                                                                <th class="no-sort">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC001</a></td>
+                                                                <td>DR. John Smith</td>
+                                                                <td>+1 555-123-4567</td>
+                                                                <td>john.smith@example.com</td>
+                                                                <td>Cardiology</td>
+                                                                <td>5 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Video</span><span
+                                                                        class="consultaionType">Chat</span><span
+                                                                        class="consultaionType">Physical</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-success"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently active">Active</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC002</a></td>
+                                                                <td>DR. Emily Brown</td>
+                                                                <td>+1 555-234-5678</td>
+                                                                <td>emily.brown@example.com</td>
+                                                                <td>Pediatrics</td>
+                                                                <td>3 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Video</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-danger"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently inactive">Inactive</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC003</a></td>
+                                                                <td>DR. Michael Lee</td>
+                                                                <td>+1 555-345-6789</td>
+                                                                <td>michael.lee@example.com</td>
+                                                                <td>Orthopedics</td>
+                                                                <td>8 Years</td>
+                                                                <td><span class="consultaionType">Video</span><span
+                                                                        class="consultaionType">Chat</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-success"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently active">Active</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC004</a></td>
+                                                                <td>DR. Sarah Miller</td>
+                                                                <td>+1 555-456-7890</td>
+                                                                <td>sarah.miller@example.com</td>
+                                                                <td>Dermatology</td>
+                                                                <td>6 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Chat</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-danger"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently inactive">Inactive</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC005</a></td>
+                                                                <td>DR. Olivia Brooks</td>
+                                                                <td>+1 555-567-8901</td>
+                                                                <td>olivia.brooks@example.com</td>
+                                                                <td>Gynecology</td>
+                                                                <td>4 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Video</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-success"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently active">Active</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC006</a></td>
+                                                                <td>DR. Ethan Hall</td>
+                                                                <td>+1 555-678-9012</td>
+                                                                <td>ethan.hall@example.com</td>
+                                                                <td>Neurology</td>
+                                                                <td>7 Years</td>
+                                                                <td><span class="consultaionType">Video</span><span
+                                                                        class="consultaionType">Chat</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-danger"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently inactive">Inactive</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC007</a></td>
+                                                                <td>DR. Nathan Scott</td>
+                                                                <td>+1 555-789-0123</td>
+                                                                <td>nathan.scott@example.com</td>
+                                                                <td>Psychiatry</td>
+                                                                <td>9 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Video</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-success"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently active">Active</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><a href="doctor-detail.php">#DOC008</a></td>
+                                                                <td>DR. Hannah Cooper</td>
+                                                                <td>+1 555-890-1234</td>
+                                                                <td>hannah.cooper@example.com</td>
+                                                                <td>Radiology</td>
+                                                                <td>2 Years</td>
+                                                                <td><span class="consultaionType">Audio</span><span
+                                                                        class="consultaionType">Video</span><span
+                                                                        class="consultaionType">Chat</span></td>
+
+                                                                <td>
+                                                                    <span class="badge bg-soft-danger"
+                                                                        data-bs-toggle="tooltip" data-placement="top"
+                                                                        title="Doctor is currently inactive">Inactive</span>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center ActionDropdown">
+                                                                        <div class="d-flex">
+                                                                            <!-- <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Doctor Detail" href="doctor-edit.php">
+                                                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                                                            </a> -->
+                                                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
+                                                                                data-bs-toggle="tooltip"
+                                                                                title="View Doctor Detail"
+                                                                                href="doctor-detail.php">
+                                                                                <span class="icon"><span
+                                                                                        class="feather-icon"><iconify-icon
+                                                                                            icon="hugeicons:view"></iconify-icon></span></span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+
+
+
+                                                            <!-- Add more Doctor rows as needed -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
 
                                             </div>
 
-
-
                                         </div>
-
-                                        <!-- <div class="text-end settings-bottom-btn">
-                                                                               <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                                                                               <button type="submit" class="btn btn-submit">Save Changes</button>
-                                                                              </div> -->
-
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        @endsection
-        @push('custom_scripts')
-            <script>
-                $(document).ready(function() {
-                    $('#download-selected-form').on('submit', function(e) {
-                        var selectedIds = $('.doc-checkbox:checked').map(function() {
-                            return $(this).val();
-                        }).get();
+                @endsection
+                @push('custom_scripts')
+                    <script>
+                        $(document).ready(function() {
+                            $('#download-selected-form').on('submit', function(e) {
+                                var selectedIds = $('.doc-checkbox:checked').map(function() {
+                                    return $(this).val();
+                                }).get();
 
-                        if (selectedIds.length === 0) {
-                            e.preventDefault();
-                            alert('Please select at least one document.');
-                            return false;
-                        }
+                                if (selectedIds.length === 0) {
+                                    e.preventDefault();
+                                    alert('Please select at least one document.');
+                                    return false;
+                                }
 
-                        $('#selected-documents-input').val(JSON.stringify(selectedIds));
-                    });
+                                $('#selected-documents-input').val(JSON.stringify(selectedIds));
+                            });
 
-                    $('#select-all').on('change', function() {
-                        $('.doc-checkbox').prop('checked', $(this).is(':checked'));
-                    });
-                });
-            </script>
-        @endpush
+                            $('#select-all').on('change', function() {
+                                $('.doc-checkbox').prop('checked', $(this).is(':checked'));
+                            });
+                        });
+                    </script>
+                @endpush
