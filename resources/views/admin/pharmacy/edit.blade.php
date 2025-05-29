@@ -341,352 +341,115 @@
                                             <div class="col-lg-12">
                                                 <div class="card mb-0">
                                                     <div class="card-body">
+                                                        @php
+                                                            $weekDays = [
+                                                                'monday',
+                                                                'tuesday',
+                                                                'wednesday',
+                                                                'thursday',
+                                                                'friday',
+                                                                'saturday',
+                                                                'sunday',
+                                                            ];
+                                                        @endphp
                                                         <div class="WeekDays_row">
                                                             <ul class="nav nav-tabs" id="weekTabs" role="tablist">
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link active" id="monday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#monday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="monday"
-                                                                        aria-selected="true">Monday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="tuesday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#tuesday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="tuesday"
-                                                                        aria-selected="false">Tuesday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="wednesday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#wednesday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="wednesday"
-                                                                        aria-selected="false">Wednesday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="thursday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#thursday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="thursday"
-                                                                        aria-selected="false">Thursday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="friday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#friday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="friday"
-                                                                        aria-selected="false">Friday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="saturday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#saturday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="saturday"
-                                                                        aria-selected="false">Saturday</button>
-                                                                </li>
-                                                                <li class="nav-item" role="presentation">
-                                                                    <button class="nav-link" id="sunday-tab"
-                                                                        data-bs-toggle="tab" data-bs-target="#sunday"
-                                                                        type="button" role="tab"
-                                                                        aria-controls="sunday"
-                                                                        aria-selected="false">Sunday</button>
-                                                                </li>
+                                                                @foreach ($weekDays as $index => $day)
+                                                                    <li class="nav-item" role="presentation">
+                                                                        <button
+                                                                            class="nav-link {{ $index === 0 ? 'active' : '' }}"
+                                                                            id="{{ $day }}-tab"
+                                                                            data-bs-toggle="tab"
+                                                                            data-bs-target="#{{ $day }}"
+                                                                            type="button" role="tab"
+                                                                            aria-controls="{{ $day }}"
+                                                                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
+                                                                            {{ ucfirst($day) }}
+                                                                        </button>
+                                                                    </li>
+                                                                @endforeach
+
                                                             </ul>
                                                         </div>
                                                         <div class="tab-content" id="weekTabContent">
-                                                            <div class="tab-pane fade show active" id="monday"
-                                                                role="tabpanel" aria-labelledby="monday-tab">
 
-                                                                <div class="day-row" id="monday">
+                                                            @foreach ($weekDays as $index => $day)
+                                                                @php
+                                                                    $dayAvailable = true;
+                                                                    if (!empty($schedules[$day])) {
+                                                                        $dayAvailable = collect(
+                                                                            $schedules[$day],
+                                                                        )->contains(fn($slot) => $slot->is_available);
+                                                                    }
+                                                                @endphp
+                                                                <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
+                                                                    id="{{ $day }}" role="tabpanel"
+                                                                    aria-labelledby="{{ $day }}-tab">
 
-                                                                    <div class="time-slots" id="monday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
+                                                                    <div class="day-row" id="{{ $day }}">
+                                                                        <div class="time-slots" style="{{ $dayAvailable ? '' : 'display:none' }}"
+                                                                            id="{{ $day }}-slots">
+                                                                            @if (isset($schedules[$day]) && $dayAvailable)
+                                                                                @foreach ($schedules[$day] as $k => $slot)
+                                                                                    <div class="time-slot">
+                                                                                        <input type="text"
+                                                                                            name="working_hours[{{ $day }}][slots][{{ $k }}][from]"
+                                                                                            value="{{ !empty($slot->start_time) ? $slot->start_time->format('h:i A') : '' }}"
+                                                                                            class="flatpickr-input form-control from-time"
+                                                                                            required>
+                                                                                        <span>to</span>
+                                                                                        <input type="text"
+                                                                                            name="working_hours[{{ $day }}][slots][{{ $k }}][to]"
+                                                                                            value="{{ !empty($slot->end_time) ? $slot->end_time->format('h:i A') : '' }}"
+                                                                                            class="flatpickr-input form-control to-time"
+                                                                                            required>
+                                                                                        <button type="button"
+                                                                                            onclick="removeSlot(this)"
+                                                                                            class="deleteslot"><iconify-icon
+                                                                                                icon="proicons:delete"></iconify-icon></button>
+                                                                                    </div>
+                                                                                @endforeach
+                                                                            @endif
                                                                         </div>
+
+                                                                        <div class="form-group applyonallcheckbbox">
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input apply-all"
+                                                                                    id="applyAll{{ ucfirst($day) }}">
+                                                                                <label class="form-check-label"
+                                                                                    for="applyAll{{ ucfirst($day) }}">
+                                                                                    Do you want to apply this on all days
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="NotAvailable{{ $index + 1 }}"
+                                                                                    name="not_available[{{ $day }}]"
+                                                                                    {{ $dayAvailable ? '' : 'checked' }}>
+                                                                                <label class="form-check-label"
+                                                                                    for="NotAvailable{{ $index + 1 }}">
+                                                                                    Not Available
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <button type="button"
+                                                                            class="add-button addMultislot_button"
+                                                                            onclick="addSlot('{{ $day }}')" {{ $dayAvailable ? '' : 'disabled' }}>
+                                                                            <iconify-icon
+                                                                                icon="basil:add-outline"></iconify-icon>
+                                                                            Add Time
+                                                                        </button>
                                                                     </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable1">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable1">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('monday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="tuesday" role="tabpanel"
-                                                                aria-labelledby="tuesday-tab">
+                                                            @endforeach
 
-                                                                <div class="day-row" id="tuesday">
-
-                                                                    <div class="time-slots" id="tuesday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable2">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable2">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('tuesday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="wednesday" role="tabpanel"
-                                                                aria-labelledby="wednesday-tab">
-
-                                                                <div class="day-row" id="wednesday">
-
-                                                                    <div class="time-slots" id="wednesday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable3">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable3">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('wednesday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="thursday" role="tabpanel"
-                                                                aria-labelledby="thursday-tab">
-
-                                                                <div class="day-row" id="thursday">
-
-                                                                    <div class="time-slots" id="thursday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable4">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable4">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('thursday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="friday" role="tabpanel"
-                                                                aria-labelledby="friday-tab">
-
-                                                                <div class="day-row" id="friday">
-
-                                                                    <div class="time-slots" id="friday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable5">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable5">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('friday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="saturday" role="tabpanel"
-                                                                aria-labelledby="saturday-tab">
-
-                                                                <div class="day-row" id="saturday">
-
-                                                                    <div class="time-slots" id="saturday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable6">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable6">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('saturday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="tab-pane fade" id="sunday" role="tabpanel"
-                                                                aria-labelledby="sunday-tab">
-
-                                                                <div class="day-row" id="sunday">
-
-                                                                    <div class="time-slots" id="sunday-slots">
-                                                                        <div class="time-slot">
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="09:00 AM">
-                                                                            to
-                                                                            <input type="text"
-                                                                                class="flatpickr-input form-control"
-                                                                                value="05:30 PM">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-group applyonallcheckbbox">
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input apply-all"
-                                                                                id="applyAllMonday">
-                                                                            <label class="form-check-label"
-                                                                                for="applyAllMonday">Do you want to apply
-                                                                                this on all days</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="NotAvailable7">
-                                                                            <label class="form-check-label"
-                                                                                for="NotAvailable7">Not Available</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button"
-                                                                        class="add-button addMultislot_button"
-                                                                        onclick="addSlot('sunday')"><iconify-icon
-                                                                            icon="basil:add-outline"></iconify-icon> Add
-                                                                        Time</button>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
-
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -762,11 +525,6 @@
         </div>
 
     </div>
-    </div>
-
-
-    </div>
-    </div>
 
     <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -787,7 +545,7 @@
                     <div class="loaderCenter">
                         <div class="loader" id="uploadLoaderNew">
                             <!-- <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." />
-                                            <p>Uploading...</p> -->
+                                                                <p>Uploading...</p> -->
                         </div>
                     </div>
 
@@ -801,385 +559,85 @@
     </div>
 @endsection
 @push('custom_scripts')
-    <!-- template icon upload js -->
+    <script src="{{ asset('common/js/form-validation.js') }}"></script>
     <script>
-        document.addEventListener("change", function(event) {
-            if (event.target.classList.contains("uploadProfileInput")) {
-                var triggerInput = event.target;
-                var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic").src;
-                var holder = triggerInput.closest(".pic-holder");
-                var wrapper = triggerInput.closest(".profile-pic-wrapper");
-                var alerts = wrapper.querySelectorAll('[role="alert"]');
-                alerts.forEach(function(alert) {
-                    alert.remove();
-                });
-                triggerInput.blur();
-                var files = triggerInput.files || [];
-                if (!files.length || !window.FileReader) {
-                    return;
-                }
-                if (/^image/.test(files[0].type)) {
-                    var reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onloadend = function() {
-                        holder.classList.add("uploadInProgress");
-                        holder.querySelector(".pic").src = this.result;
-                        var loader = document.createElement("div");
-                        loader.classList.add("upload-loader");
-                        loader.innerHTML =
-                            '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
-                        holder.appendChild(loader);
-                        setTimeout(function() {
-                            holder.classList.remove("uploadInProgress");
-                            loader.remove();
-                            var random = Math.random();
-                            if (random < 0.9) {
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Pharmacy Logo updated successfully</div>';
-                                triggerInput.value = "";
-                                // Hide the label by setting opacity to 0
-                                wrapper.querySelector(".upload-file-block").style.opacity = "0";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            } else {
-                                holder.querySelector(".pic").src = currentImg;
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                                triggerInput.value = "";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            }
-                        }, 1500);
-                    };
-                } else {
-                    wrapper.innerHTML +=
-                        '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
-                    setTimeout(function() {
-                        var invalidAlert = wrapper.querySelector('[role="alert"]');
-                        if (invalidAlert) {
-                            invalidAlert.remove();
-                        }
-                    }, 3000);
-                }
-            }
-        });
-    </script>
-    <!-- template icon upload js -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            initializeTimePickers();
-        });
+        /******************************* clinic profile image ***********************/
+        $(document).on("change", ".uploadProfileInput", function() {
+            const triggerInput = $(this);
+            const wrapper = triggerInput.closest(".profile-pic-wrapper");
+            const holder = triggerInput.closest(".pic-holder");
+            const pic = holder.find(".pic");
+            const currentImg = pic.attr("src");
+            const file = this.files[0];
 
-        function initializeTimePickers() {
-            const timepickers = document.querySelectorAll('.flatpickr-input:not(.flatpickr-initialized)');
-            timepickers.forEach(tp => {
-                if (!tp._flatpickr) {
-                    flatpickr(tp, {
-                        enableTime: true,
-                        noCalendar: true,
-                        dateFormat: "H:i",
-                        time_24hr: true,
-                        minuteIncrement: 1,
-                        onChange: function(selectedDates, dateStr, instance) {
-                            tp.value = dateStr;
-                        }
-                    });
-                    tp.classList.add('flatpickr-initialized');
-                }
-            });
-        }
+            // Remove old alerts/snackbars
+            wrapper.find('[role="alert"]').remove();
 
-        function addSlot(day) {
-            const container = document.getElementById(day + '-slots');
-            const timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.innerHTML = `
-                <input type="text" class="flatpickr-input form-control" readonly>
-                to
-                <input type="text" class="flatpickr-input form-control" readonly>
-                <button class="deleteslot" onclick="removeSlot(this, false)"><iconify-icon icon="proicons:delete"></iconify-icon></button>
-            `;
-            // Append new slot before the add button if it exists
-            const addButton = container.querySelector('.add-button');
-            if (addButton) {
-                container.insertBefore(timeSlot, addButton.parentElement);
-            } else {
-                container.appendChild(timeSlot);
-            }
-            initializeTimePickers(); // Reinitialize for new timepickers
+            if (!file || !window.FileReader) return;
 
-            // Apply to all days if checkbox is checked
-            const applyAll = document.getElementById(`applyAll${day.charAt(0).toUpperCase() + day.slice(1)}`).checked;
-            if (applyAll) {
-                document.querySelectorAll('.tab-pane').forEach(tab => {
-                    if (tab.id !== day) {
-                        const otherContainer = tab.querySelector(`#${tab.id}-slots`);
-                        const newOtherSlot = timeSlot.cloneNode(true);
-                        const otherAddButton = otherContainer.querySelector('.add-button');
-                        if (otherAddButton) {
-                            otherContainer.insertBefore(newOtherSlot, otherAddButton.parentElement);
-                        } else {
-                            otherContainer.appendChild(newOtherSlot);
-                        }
-                        initializeTimePickers(); // Reinitialize for cloned timepickers
-                    }
-                });
-            }
-        }
-
-        function removeSlot(button, isDefault = true) {
-            if (isDefault) return; // Prevent deletion of default slot
-            const timeSlot = button.parentElement;
-            const day = timeSlot.closest('.day-row').id;
-            timeSlot.remove();
-
-            // Remove from all days if applied
-            const applyAll = document.getElementById(`applyAll${day.charAt(0).toUpperCase() + day.slice(1)}`).checked;
-            if (applyAll) {
-                const startTime = timeSlot.querySelector('.flatpickr-input').value || '09:00 AM'; // Fallback to default
-                document.querySelectorAll('.tab-pane').forEach(tab => {
-                    if (tab.id !== day) {
-                        const otherSlot = tab.querySelector(
-                            `.time-slot:not(.default-slot):has(.flatpickr-input[value="${startTime}"])`);
-                        if (otherSlot) otherSlot.remove();
-                    }
-                });
-            }
-        }
-    </script>
-
-    <!-----------------------------------
-                    Password Hide and show js start here
-                    ------------------------------------->
-    <script>
-        $(document).on('click', '.toggle-password', function() {
-            const input = $(this).siblings('.password-field');
-            const type = input.attr('type') === 'password' ? 'text' : 'password';
-            input.attr('type', type);
-
-            const icon = type === 'password' ? 'mdi:eye-off-outline' : 'mdi:eye-outline';
-            $(this).html(`<iconify-icon icon="${icon}"></iconify-icon>`);
-        });
-    </script>
-    <!-----------------------------------
-                    Password Hide and show js End here
-                    ------------------------------------->
-
-    <!-- product gallery images multiple upload start -->
-    <script>
-        const uploadAreaNew = document.getElementById("uploadAreaNew");
-        const imageInputNew = document.getElementById("imageInputNew");
-        const imageGalleryNew = document.getElementById("imageGalleryNew");
-        const uploadLoaderNew = document.getElementById("uploadLoaderNew");
-        const addImageBtnNew = document.getElementById("addImageBtnNew");
-        const addImagesLinkNew = document.querySelector("[data-bs-target='#uploadModalNew']");
-        let uploadedFilesNew = [];
-
-        imageGalleryNew.style.display = "none";
-
-        // Drag & Drop
-        uploadAreaNew.addEventListener("dragover", (event) => {
-            event.preventDefault();
-            uploadAreaNew.classList.add("drag-over");
-        });
-
-        uploadAreaNew.addEventListener("dragleave", () => {
-            uploadAreaNew.classList.remove("drag-over");
-        });
-
-        uploadAreaNew.addEventListener("drop", (event) => {
-            event.preventDefault();
-            uploadAreaNew.classList.remove("drag-over");
-            const files = event.dataTransfer.files;
-            if (files && files.length > 0) {
-                Array.from(files).forEach((file) => {
-                    const validTypes = [
-                        "image/",
-                        "application/pdf",
-                        "application/msword",
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    ];
-                    if (
-                        (validTypes.some(type => file.type.startsWith(type)) || file.name.endsWith(
-                            ".doc") || file.name.endsWith(".docx")) &&
-                        !uploadedFilesNew.includes(file)
-                    ) {
-                        uploadedFilesNew.push(file);
-                    }
-                });
-                showPreviewNew(uploadedFilesNew);
-            }
-        });
-
-        // Click to Upload
-        uploadAreaNew.addEventListener("click", () => {
-            imageInputNew.click();
-        });
-
-        imageInputNew.addEventListener("change", (event) => {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-                Array.from(files).forEach((file) => {
-                    const validTypes = [
-                        "image/",
-                        "application/pdf",
-                        "application/msword",
-                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    ];
-                    if (
-                        (validTypes.some(type => file.type.startsWith(type)) || file.name.endsWith(
-                            ".doc") || file.name.endsWith(".docx")) &&
-                        !uploadedFilesNew.includes(file)
-                    ) {
-                        uploadedFilesNew.push(file);
-                    }
-                });
-                showPreviewNew(uploadedFilesNew);
-            }
-        });
-
-        function showPreviewNew(files) {
-            uploadAreaNew.innerHTML = ""; // Clear previous previews
-            files.forEach((file) => {
-                const fileDiv = document.createElement("div");
-                fileDiv.style.marginBottom = "10px";
-                fileDiv.style.border = "1px solid #ccc";
-                fileDiv.style.padding = "5px";
-
-                const fileName = document.createElement("p");
-                fileName.textContent = file.name;
-                fileName.style.fontSize = "14px";
-                fileName.style.margin = "5px 0";
-
-                if (file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = document.createElement("img");
-                        img.src = e.target.result;
-                        img.style.width = "100%";
-                        img.style.border = "1px solid #ccc";
-                        fileDiv.appendChild(img);
-                        fileDiv.appendChild(fileName);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    const img = document.createElement("img");
-                    img.style.width = "50px";
-                    img.style.marginRight = "10px";
-
-                    if (file.name.endsWith(".pdf")) {
-                        img.src = "assets/img/newimages/file.png";
-                    } else if (file.name.endsWith(".doc") || file.name.endsWith(".docx")) {
-                        img.src = "assets/img/newimages/docx-file.png";
-                    } else {
-                        img.src = ""; // fallback (optional)
-                    }
-
-                    fileDiv.appendChild(img);
-                    fileDiv.appendChild(fileName);
-                }
-
-                uploadAreaNew.appendChild(fileDiv);
-            });
-        }
-
-        addImageBtnNew.addEventListener("click", () => {
-            if (uploadedFilesNew.length === 0) {
-                alert("Please upload at least one file first.");
+            // Validate file type
+            if (!file.type.match(/^image/)) {
+                wrapper.append(
+                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>'
+                );
+                setTimeout(() => {
+                    wrapper.find('[role="alert"]').remove();
+                }, 3000);
                 return;
             }
 
-            uploadLoaderNew.style.display = "block";
-
-            uploadedFilesNew.forEach((file, index) => {
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                wrapper.append(
+                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">File size must be less than 5MB.</div>'
+                );
                 setTimeout(() => {
-                    const container = document.createElement("div");
-                    container.classList.add("image-container");
-
-                    if (file.type.startsWith("image/")) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.style.width = "100px";
-                            img.style.marginRight = "10px";
-
-                            const removeBtn = document.createElement("button");
-                            removeBtn.classList.add("remove-btn");
-                            removeBtn.innerHTML = "×";
-                            removeBtn.addEventListener("click", () => {
-                                container.remove();
-                                checkAndHideGallery();
-                            });
-
-                            container.appendChild(img);
-                            container.appendChild(removeBtn);
-                            imageGalleryNew.appendChild(container);
-                            imageGalleryNew.style.display = "flex";
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        const fileWrapper = document.createElement("div");
-                        fileWrapper.style.display = "flex";
-                        fileWrapper.style.alignItems = "center";
-                        fileWrapper.style.border = "1px solid #ccc";
-                        fileWrapper.style.padding = "5px";
-                        fileWrapper.style.flexDirection = "column";
-                        fileWrapper.style.textAlign = "center";
-
-                        const img = document.createElement("img");
-                        img.style.width = "60px";
-                        img.style.marginRight = "10px";
-
-                        if (file.name.endsWith(".pdf")) {
-                            img.src = "assets/img/newimages/file.png";
-                        } else if (file.name.endsWith(".doc") || file.name.endsWith(".docx")) {
-                            img.src = "assets/img/newimages/docx-file.png";
-                        }
-
-                        const fileText = document.createElement("span");
-                        fileText.textContent = file.name;
-                        fileText.style.fontSize = "12px";
-                        fileText.style.lineHeight = "13px";
-                        fileText.style.marginTop = "10px";
-
-                        const removeBtn = document.createElement("button");
-                        removeBtn.classList.add("remove-btn");
-                        removeBtn.innerHTML = "×";
-                        removeBtn.style.marginLeft = "10px";
-                        removeBtn.addEventListener("click", () => {
-                            container.remove();
-                            checkAndHideGallery();
-                        });
-
-                        fileWrapper.appendChild(img);
-                        fileWrapper.appendChild(fileText);
-                        container.appendChild(fileWrapper);
-                        container.appendChild(removeBtn);
-                        imageGalleryNew.appendChild(container);
-                        imageGalleryNew.style.display = "flex";
-                    }
-                }, index * 2000);
-            });
-
-            setTimeout(() => {
-                uploadLoaderNew.style.display = "none";
-                uploadedFilesNew = [];
-                uploadAreaNew.innerHTML = "Drag & drop images here or click to upload";
-                const modal = bootstrap.Modal.getInstance(document.getElementById("uploadModalNew"));
-                modal.hide();
-                addImagesLinkNew.style.display = "none";
-            }, uploadedFilesNew.length * 2000);
-        });
-
-        function checkAndHideGallery() {
-            if (imageGalleryNew.childElementCount === 0) {
-                imageGalleryNew.style.display = "none";
+                    wrapper.find('[role="alert"]').remove();
+                }, 3000);
+                return;
             }
-        }
-    </script>
 
-    <!-- multiple images upload js end -->
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                holder.addClass("uploadInProgress");
+                pic.attr("src", this.result);
+
+                const loader = $('<div class="upload-loader"></div>').html(
+                    '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
+                );
+                holder.append(loader);
+
+                setTimeout(() => {
+                    holder.removeClass("uploadInProgress");
+                    loader.remove();
+
+                    // Simulate random success/failure
+                    const random = Math.random();
+                    if (random < 0.9) {
+                        // wrapper.append(
+                        //     '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Image uploaded successfully</div>'
+                        // );
+                        // triggerInput.val("");
+                        wrapper.find(".upload-file-block").css("opacity", "0");
+
+                        setTimeout(() => {
+                            wrapper.find('[role="alert"]').remove();
+                        }, 3000);
+                    } else {
+                        pic.attr("src", currentImg);
+                        wrapper.append(
+                            '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There was an error while uploading! Please try again later.</div>'
+                        );
+                        triggerInput.val("");
+                        setTimeout(() => {
+                            wrapper.find('[role="alert"]').remove();
+                        }, 3000);
+                    }
+                }, 1500);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    @include('admin.common.schedule-js')
 @endpush

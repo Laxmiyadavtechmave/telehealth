@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use ZipArchive;
 
 class PharmacyController extends Controller
 {
@@ -23,7 +24,8 @@ class PharmacyController extends Controller
     public function index()
     {
         try {
-            return view('admin.pharmacy.index');
+            $clinics = Clinic::orderBy('id', 'desc')->get();
+            return view('admin.pharmacy.index', compact('clinics'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.dashboard')->with('error', 'Something went wrong');
         }
@@ -43,6 +45,9 @@ class PharmacyController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data'] ?? 'name';
         $columnSortOrder = $columnIndex_arr[0]['dir'] ?? 'asc';
         $searchValue = $search_arr['value'] ?? '';
+        $status = $request->status;
+        $clinic_id = $request->clinic_id;
+        $daterange = $request->daterange;
 
         // Whitelist of sortable fields
         $sortableColumns = ['id', 'name', 'email', 'phone', 'license_no', 'address1', 'status', 'created_at'];
@@ -53,15 +58,42 @@ class PharmacyController extends Controller
         // Count total records
         $totalRecords = Pharmacy::count();
 
+        // Base query
+        $query = Pharmacy::query();
+
+        // Apply search text
+        if (!empty($searchValue)) {
+            $query->search($searchValue);
+        }
+
+        // Apply status filter
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        // // Apply daterange filter
+        if (!empty($daterange)) {
+            try {
+                [$startRange, $endRange] = explode(' - ', $daterange);
+
+                $startDate = Carbon::createFromFormat('m/d/Y', trim($startRange))->format('Y-m-d');
+                $endDate = Carbon::createFromFormat('m/d/Y', trim($endRange))->format('Y-m-d');
+
+                $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
+            } catch (\Exception $e) {
+                \Log::error('Invalid date range: ' . $e->getMessage());
+            }
+        }
+
         // Count with filter
-        $totalRecordswithFilter = Pharmacy::search($searchValue)->count();
+        $totalRecordswithFilter = $query->count();
 
         // Fetch data
-        $pharmacies = Pharmacy::search($searchValue)->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
+        $records = $query->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
 
         // Data formatting
         $data_arr = [];
-        foreach ($pharmacies as $key => $row) {
+        foreach ($records as $key => $row) {
             $statusBg = CommonController::statusBg($row->status ?? '');
 
             $address =
@@ -77,6 +109,7 @@ class PharmacyController extends Controller
                                     </div>';
 
             $data_arr[] = [
+                'id'=>$row->id??'',
                 'pharmacy_id' => $row->pharmacy_id ?? '',
                 'name' => $row->name ?? '',
                 'phone' => $row->phone ?? '',
@@ -85,7 +118,7 @@ class PharmacyController extends Controller
                 'address1' => $address,
                 'clinic_id' => $row->clinic->name ?? '',
                 'created_at' => !empty($row->created_at) ? date('d M, Y', strtotime($row->created_at)) : '',
-                'status' => $row->status ?? '',
+                'status' => '<span class="badge ' . ($statusBg ?? '') . '" data-bs-toggle="tooltip" data-placement="top" data-bs-original-title="Pharmacy is currently ' . ($row->status ?? '') . '">' . ucfirst($row->status ?? '') . '</span>',
                 'action' =>
                     '<div class="d-flex align-items-center ActionDropdown">
                                         <div class="d-flex">
@@ -124,7 +157,7 @@ class PharmacyController extends Controller
             $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
             return view('admin.pharmacy.create', compact('clinics'));
         } catch (Exception $e) {
-            return redirect()->route('superadmin.pharmacy.index')->with('error', 'Something went wrong');
+            return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
         }
     }
 
@@ -188,14 +221,19 @@ class PharmacyController extends Controller
 
             // Step 4: Save available slots
             foreach ($workingHours as $day => $info) {
-                foreach ($info['slots'] ?? [] as $slot) {
-                    PharmacySchedule::create([
-                        'pharmacy_id' => $pharmacy->id,
-                        'day' => $day,
-                        'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
-                        'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
-                        'is_available' => true,
-                    ]);
+                if (isset($notAvailable[$day])) {
+                    continue;
+                }
+                if (!empty($info['slots'])) {
+                    foreach ($info['slots'] ?? [] as $slot) {
+                        PharmacySchedule::create([
+                            'pharmacy_id' => $pharmacy->id,
+                            'day' => $day,
+                            'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
+                            'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
+                            'is_available' => true,
+                        ]);
+                    }
                 }
             }
 
@@ -223,7 +261,6 @@ class PharmacyController extends Controller
             DB::commit();
             return redirect()->route('superadmin.pharmacies.index')->with('success', 'Pharmacy created successfully!');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
             return redirect()->route('superadmin.pharmacies.create')->with('error', $e->getMessage())->withInput();
         }
@@ -234,7 +271,16 @@ class PharmacyController extends Controller
      */
     public function show(string $id)
     {
-        return view('admin.pharmacy.detail');
+        try {
+            $pharmacy = Pharmacy::findorfail(decrypt($id));
+            $extra = !empty($pharmacy->extra) ? json_decode($pharmacy->extra, true) : [];
+            $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
+            $schedules = $pharmacy->schedules->groupBy('day', 'extra');
+            $documents = $pharmacy->documents->sortByDesc('id');
+            return view('admin.pharmacy.detail', compact('pharmacy', 'schedules', 'clinics', 'extra', 'documents'));
+        } catch (Exception $e) {
+            return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
+        }
     }
 
     /**
@@ -247,7 +293,7 @@ class PharmacyController extends Controller
             $extra = !empty($pharmacy->extra) ? json_decode($pharmacy->extra, true) : [];
             $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
             $schedules = $pharmacy->schedules->groupBy('day', 'extra');
-            return view('admin.pharmacy.edit', compact('pharmacy', 'schedules','clinics','extra'));
+            return view('admin.pharmacy.edit', compact('pharmacy', 'schedules', 'clinics', 'extra'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
         }
@@ -312,20 +358,24 @@ class PharmacyController extends Controller
             $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
-                dd($validationErrors);
                 return redirect()->back()->withErrors($validationErrors)->withInput();
             }
 
             // Step 4: Save available slots
             foreach ($workingHours as $day => $info) {
-                foreach ($info['slots'] ?? [] as $slot) {
-                    PharmacySchedule::create([
-                        'pharmacy_id' => $pharmacy->id,
-                        'day' => $day,
-                        'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
-                        'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
-                        'is_available' => true,
-                    ]);
+                if (isset($notAvailable[$day])) {
+                    continue;
+                }
+                if (!empty($info['slots'])) {
+                    foreach ($info['slots'] ?? [] as $slot) {
+                        PharmacySchedule::create([
+                            'pharmacy_id' => $pharmacy->id,
+                            'day' => $day,
+                            'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
+                            'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
+                            'is_available' => true,
+                        ]);
+                    }
                 }
             }
 
@@ -363,5 +413,35 @@ class PharmacyController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function downloadDocuments($id)
+    {
+        $id = decrypt($id);
+        $ids = json_decode($request->document_ids, true);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'No documents selected.');
+        }
+
+        $documents = PharmacyImage::whereIn('id', $ids)->get();
+        $zipFileName = 'pharmacy_documents_' . now()->format('YmdHis') . '.zip';
+        $zipPath = storage_path("app/public/zips/{$zipFileName}");
+
+        if (!file_exists(storage_path('app/public/zips'))) {
+            mkdir(storage_path('app/public/zips'), 0755, true);
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
+            foreach ($documents as $doc) {
+                if (Storage::disk('public')->exists($doc->img)) {
+                    $filePath = storage_path('app/public/' . $doc->img);
+                    $zip->addFile($filePath, basename($doc->img));
+                }
+            }
+            $zip->close();
+        }
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

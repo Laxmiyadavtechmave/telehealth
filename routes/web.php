@@ -28,7 +28,18 @@ Route::prefix('superadmin')
         Route::middleware('auth:web')->group(function () {
             Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+            Route::resource('role', RoleController::class);
             Route::match(['get', 'put'], 'profile', [AuthController::class, 'profile'])->name('profile');
+            Route::prefix('user')
+                ->name('user.')
+                ->group(function () {
+                    Route::get('users', [UserController::class, 'index'])->name('index');
+                    Route::post('store', [UserController::class, 'store'])->name('store');
+                    Route::post('update-status', [UserController::class, 'updateStatus'])->name('update-status');
+                    Route::post('update', [UserController::class, 'update'])->name('update');
+                });
+
+
             Route::get('patients', [HomeController::class, 'patients'])->name('patients');
             Route::prefix('doctors')
                 ->name('doctors.')
@@ -40,6 +51,8 @@ Route::prefix('superadmin')
             /************************ clinic ************/
             Route::resource('clinic', ClinicController::class);
             Route::get('/clinics/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
+            Route::get('clinics/documents-download/{clinicId}', [ClinicController::class, 'downloadDocuments'])->name('clinics.downloadDocuments');
+
 
 
             Route::prefix('nurses')
@@ -48,20 +61,10 @@ Route::prefix('superadmin')
                     Route::get('/', [HomeController::class, 'nurses'])->name('list');
                     Route::get('details', [HomeController::class, 'nursesDetail'])->name('detail');
                 });
-
-            Route::resource('role', RoleController::class);
-
-            Route::prefix('user')
-                ->name('user.')
-                ->group(function () {
-                    Route::get('users', [UserController::class, 'index'])->name('index');
-                    Route::post('store', [UserController::class, 'store'])->name('store');
-                    Route::post('update-status', [UserController::class, 'updateStatus'])->name('update-status');
-                    Route::post('update', [UserController::class, 'update'])->name('update');
-                });
-
+  /*************************** pharmacy *****************/
             Route::resource('pharmacies', PharmacyController::class);
-             Route::get('/pharmacy/datatable', [PharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
+            Route::get('/pharmacy/datatable', [PharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
+            Route::get('pharmacy/documents-download/{clinicId}', [PharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
         });
     });
 

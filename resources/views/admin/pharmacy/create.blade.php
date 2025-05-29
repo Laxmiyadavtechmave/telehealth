@@ -353,9 +353,9 @@
                                                                             <div class="form-check">
                                                                                 <input type="checkbox"
                                                                                     class="form-check-input"
-                                                                                    id="NotAvailable{{ $index + 1 }}">
+                                                                                    id="NotAvailable{{ $index + 1 }}"
+                                                                                    name="not_available[{{ $day }}]">
                                                                                 <label class="form-check-label"
-                                                                                    name="not_available[{{ $day }}]"
                                                                                     for="NotAvailable{{ $index + 1 }}">
                                                                                     Not Available
                                                                                 </label>

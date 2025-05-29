@@ -17,13 +17,23 @@ class Clinic extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $casts = [
+        'valid_from' => 'date',
+        'valid_to' => 'date',
+    ];
+
     public function scopeSearch($query, $value)
     {
         return $query->where(function ($q) use ($value) {
             $q->where('name', 'like', "%$value%")
                 ->orWhere('email', 'like', "%$value%")
+                ->orWhere('license_no', 'like', "%$value%")
                 ->orWhere('phone', 'like', "%$value%")
                 ->orWhere('address1', 'like', "%$value%")
+                ->orWhere('address2', 'like', "%$value%")
+                ->orWhere('country', 'like', "%$value%")
+                ->orWhere('city', 'like', "%$value%")
+                ->orWhere('postal_code', 'like', "%$value%")
                 ->orWhere('status', 'like', "%$value%");
         });
     }
@@ -31,5 +41,10 @@ class Clinic extends Model
     public function schedules()
     {
         return $this->hasMany(ClinicSchedule::class, 'clinic_id', 'id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(PharmacyImage::class, 'pharmacy_id', 'id'); // or whatever your model is
     }
 }
