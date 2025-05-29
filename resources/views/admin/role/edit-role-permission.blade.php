@@ -175,7 +175,7 @@
                                         <div class="col-lg-12 mb-5">
                                             <div class="accordion rolePermission" id="accordionExample">
                                                 @php
-                                                    $permissions = Spatie\Permission\Models\Permission::all()
+                                                    $permissions = Spatie\Permission\Models\Permission::where('guard_name','web')->get()
                                                         ->groupBy('category')
                                                         ->map(function ($category) {
                                                             return $category->groupBy('subcategory');

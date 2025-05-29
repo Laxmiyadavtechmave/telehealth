@@ -42,7 +42,7 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('superadmin.nurses.list') }}" aria-expanded="false">
                                 Nurses
                             </a>
                         </li>
@@ -59,7 +59,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{route('superadmin.clinic.index')}}">Clinics List</a></li>
-                                <li><a class="dropdown-item" href="#">Add New Clinic</a></li>
+                                <li><a class="dropdown-item" href="{{ route('superadmin.clinic.create') }}">Add New Clinic</a></li>
 
 
                             </ul>

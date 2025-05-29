@@ -59,7 +59,7 @@ class UserController extends Controller
 
 
         DB::beginTransaction();
-        $customId = $this->generateCustomUniqueId('users','custom_id','USR-', 6);
+        $customId = $this->generateCustomUniqueId('users','custom_id','US', 6);
         $data['custom_id'] = $customId;
         $data['status'] = 'Active';
         $user = User::create($data); // Use appropriate model based on role

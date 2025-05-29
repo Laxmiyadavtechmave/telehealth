@@ -26,4 +26,14 @@ class HomeController extends Controller
     {
         return view('admin.doctors.detail');
     }
+
+    public function nurses()
+    {
+        return view('admin.nurses.index');
+    }
+
+     public function nursesDetail()
+    {
+        return view('admin.nurses.detail');
+    }
 }

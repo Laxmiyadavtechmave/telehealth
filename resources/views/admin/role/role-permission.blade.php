@@ -131,6 +131,7 @@
                             <table class="table common-datatable nowrap w-100">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Role</th>
                                         <th>Created Date</th>
                                         {{-- <th>Created By</th> --}}
@@ -143,6 +144,7 @@
 
                                     @foreach ($roles as $role)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $role->name ?? 'N/A' }}</td>
 
                                             {{-- Created at --}}
