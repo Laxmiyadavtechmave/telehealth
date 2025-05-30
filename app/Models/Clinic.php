@@ -8,12 +8,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Clinic extends Model
 {
-
-    use SoftDeletes,HasRoles;
+    use SoftDeletes, HasRoles;
 
     protected $guard_name = 'clinic'; // important
 
-    protected $fillable = ['clinic_id', 'name', 'email', 'password', 'license_no', 'valid_from', 'valid_to', 'phone', 'web_url', 'address1', 'address2', 'city', 'country', 'postal_code', 'map_link', 'extra', 'status'];
+    protected $fillable = ['clinic_id', 'name', 'img', 'email', 'password', 'license_no', 'valid_from', 'valid_to', 'phone', 'web_url', 'address1', 'address2', 'city', 'country', 'postal_code', 'map_link', 'extra', 'status'];
 
     protected $dates = ['deleted_at'];
 
@@ -40,11 +39,11 @@ class Clinic extends Model
 
     public function schedules()
     {
-        return $this->hasMany(ClinicSchedule::class, 'clinic_id', 'id');
+        return $this->morphMany(Schedule::class, 'schedulable');
     }
 
     public function documents()
     {
-        return $this->hasMany(ClinicImage::class, 'clinic_id', 'id'); // or whatever your model is
+        return $this->morphMany(Document::class, 'imageable');
     }
 }

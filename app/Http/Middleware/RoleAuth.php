@@ -5,8 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Auth;
 
-class NoCacheHeader
+class RoleAuth
 {
     /**
      * Handle an incoming request.
@@ -15,7 +16,12 @@ class NoCacheHeader
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-        return $response->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')->header('Pragma', 'no-cache')->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
+        $segment = $request->segment(1); // e.g., 'clinic' from /clinic/dashboard
+
+        $validRoles = ['superadmin', 'clinic', 'doctor', 'patient', 'pharmacy'];
+
+        $role = in_array($segment, $validRoles) ? $segment : 'superadmin';
+
+        return redirect()->route('login', ['role' => $role]);
     }
 }

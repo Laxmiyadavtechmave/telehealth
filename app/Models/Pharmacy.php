@@ -10,7 +10,7 @@ class Pharmacy extends Model
 {
     use SoftDeletes, HasRoles;
 
-    protected $fillable = ['pharmacy_id', 'name', 'email', 'password', 'license_no', 'valid_from', 'valid_to', 'phone', 'pharmacy_type', 'clinic_id', 'address1', 'address2', 'city', 'country', 'postal_code', 'map_link', 'extra', 'status'];
+    protected $fillable = ['pharmacy_id', 'name', 'img', 'email', 'password', 'license_no', 'valid_from', 'valid_to', 'phone', 'pharmacy_type', 'clinic_id', 'address1', 'address2', 'city', 'country', 'postal_code', 'map_link', 'extra', 'status'];
 
     protected $dates = ['deleted_at'];
 
@@ -32,7 +32,7 @@ class Pharmacy extends Model
 
     public function schedules()
     {
-        return $this->hasMany(PharmacySchedule::class, 'pharmacy_id', 'id');
+        return $this->morphMany(Schedule::class, 'schedulable');
     }
 
     public function clinic()
@@ -42,6 +42,6 @@ class Pharmacy extends Model
 
     public function documents()
     {
-        return $this->hasMany(PharmacyImage::class, 'pharmacy_id', 'id'); // or whatever your model is
+        return $this->morphMany(Document::class, 'imageable');
     }
 }

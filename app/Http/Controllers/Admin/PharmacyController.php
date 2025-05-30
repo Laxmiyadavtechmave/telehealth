@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Pharmacy, PharmacySchedule, Clinic, PharmacyImage};
+use App\Models\{Pharmacy, Schedule, Clinic, Document};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Hash;
@@ -69,6 +69,11 @@ class PharmacyController extends Controller
         // Apply status filter
         if (!empty($status)) {
             $query->where('status', $status);
+        }
+
+        // Apply status filter
+        if (!empty($clinic_id)) {
+            $query->where('clinic_id', $clinic_id);
         }
 
         // // Apply daterange filter
@@ -190,22 +195,23 @@ class PharmacyController extends Controller
             $customId = $this->generateCustomUniqueId('pharmacies', 'pharmacy_id', 'PHR-', 6);
             $pharmacy = new Pharmacy();
             $pharmacy->pharmacy_id = $customId;
-            $pharmacy->name = $request->name ?? '';
-            $pharmacy->email = $request->email ?? '';
-            $pharmacy->license_no = $request->license_no ?? '';
-            $pharmacy->valid_from = $request->valid_from ?? '';
-            $pharmacy->valid_to = $request->valid_to ?? '';
+            $pharmacy->name = $request->name ?? null;
+            $pharmacy->email = $request->email ?? null;
+            $pharmacy->license_no = $request->license_no ?? null;
+            $pharmacy->valid_from = $request->valid_from ?? null;
+            $pharmacy->valid_to = $request->valid_to ?? null;
             $pharmacy->clinic_id = $request->clinic_id ?? null;
-            $pharmacy->pharmacy_type = $request->pharmacy_type ?? '';
+            $pharmacy->pharmacy_type = $request->pharmacy_type ?? null;
             $pharmacy->password = Hash::make($request->password ?? '');
-            $pharmacy->phone = $request->phone ?? '';
-            $pharmacy->address1 = $request->address1 ?? '';
-            $pharmacy->city = $request->city ?? '';
-            $pharmacy->country = $request->country ?? '';
-            $pharmacy->postal_code = $request->postal_code ?? '';
-            $pharmacy->map_link = $request->map_link ?? '';
+            $pharmacy->phone = $request->phone ?? null;
+            $pharmacy->address1 = $request->address1 ?? null;
+            $pharmacy->address2 = $request->address2 ?? null;
+            $pharmacy->city = $request->city ?? null;
+            $pharmacy->country = $request->country ?? null;
+            $pharmacy->postal_code = $request->postal_code ?? null;
+            $pharmacy->map_link = $request->map_link ?? null;
             if ($request->hasFile('profile_pic')) {
-                $pharmacy->img = ImageController::upload($request->file('profile_pic'), '/pharmacies/');
+                $pharmacy->img = ImageController::upload($request->file('profile_pic'), '/pharmacies');
             }
 
             $pharmacy->extra = $request->filled('extra') ? json_encode($request->extra) : null;
@@ -228,8 +234,7 @@ class PharmacyController extends Controller
                 }
                 if (!empty($info['slots'])) {
                     foreach ($info['slots'] ?? [] as $slot) {
-                        PharmacySchedule::create([
-                            'pharmacy_id' => $pharmacy->id,
+                        $pharmacy->schedules()->create([
                             'day' => $day,
                             'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
                             'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
@@ -241,8 +246,7 @@ class PharmacyController extends Controller
 
             // Step 5: Save not available days
             foreach ($notAvailable as $day => $val) {
-                PharmacySchedule::create([
-                    'pharmacy_id' => $pharmacy->id,
+                $pharmacy->schedules()->create([
                     'day' => $day,
                     'start_time' => null,
                     'end_time' => null,
@@ -252,9 +256,8 @@ class PharmacyController extends Controller
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $image) {
-                    $path = ImageController::upload($image, '/pharmacies/documents/');
-                    PharmacyImage::create([
-                        'pharmacy_id' => $pharmacy->id,
+                    $path = ImageController::upload($image, '/pharmacies/documents');
+                    $pharmacy->documents()->create([
                         'img' => $path,
                     ]);
                 }
@@ -287,8 +290,8 @@ class PharmacyController extends Controller
             $pharmacy = Pharmacy::findorfail(decrypt($id));
             $extra = !empty($pharmacy->extra) ? json_decode($pharmacy->extra, true) : [];
             $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
-            $schedules = $pharmacy->schedules->groupBy('day', 'extra');
-            $documents = $pharmacy->documents->sortByDesc('id');
+            $schedules = $pharmacy->schedules()->groupBy('day', 'extra');
+            $documents = $pharmacy->documents()->sortByDesc('id');
             return view('admin.pharmacy.detail', compact('pharmacy', 'schedules', 'clinics', 'extra', 'documents'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
@@ -345,35 +348,36 @@ class PharmacyController extends Controller
                 'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
             //Step 2. save pharmacy
-            $pharmacy->name = $request->name ?? '';
-            $pharmacy->email = $request->email ?? '';
-            $pharmacy->license_no = $request->license_no ?? '';
-            $pharmacy->valid_from = $request->valid_from ?? '';
-            $pharmacy->valid_to = $request->valid_to ?? '';
+            $pharmacy->name = $request->name ?? null;
+            $pharmacy->email = $request->email ?? null;
+            $pharmacy->license_no = $request->license_no ?? null;
+            $pharmacy->valid_from = $request->valid_from ?? null;
+            $pharmacy->valid_to = $request->valid_to ?? null;
             if ($request->filled('password')) {
                 $pharmacy->password = Hash::make($request->password ?? '');
             }
-            $pharmacy->phone = $request->phone ?? '';
-            $pharmacy->pharmacy_type = $request->pharmacy_type ?? '';
+            $pharmacy->phone = $request->phone ?? null;
+            $pharmacy->pharmacy_type = $request->pharmacy_type ?? null;
             $pharmacy->clinic_id = $request->clinic_id ?? null;
-            $pharmacy->address1 = $request->address1 ?? '';
-            $pharmacy->city = $request->city ?? '';
-            $pharmacy->country = $request->country ?? '';
-            $pharmacy->postal_code = $request->postal_code ?? '';
-            $pharmacy->map_link = $request->map_link ?? '';
+            $pharmacy->address1 = $request->address1 ?? null;
+            $pharmacy->address2 = $request->address2 ?? null;
+            $pharmacy->city = $request->city ?? null;
+            $pharmacy->country = $request->country ?? null;
+            $pharmacy->postal_code = $request->postal_code ?? null;
+            $pharmacy->map_link = $request->map_link ?? null;
 
             if ($request->hasFile('profile_pic')) {
                 if ($pharmacy->img && Storage::disk('public')->exists($pharmacy->img)) {
                     Storage::disk('public')->delete($pharmacy->img);
                 }
-                $pharmacy->img = ImageController::upload($request->file('profile_pic'), '/pharmacies/');
+                $pharmacy->img = ImageController::upload($request->file('profile_pic'), '/pharmacies');
             }
 
             $pharmacy->extra = $request->filled('extra') ? json_encode($request->extra) : null;
             $pharmacy->save();
 
             // Step 3: Validate and store schedule
-            PharmacySchedule::where('pharmacy_id', $pharmacy->id)->delete();
+            $pharmacy->schedules()->delete();
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
@@ -390,8 +394,7 @@ class PharmacyController extends Controller
                 }
                 if (!empty($info['slots'])) {
                     foreach ($info['slots'] ?? [] as $slot) {
-                        PharmacySchedule::create([
-                            'pharmacy_id' => $pharmacy->id,
+                        $pharmacy->schedules()->create([
                             'day' => $day,
                             'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
                             'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
@@ -403,8 +406,7 @@ class PharmacyController extends Controller
 
             // Step 5: Save not available days
             foreach ($notAvailable as $day => $val) {
-                PharmacySchedule::create([
-                    'pharmacy_id' => $pharmacy->id,
+                $pharmacy->schedules()->create([
                     'day' => $day,
                     'start_time' => null,
                     'end_time' => null,
@@ -414,15 +416,13 @@ class PharmacyController extends Controller
 
             $removedFileIds = json_decode($request->removed_files, true);
             if (!empty($removedFileIds)) {
-                $removedFileIds = implode(',', $removedFileIds);
-                PharmacyImage::whereRaw('FIND_IN_SET(id, ?)', [$removedFileIds])->delete();
+                $pharmacy->documents()->whereIn('id', $removedFileIds)->delete();
             }
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $image) {
-                    $path = ImageController::upload($image, '/pharmacies/documents/');
-                    PharmacyImage::create([
-                        'pharmacy_id' => $pharmacy->id,
+                    $path = ImageController::upload($image, '/pharmacies/documents');
+                    $pharmacy->documents()->create([
                         'img' => $path,
                     ]);
                 }
