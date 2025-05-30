@@ -13,7 +13,7 @@
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
                     <div class="ActionWrapper">
-                        <a href="doctor-add.php" class="btn btn-primary d-flex align-items-center cmnaddbtn">
+                        <a href="{{ route('clinic.doctor.create') }}" class="btn btn-primary d-flex align-items-center cmnaddbtn">
                         <iconify-icon icon="icons8:plus"></iconify-icon> Add New Doctor
                         </a>
                         <!-- <a href="sales-return-new.php" class="btn btn-info d-flex align-items-center cmnaddbtn">
