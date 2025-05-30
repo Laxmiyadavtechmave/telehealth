@@ -11,7 +11,7 @@
                     <div class="my-auto ">
                         <h2 class="mb-1 flexpagetitle">
                             <div class="backbtnwrap">
-                                <a href="nurse.php">
+                                <a href="{{ route('clinic.nurse.index') }}">
                                     <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
                                 </a>
                             </div>
@@ -21,13 +21,6 @@
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
 
                         <div class="ActionWrapper">
-                            <!-- <a href="#" class="btn btn-primary d-flex align-items-center cmnaddbtn">
-                            <iconify-icon icon="fluent-mdl2:add-to"></iconify-icon> Add New Item
-                        </a> -->
-                            <!-- <a href="sales-return-new.php" class="btn btn-info d-flex align-items-center cmnaddbtn">
-                         <iconify-icon icon="carbon:return"></iconify-icon> Sales Return
-                        </a> -->
-                            <!-- <a href="nurse.php" class="AttchmentBtn"><iconify-icon icon="typcn:arrow-back-outline"></iconify-icon> Back</a> -->
                         </div>
                         <div class="head-icons ms-2 headicon_innerpage">
                             <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -39,7 +32,9 @@
                 </div>
                 <div class="tablemaincard_nopaddingleftright">
                     <form action="{{ route('clinic.nurse.update', ['nurse' => $nurse->id]) }}"
-                        class="form needs-validation" method="post" enctype="multipart/form-data" novalidate>
+                        class="form needs-validation" method="POST" enctype="multipart/form-data" novalidate>
+                        @csrf
+                    @method('PUT')
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -56,7 +51,7 @@
                                                             <div class="col-lg-3">
                                                                 <div class="image-upload-container">
                                                                     <div class="profile-pic-wrapper">
-                                                                        <div class="pic-holder">
+                                                                        {{-- <div class="pic-holder">
                                                                             <!-- uploaded pic shown here -->
                                                                             <img id="profilePic" class="pic"
                                                                                 src="">
@@ -73,6 +68,42 @@
                                                                                     </div>
                                                                                     <div class="text-uppercase">
                                                                                         Update <br /> Profile Photo
+                                                                                    </div>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div> --}}
+
+                                                                        <div class="pic-holder">
+                                                                            @php
+
+                                                                                $image = '';
+                                                                                if (
+                                                                                    $nurse->img &&
+                                                                                    Illuminate\Support\Facades\Storage::disk(
+                                                                                        'public',
+                                                                                    )->exists($nurse->img)
+                                                                                ) {
+                                                                                    $image =
+                                                                                        env('IMAGE_ROOT') .
+                                                                                        $nurse->img;
+                                                                                }
+
+                                                                            @endphp
+                                                                            <img id="profilePic" class="pic"
+                                                                                src="{{ $image ?? '' }}">
+
+                                                                            <input class="uploadProfileInput" type="file"
+                                                                                name="profile_pic" id="newProfilePhoto"
+                                                                                accept="image/*" style="opacity: 0;" />
+                                                                            <label for="newProfilePhoto"
+                                                                                class="upload-file-block">
+                                                                                <div class="text-center">
+                                                                                    <div class="uploadicon_template">
+                                                                                        <iconify-icon
+                                                                                            icon="bytesize:upload"></iconify-icon>
+                                                                                    </div>
+                                                                                    <div class="text-uppercase">
+                                                                                        Upload <br /> Logo Picture
                                                                                     </div>
                                                                                 </div>
                                                                             </label>
@@ -394,6 +425,56 @@
                                 </div>
 
                             </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6">
+                                    <div class="ItemNewContainer1">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <h6 class="sectionTitle">Upload Clinic Document Images</h6>
+                                            </div>
+
+                                            <input type="file" id="finalImageInput" name="documents[]" multiple
+                                                hidden>
+                                            <input type="hidden" id="removed_files" name="removed_files"
+                                                hidden>
+
+                                            <div class="col-lg-12">
+                                                <div class="card selected">
+
+                                                    <div class="card-body">
+                                                        <div class="adding_fildswrap multipleimage_wrap">
+                                                            <div class="image-gallery" id="imageGalleryNew"
+                                                                style="display: none;">
+                                                            </div>
+
+                                                            <!-- Add Product Gallery Images Link -->
+                                                            <div class="addgaller_action">
+                                                                <a href="#"
+                                                                    class="text-primary d-inline-flex justify-content-center addgallery_btn btnComn_add_lightbg"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#uploadModalNew"
+                                                                    style="display: none;">
+                                                                    <iconify-icon
+                                                                        icon="octicon:feed-plus-16"></iconify-icon> Add
+                                                                    Document
+                                                                    Images
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="FormSubmit_fix_container">
@@ -422,225 +503,464 @@
 
     </div>
     </div>
+        <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Clinic Document Images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Drag and Drop Upload Area -->
+                    <div id="uploadAreaNew" class="upload-area">
+                        Drag & drop images here or click to upload
+                        <input type="file" id="imageInputNew" accept="image/*,.pdf,.doc,.docx" style="display: none;"
+                            multiple />
+                    </div>
+                    <!-- Upload Loader -->
+                    <div class="loaderCenter">
+                        <div class="loader" id="uploadLoaderNew">
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" brnmodalclose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addImageBtnNew">Add Images</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('custom_scripts')
-    <!-- template icon upload js -->
+    <script src="{{ asset('common/js/form-validation.js') }}"></script>
     <script>
-        document.addEventListener("change", function(event) {
-            if (event.target.classList.contains("uploadProfileInput")) {
-                var triggerInput = event.target;
-                var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic").src;
-                var holder = triggerInput.closest(".pic-holder");
-                var wrapper = triggerInput.closest(".profile-pic-wrapper");
-                var alerts = wrapper.querySelectorAll('[role="alert"]');
-                alerts.forEach(function(alert) {
-                    alert.remove();
-                });
-                triggerInput.blur();
-                var files = triggerInput.files || [];
-                if (!files.length || !window.FileReader) {
-                    return;
-                }
-                if (/^image/.test(files[0].type)) {
-                    var reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onloadend = function() {
-                        holder.classList.add("uploadInProgress");
-                        holder.querySelector(".pic").src = this.result;
-                        var loader = document.createElement("div");
-                        loader.classList.add("upload-loader");
-                        loader.innerHTML =
-                            '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
-                        holder.appendChild(loader);
-                        setTimeout(function() {
-                            holder.classList.remove("uploadInProgress");
-                            loader.remove();
-                            var random = Math.random();
-                            if (random < 0.9) {
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Patient Profile updated successfully</div>';
-                                triggerInput.value = "";
-                                // Hide the label by setting opacity to 0
-                                wrapper.querySelector(".upload-file-block").style.opacity = "0";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            } else {
-                                holder.querySelector(".pic").src = currentImg;
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                                triggerInput.value = "";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            }
-                        }, 1500);
-                    };
-                } else {
-                    wrapper.innerHTML +=
-                        '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
-                    setTimeout(function() {
-                        var invalidAlert = wrapper.querySelector('[role="alert"]');
-                        if (invalidAlert) {
-                            invalidAlert.remove();
-                        }
-                    }, 3000);
-                }
+        /******************************* clinic profile image ***********************/
+        $(document).on("change", ".uploadProfileInput", function() {
+            const triggerInput = $(this);
+            const wrapper = triggerInput.closest(".profile-pic-wrapper");
+            const holder = triggerInput.closest(".pic-holder");
+            const pic = holder.find(".pic");
+            const currentImg = pic.attr("src");
+            const file = this.files[0];
+
+            // Remove old alerts/snackbars
+            wrapper.find('[role="alert"]').remove();
+
+            if (!file || !window.FileReader) return;
+
+            // Validate file type
+            if (!file.type.match(/^image/)) {
+                wrapper.append(
+                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>'
+                );
+                setTimeout(() => {
+                    wrapper.find('[role="alert"]').remove();
+                }, 3000);
+                return;
             }
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                wrapper.append(
+                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">File size must be less than 5MB.</div>'
+                );
+                setTimeout(() => {
+                    wrapper.find('[role="alert"]').remove();
+                }, 3000);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                holder.addClass("uploadInProgress");
+                pic.attr("src", this.result);
+
+                const loader = $('<div class="upload-loader"></div>').html(
+                    '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
+                );
+                holder.append(loader);
+
+                setTimeout(() => {
+                    holder.removeClass("uploadInProgress");
+                    loader.remove();
+
+                    // Simulate random success/failure
+                    const random = Math.random();
+                    if (random < 0.9) {
+                        // wrapper.append(
+                        //     '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Image uploaded successfully</div>'
+                        // );
+                        // triggerInput.val("");
+                        wrapper.find(".upload-file-block").css("opacity", "0");
+
+                        setTimeout(() => {
+                            wrapper.find('[role="alert"]').remove();
+                        }, 3000);
+                    } else {
+                        pic.attr("src", currentImg);
+                        wrapper.append(
+                            '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There was an error while uploading! Please try again later.</div>'
+                        );
+                        triggerInput.val("");
+                        setTimeout(() => {
+                            wrapper.find('[role="alert"]').remove();
+                        }, 3000);
+                    }
+                }, 1500);
+            };
+
+            reader.readAsDataURL(file);
         });
-    </script>
-    <!-- template icon upload js -->
 
 
+        /********************************* gallery/documents ************************/
+        const uploadAreaNew = document.getElementById("uploadAreaNew");
+        const imageInputNew = document.getElementById("imageInputNew");
+        const imageGalleryNew = document.getElementById("imageGalleryNew");
+        const uploadLoaderNew = document.getElementById("uploadLoaderNew");
+        const addImageBtnNew = document.getElementById("addImageBtnNew");
+        const addImagesLinkNew = document.querySelector("[data-bs-target='#uploadModalNew']");
+        let uploadedFilesNew = [];
+        let finalImagesArray = [];
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            initializeTimePickers();
+        imageGalleryNew.style.display = "none";
+
+        const MAX_FILES = 7;
+        const MAX_SIZE_MB = 5;
+
+        // Helper
+        function isValidFile(file) {
+            const validTypes = [
+                "image/",
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ];
+            return (
+                (validTypes.some(type => file.type.startsWith(type)) ||
+                    file.name.endsWith(".doc") || file.name.endsWith(".docx"))
+            );
+        }
+
+        // Drag & Drop
+        uploadAreaNew.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.add("drag-over");
         });
 
-        function initializeTimePickers() {
-            const timepickers = document.querySelectorAll('.flatpickr-input:not(.flatpickr-initialized)');
-            timepickers.forEach(tp => {
-                if (!tp._flatpickr) {
-                    flatpickr(tp, {
-                        enableTime: true,
-                        noCalendar: true,
-                        dateFormat: "H:i",
-                        time_24hr: true,
-                        minuteIncrement: 1,
-                        onChange: function(selectedDates, dateStr, instance) {
-                            tp.value = dateStr;
-                        }
+        uploadAreaNew.addEventListener("dragleave", () => {
+            uploadAreaNew.classList.remove("drag-over");
+        });
+
+        uploadAreaNew.addEventListener("drop", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.remove("drag-over");
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // Click to Upload
+        uploadAreaNew.addEventListener("click", () => {
+            imageInputNew.click();
+        });
+
+        imageInputNew.addEventListener("change", (event) => {
+            const files = event.target.files;
+            handleFiles(files);
+        });
+
+        // Handle File Uploads
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+
+            const newFiles = Array.from(files);
+            for (let file of newFiles) {
+                if (!isValidFile(file)) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} is not a valid file type.`
                     });
-                    tp.classList.add('flatpickr-initialized');
+                    continue;
                 }
-            });
+
+                if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} exceeds the 5MB limit.`
+                    });
+                    continue;
+                }
+
+                if (uploadedFilesNew.length >= MAX_FILES) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `You can upload a maximum of ${MAX_FILES} files.`
+                    });
+                    break;
+                }
+
+                if (!uploadedFilesNew.includes(file)) {
+                    uploadedFilesNew.push(file);
+                }
+            }
+
+            showPreviewNew(uploadedFilesNew);
         }
 
-        function addSlot(day) {
-            const container = document.getElementById(day + '-slots');
-            const timeSlot = document.createElement('div');
-            timeSlot.className = 'time-slot';
-            timeSlot.innerHTML = `
-                <input type="text" class="flatpickr-input form-control" readonly>
-                to
-                <input type="text" class="flatpickr-input form-control" readonly>
-                <button class="deleteslot" onclick="removeSlot(this, false)"><iconify-icon icon="proicons:delete"></iconify-icon></button>
-            `;
-            // Append new slot before the add button if it exists
-            const addButton = container.querySelector('.add-button');
-            if (addButton) {
-                container.insertBefore(timeSlot, addButton.parentElement);
-            } else {
-                container.appendChild(timeSlot);
-            }
-            initializeTimePickers(); // Reinitialize for new timepickers
+        // Show Preview
+        function showPreviewNew(files) {
+            uploadAreaNew.innerHTML = ""; // Clear previous previews
+            files.forEach((file) => {
+                const fileDiv = document.createElement("div");
+                fileDiv.style.marginBottom = "10px";
+                fileDiv.style.border = "1px solid #ccc";
+                fileDiv.style.padding = "5px";
 
-            // Apply to all days if checkbox is checked
-            const applyAll = document.getElementById(`applyAll${day.charAt(0).toUpperCase() + day.slice(1)}`).checked;
-            if (applyAll) {
-                document.querySelectorAll('.tab-pane').forEach(tab => {
-                    if (tab.id !== day) {
-                        const otherContainer = tab.querySelector(`#${tab.id}-slots`);
-                        const newOtherSlot = timeSlot.cloneNode(true);
-                        const otherAddButton = otherContainer.querySelector('.add-button');
-                        if (otherAddButton) {
-                            otherContainer.insertBefore(newOtherSlot, otherAddButton.parentElement);
-                        } else {
-                            otherContainer.appendChild(newOtherSlot);
-                        }
-                        initializeTimePickers(); // Reinitialize for cloned timepickers
-                    }
-                });
-            }
-        }
+                const fileName = document.createElement("p");
+                fileName.textContent = file.name;
+                fileName.style.fontSize = "14px";
+                fileName.style.margin = "5px 0";
 
-        function removeSlot(button, isDefault = true) {
-            if (isDefault) return; // Prevent deletion of default slot
-            const timeSlot = button.parentElement;
-            const day = timeSlot.closest('.day-row').id;
-            timeSlot.remove();
-
-            // Remove from all days if applied
-            const applyAll = document.getElementById(`applyAll${day.charAt(0).toUpperCase() + day.slice(1)}`).checked;
-            if (applyAll) {
-                const startTime = timeSlot.querySelector('.flatpickr-input').value || '09:00 AM'; // Fallback to default
-                document.querySelectorAll('.tab-pane').forEach(tab => {
-                    if (tab.id !== day) {
-                        const otherSlot = tab.querySelector(
-                            `.time-slot:not(.default-slot):has(.flatpickr-input[value="${startTime}"])`);
-                        if (otherSlot) otherSlot.remove();
-                    }
-                });
-            }
-        }
-    </script>
-    <!-- custom multiple select js start -->
-    <script>
-        $(document).ready(function() {
-            // Update the count of selected options
-            function updateSelectedCount(dropdownWrapper) {
-                const selectedCount = dropdownWrapper.find(".individual-option:checked").length;
-                const selectedCountElement = dropdownWrapper.find(".selected-count");
-                if (selectedCount === 0) {
-                    selectedCountElement.text("Select Location");
-                } else if (selectedCount === 1) {
-                    selectedCountElement.text("1 selected");
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.style.width = "100%";
+                        img.style.border = "1px solid #ccc";
+                        fileDiv.appendChild(img);
+                        fileDiv.appendChild(fileName);
+                    };
+                    reader.readAsDataURL(file);
                 } else {
-                    selectedCountElement.text(`${selectedCount} selected`);
+                    const img = document.createElement("img");
+                    img.style.width = "50px";
+                    img.style.marginRight = "10px";
+                    img.src = file.name.endsWith(".pdf") ?
+                        "{{ asset('common/img/file.png') }}" :
+                        "{{ asset('common/img/docx-file.png') }}";
+                    fileDiv.appendChild(img);
+                    fileDiv.appendChild(fileName);
                 }
-            }
-            // Handle Select All checkbox
-            $(".select-all-available-users").on("change", function() {
-                const dropdownWrapper = $(this).closest(".available-users-dropdown-wrapper");
-                const isChecked = $(this).prop("checked");
-                dropdownWrapper.find(".individual-option").prop("checked", isChecked);
-                updateSelectedCount(dropdownWrapper);
+
+                uploadAreaNew.appendChild(fileDiv);
             });
-            // Handle individual option selection
-            $(".individual-option").on("change", function() {
-                const dropdownWrapper = $(this).closest(".available-users-dropdown-wrapper");
-                const totalOptions = dropdownWrapper.find(".individual-option").length;
-                const selectedOptions = dropdownWrapper.find(".individual-option:checked").length;
-                // Toggle the Select All checkbox
-                dropdownWrapper.find(".select-all-available-users").prop("checked", totalOptions ===
-                    selectedOptions);
-                updateSelectedCount(dropdownWrapper);
-            });
-            // Reset Filter button
-            $(".reset-filter").on("click", function() {
-                const dropdownWrapper = $(this).closest(".available-users-dropdown-wrapper");
-                dropdownWrapper.find(".individual-option").prop("checked", false);
-                dropdownWrapper.find(".select-all-available-users").prop("checked", false);
-                updateSelectedCount(dropdownWrapper);
-            });
-            // Apply Filter button
-            $(".apply-filter").on("click", function() {
-                const dropdownWrapper = $(this).closest(".available-users-dropdown-wrapper");
-                const selectedItems = dropdownWrapper.find(".individual-option:checked").map(
-                    function() {
-                        return $(this).parent().text().trim();
-                    }).get();
-                console.log("Selected Items:", selectedItems);
-            });
-            // Filter search functionality
-            $(".available-users-search").on("keyup", function() {
-                const dropdownWrapper = $(this).closest(".available-users-dropdown-wrapper");
-                const searchTerm = $(this).val().toLowerCase();
-                const options = dropdownWrapper.find(".mainoptionContainer");
-                options.filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().includes(searchTerm));
+        }
+
+        // Final Submit Preview
+        addImageBtnNew.addEventListener("click", () => {
+            if (uploadedFilesNew.length === 0) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Please upload at least one file first.',
                 });
-                const noDataMessage = dropdownWrapper.find(".no-data");
-                noDataMessage.toggle(options.filter(":visible").length === 0);
+                return;
+            }
+
+            uploadLoaderNew.style.display = "block";
+
+            uploadedFilesNew.forEach((file, index) => {
+                setTimeout(() => {
+                    if (!finalImagesArray.includes(file)) {
+                        finalImagesArray.push(file);
+                    }
+
+                    const container = document.createElement("div");
+                    container.classList.add("image-container");
+
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.createElement("img");
+                            img.src = e.target.result;
+                            img.style.width = "100px";
+                            img.style.marginRight = "10px";
+
+                            const removeBtn = document.createElement("button");
+                            removeBtn.classList.add("remove-btn");
+                            removeBtn.innerHTML = "×";
+                            removeBtn.addEventListener("click", () => {
+                                container.remove();
+                                finalImagesArray = finalImagesArray.filter(f => f !==
+                                    file);
+                                checkAndHideGallery();
+                            });
+
+                            container.appendChild(img);
+                            container.appendChild(removeBtn);
+                            imageGalleryNew.appendChild(container);
+                            imageGalleryNew.style.display = "flex";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        const fileWrapper = document.createElement("div");
+                        fileWrapper.style.display = "flex";
+                        fileWrapper.style.alignItems = "center";
+                        fileWrapper.style.border = "1px solid #ccc";
+                        fileWrapper.style.padding = "5px";
+                        fileWrapper.style.flexDirection = "column";
+                        fileWrapper.style.textAlign = "center";
+
+                        const img = document.createElement("img");
+                        img.style.width = "60px";
+                        img.style.marginRight = "10px";
+                        img.src = file.name.endsWith(".pdf") ?
+                            "{{ asset('common/img/file.png') }}" :
+                            "{{ asset('common/img/docx-file.png') }}";
+
+                        const fileText = document.createElement("span");
+                        fileText.textContent = file.name;
+                        fileText.style.fontSize = "12px";
+                        fileText.style.lineHeight = "13px";
+                        fileText.style.marginTop = "10px";
+
+                        const removeBtn = document.createElement("button");
+                        removeBtn.classList.add("remove-btn");
+                        removeBtn.innerHTML = "×";
+                        removeBtn.style.marginLeft = "10px";
+                        removeBtn.addEventListener("click", () => {
+                            container.remove();
+                            finalImagesArray = finalImagesArray.filter(f => f !== file);
+                            checkAndHideGallery();
+                        });
+
+                        fileWrapper.appendChild(img);
+                        fileWrapper.appendChild(fileText);
+                        container.appendChild(fileWrapper);
+                        container.appendChild(removeBtn);
+                        imageGalleryNew.appendChild(container);
+                        imageGalleryNew.style.display = "flex";
+                    }
+                }, index * 2000);
+            });
+
+            setTimeout(() => {
+                uploadLoaderNew.style.display = "none";
+                uploadedFilesNew = [];
+                uploadAreaNew.innerHTML = "Drag & drop images here or click to upload";
+                const modal = bootstrap.Modal.getInstance(document.getElementById("uploadModalNew"));
+                modal.hide();
+                addImagesLinkNew.style.display = "none";
+            }, uploadedFilesNew.length * 2000);
+        });
+
+        function checkAndHideGallery() {
+            if (imageGalleryNew.childElementCount === 0) {
+                imageGalleryNew.style.display = "none";
+            }
+        }
+
+        $('form').on('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            finalImagesArray.forEach((file) => {
+                dataTransfer.items.add(file);
+            });
+            document.getElementById("finalImageInput").files = dataTransfer.files;
+        });
+
+        /*********************** edit gallery ***************************/
+        const existingFiles = @json($documents ?? []);
+        const removedFileIds = [];
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!existingFiles || !Array.isArray(existingFiles)) return;
+
+            const imageGalleryNew = document.getElementById("imageGalleryNew");
+
+
+            existingFiles.forEach(file => {
+                if (!file || !file.name || !file.url || !file.id) return;
+
+                const container = document.createElement("div");
+                container.classList.add("image-container");
+                container.setAttribute("data-id", file.id);
+
+                const isImage = file.name.match(/\.(jpg|jpeg|png|gif)$/i);
+                const isPDF = file.name.match(/\.pdf$/i);
+                const isDoc = file.name.match(/\.(doc|docx)$/i);
+
+                if (isImage) {
+                    const img = document.createElement("img");
+                    img.src = file.url;
+                    img.style.width = "100px";
+                    img.style.marginRight = "10px";
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.classList.add("remove-btn");
+                    removeBtn.innerHTML = "×";
+                    removeBtn.addEventListener("click", () => {
+                        container.remove();
+                        removedFileIds.push(file.id);
+                    });
+
+                    container.appendChild(img);
+                    container.appendChild(removeBtn);
+                } else {
+                    const fileWrapper = document.createElement("div");
+                    fileWrapper.style.display = "flex";
+                    fileWrapper.style.alignItems = "center";
+                    fileWrapper.style.border = "1px solid #ccc";
+                    fileWrapper.style.padding = "5px";
+                    fileWrapper.style.flexDirection = "column";
+                    fileWrapper.style.textAlign = "center";
+
+                    const icon = document.createElement("img");
+                    icon.style.width = "60px";
+                    icon.src = isPDF ?
+                        "{{ asset('common/img/file.png') }}" :
+                        "{{ asset('common/img/docx-file.png') }}";
+
+                    // const fileText = document.createElement("span");
+                    // fileText.textContent = file.name;
+                    // fileText.style.fontSize = "12px";
+                    // fileText.style.lineHeight = "13px";
+                    // fileText.style.marginTop = "10px";
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.classList.add("remove-btn");
+                    removeBtn.innerHTML = "×";
+                    removeBtn.style.marginLeft = "10px";
+                    removeBtn.addEventListener("click", () => {
+                        container.remove();
+                        removedFileIds.push(file.id);
+                    });
+
+                    fileWrapper.appendChild(icon);
+                    // fileWrapper.appendChild(fileText);
+                    container.appendChild(fileWrapper);
+                    container.appendChild(removeBtn);
+                }
+
+                imageGalleryNew.appendChild(container);
+                imageGalleryNew.style.display = "flex";
             });
         });
+
+        // Append removed IDs and files to the form on submit
+          $('form').on('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            finalImagesArray.forEach((file) => {
+                dataTransfer.items.add(file);
+            });
+            document.getElementById("finalImageInput").files = dataTransfer.files;
+            document.getElementById("removed_files").value = JSON.stringify(removedFileIds);
+        });
     </script>
-    <!-- end -->
-    <!-----------------------------------
-    Password Hide and show js start here
-    ------------------------------------->
     <script>
         $(document).on('click', '.toggle-password', function() {
             const input = $(this).siblings('.password-field');

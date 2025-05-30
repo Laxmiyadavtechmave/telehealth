@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CommonController;
+use App\Models\NurseImage;
 
 class NurseController extends Controller
 {
@@ -205,7 +206,7 @@ class NurseController extends Controller
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after:valid_from',
                 'password' => 'required|string|min:6',
-                'phone' => 'required|string',
+                'phone' => 'required',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -221,6 +222,9 @@ class NurseController extends Controller
                 'language' => 'required|string|max:255',
                 'area_expertise_id' => 'required|array',
                 // 'area_expertise_id.*' => 'exists:area_of_expertises',
+                // documents validation
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
 
             // Step 2: Save nurse
@@ -270,6 +274,16 @@ class NurseController extends Controller
                 }
             }
 
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/nurse/documents');
+                    NurseImage::create([
+                        'nurse_id' => $nurse->id,
+                        'img' => $path,
+                    ]);
+                }
+            }
+
             DB::commit();
             return redirect()->route('superadmin.clinic.index')->with('success', 'Nurse created successfully!');
 
@@ -291,7 +305,9 @@ class NurseController extends Controller
     {
 
         try {
-            return view('clinic.nurse.detail');
+            $nurseId = decrypt($id);
+            $nurse = Nurse::findorfail($nurseId);
+            return view('clinic.nurse.detail',compact('nurse'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -304,7 +320,20 @@ class NurseController extends Controller
     {
 
         try {
-         return view('clinic.nurse.edit');
+
+
+            $areaExpertises = AreaOfExpertise::all();
+            $nurse = Nurse::findorfail(decrypt($id));
+
+            $documents = $nurse->documents->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'name' => basename($doc->img),
+                    'url' => env('IMAGE_ROOT') . $doc->img,
+                ];
+            });
+            // dd($documents);
+         return view('clinic.nurse.edit',compact('nurse','documents','areaExpertises'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -315,7 +344,9 @@ class NurseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $nurseId = decrypt($id);
+        $nurse = Nurse::findorfail($nurseId);
+        dd($nurseId);
     }
 
     /**

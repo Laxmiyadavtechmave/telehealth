@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class NurseImage extends Model
 {
-    protected $fillable = ['clinic_id', 'img'];
+    protected $fillable = ['nurse_id', 'img'];
 }

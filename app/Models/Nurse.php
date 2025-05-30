@@ -21,4 +21,10 @@ class Nurse extends Model {
         'dob' => 'date',
     ];
 
+        public function documents()
+    {
+        return $this->hasMany(NurseImage::class, 'nurse_id', 'id'); // or whatever your model is
+    }
+
+
 }
