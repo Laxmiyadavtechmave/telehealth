@@ -208,7 +208,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Description / Bio</label>
                                                                 <!-- <input type="email" class="form-control"
-                                                                                                                                        value="johndoe@example.com" readonly disabled> -->
+                                                                                                                                                    value="johndoe@example.com" readonly disabled> -->
                                                                 <textarea class="form-control" name="" id="" readonly disabled row="4">{{ $extra['description'] ?? '' }}</textarea>
                                                             </div>
                                                         </div>
@@ -411,51 +411,88 @@
                                                                 @foreach ($documents as $doc)
                                                                     @php
                                                                         $filePath = '';
-                                                                        if (
-                                                                            $doc->img &&
-                                                                            Illuminate\Support\Facades\Storage::disk(
-                                                                                'public',
-                                                                            )->exists($doc->img)
-                                                                        ) {
+                                                                        $localFilePath = '';
+                                                                        $file_name = '';
+                                                                        $file_size = 'N/A';
+                                                                        $file_type = 'N/A';
+
+                                                                        if (is_object($doc) && !empty($doc->img)) {
+                                                                            // Local file path for PHP functions
+                                                                            $localFilePath = storage_path(
+                                                                                'app/public/' . $doc->img,
+                                                                            );
+
+                                                                            // Public URL for browser
                                                                             $filePath = env('IMAGE_ROOT') . $doc->img;
+
+                                                                            if (file_exists($localFilePath)) {
+                                                                                $file_size =
+                                                                                    round(
+                                                                                        filesize($localFilePath) / 1024,
+                                                                                        2,
+                                                                                    ) . ' KB';
+                                                                                $file_type = File::mimeType(
+                                                                                    $localFilePath,
+                                                                                );
+                                                                            }
+
+                                                                            $file_name = basename($doc->img);
+
+                                                                            // Determine icon/image to show
+                                                                            $isPdf = preg_match(
+                                                                                '/\.pdf$/i',
+                                                                                $file_name,
+                                                                            );
+                                                                            $isDoc = preg_match(
+                                                                                '/\.(doc|docx)$/i',
+                                                                                $file_name,
+                                                                            );
+                                                                            $isImage = preg_match(
+                                                                                '/\.(jpg|jpeg|png|gif)$/i',
+                                                                                $file_name,
+                                                                            );
+
+                                                                            if ($isPdf) {
+                                                                                $displayImage = asset(
+                                                                                    'common/img/file.png',
+                                                                                ); // pdf icon
+                                                                            } elseif ($isDoc) {
+                                                                                $displayImage = asset(
+                                                                                    'common/img/docx-file.png',
+                                                                                ); // doc icon
+                                                                            } else {
+                                                                                $displayImage = $filePath;
+                                                                            }
                                                                         }
-                                                                        $fileExists = file_exists($filePath);
-                                                                        $size = $fileExists
-                                                                            ? round(filesize($filePath) / 1024, 2) .
-                                                                                ' KB'
-                                                                            : 'N/A';
-                                                                        $type = $fileExists
-                                                                            ? File::mimeType($filePath)
-                                                                            : 'N/A';
-                                                                        $name = basename($image->img);
                                                                     @endphp
+
                                                                     <tr>
                                                                         <td>
                                                                             <label class="checkboxs">
                                                                                 <input type="checkbox" name="documents[]"
-                                                                                    value="{{ $doc->id }}"
+                                                                                    value="{{ $doc->id ?? '' }}"
                                                                                     class="doc-checkbox">
                                                                                 <span class="checkmarks"></span>
                                                                             </label>
                                                                         </td>
                                                                         <td class="productimgname">
-                                                                            <a href="{{ $filePath ?? 'javascript:void(0)' }}"
+                                                                            <a href="{{ $filePath ?: 'javascript:void(0)' }}"
+                                                                                target="_blank"
                                                                                 class="product-img d-flex align-items-center">
-                                                                                <img src="{{ $filePath ?? '' }}"
+                                                                                <img src="{{ $displayImage ?? '' }}"
                                                                                     alt="Product" class="me-2">
-                                                                                <span>{{ $name ?? '' }}</span>
+                                                                                <span>{{ $file_name ?? '' }}</span>
                                                                             </a>
                                                                         </td>
                                                                         <td>{{ $doc->created_at->format('d M,Y h:i a') }}</td>
-                                                                        <td> {{ $size ?? '' }}</td>
-                                                                        <td>
-                                                                            {{ $type ?? '' }}
-                                                                        </td>
+                                                                        <td>{{ $file_size ?? '' }}</td>
+                                                                        <td>{{ $file_type ?? '' }}</td>
                                                                         <td>
                                                                             <div
                                                                                 class="d-flex align-items-center ActionDropdown">
                                                                                 <div class="d-flex">
-                                                                                    <button
+                                                                                    <a href="{{ $filePath ?: 'javascript:void(0)' }}"
+                                                                                        target="_blank"
                                                                                         class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover "
                                                                                         data-bs-toggle="tooltip"
                                                                                         data-placement="top" title=""
@@ -465,7 +502,7 @@
                                                                                                 class="feather-icon">
                                                                                                 <iconify-icon
                                                                                                     icon="hugeicons:view"></iconify-icon>
-                                                                                            </span></span></button>
+                                                                                            </span></span></a>
 
                                                                                 </div>
                                                                             </div>
@@ -524,34 +561,11 @@
                                                                         value="" readonly disabled>
                                                                 </div>
                                                             </div>
-
                                                         </div>
-
-
-
-
-
-
                                                     </div>
-
                                                 </div>
-
-                                                <!-- <div class="text-end settings-bottom-btn">
-                                                                               <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                                                                               <button type="submit" class="btn btn-submit">Save Changes</button>
-                                                                              </div> -->
-
                                             </div>
-
-
-
                                         </div>
-
-                                        <!-- <div class="text-end settings-bottom-btn">
-                                                                               <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                                                                               <button type="submit" class="btn btn-submit">Save Changes</button>
-                                                                              </div> -->
-
                                     </div>
 
                                 </div>
@@ -572,7 +586,14 @@
 
                         if (selectedIds.length === 0) {
                             e.preventDefault();
-                            alert('Please select at least one document.');
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Error!',
+                                text: `Please select at least one document.`
+                            });
+
                             return false;
                         }
 

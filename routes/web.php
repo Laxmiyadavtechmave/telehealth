@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\{AuthController, HomeController , PharmacyController, RoleController,UserController,ClinicController};
+use App\Http\Controllers\Admin\{AuthController, HomeController, PharmacyController, RoleController, UserController, ClinicController};
 use App\Http\Controllers\Clinic\DoctorController;
 use App\Http\Controllers\Clinic\HomeController as ClinicHomeController;
 use App\Http\Controllers\Clinic\NurseController;
@@ -39,6 +39,15 @@ Route::prefix('superadmin')
                     Route::post('update', [UserController::class, 'update'])->name('update');
                 });
 
+            /************************ clinic ************/
+            Route::resource('clinic', ClinicController::class);
+            Route::get('/clinics/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
+            Route::post('clinics/documents-download/{clinicId}', [ClinicController::class, 'downloadDocuments'])->name('clinics.downloadDocuments');
+
+            /*************************** pharmacy *****************/
+            Route::resource('pharmacies', PharmacyController::class);
+            Route::get('/pharmacy/datatable', [PharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
+            Route::post('pharmacy/documents-download/{clinicId}', [PharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
 
             Route::get('patients', [HomeController::class, 'patients'])->name('patients');
             Route::prefix('doctors')
@@ -48,51 +57,35 @@ Route::prefix('superadmin')
                     Route::get('details', [HomeController::class, 'doctorDetail'])->name('detail');
                 });
 
-            /************************ clinic ************/
-            Route::resource('clinic', ClinicController::class);
-            Route::get('/clinics/datatable', [ClinicController::class, 'ajaxDataTable'])->name('clinics.ajaxDataTable');
-            Route::get('clinics/documents-download/{clinicId}', [ClinicController::class, 'downloadDocuments'])->name('clinics.downloadDocuments');
-
-
-
             Route::prefix('nurses')
                 ->name('nurses.')
                 ->group(function () {
                     Route::get('/', [HomeController::class, 'nurses'])->name('list');
                     Route::get('details', [HomeController::class, 'nursesDetail'])->name('detail');
                 });
-  /*************************** pharmacy *****************/
-            Route::resource('pharmacies', PharmacyController::class);
-            Route::get('/pharmacy/datatable', [PharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
-            Route::get('pharmacy/documents-download/{clinicId}', [PharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
         });
     });
 
-
- /************************ clinic panel ************/
+/************************ clinic panel ************/
 Route::middleware('auth_redirect:clinic')->group(function () {
-
     Route::prefix('clinic')
         ->name('clinic.')
-            ->group(function () {
-                        Route::get('dashboard', [ClinicHomeController::class, 'dashboard'])->name('dashboard');
-                        Route::resource('doctor',DoctorController::class);
-                        Route::resource('nurse',NurseController::class);
-                        Route::resource('patient',PatientController::class);
-                        Route::resource('pharmacy',ClinicPharmacyController::class);
+        ->group(function () {
+            Route::get('dashboard', [ClinicHomeController::class, 'dashboard'])->name('dashboard');
+            Route::resource('doctor', DoctorController::class);
+            Route::resource('nurse', NurseController::class);
+            Route::resource('patient', PatientController::class);
+            Route::resource('pharmacy', ClinicPharmacyController::class);
 
-                        Route::prefix('user')
-                                ->name('user.')
-                                    ->group(function () {
-                                        Route::get('users', [ClinicUserController::class, 'index'])->name('index');
-                                        Route::post('store', [ClinicUserController::class, 'store'])->name('store');
-                                        Route::post('update-status', [ClinicUserController::class, 'updateStatus'])->name('update-status');
-                                        Route::post('update', [ClinicUserController::class, 'update'])->name('update');
-                                    });
-
-                        Route::resource('role', ClinicRoleController::class);
+            Route::prefix('user')
+                ->name('user.')
+                ->group(function () {
+                    Route::get('users', [ClinicUserController::class, 'index'])->name('index');
+                    Route::post('store', [ClinicUserController::class, 'store'])->name('store');
+                    Route::post('update-status', [ClinicUserController::class, 'updateStatus'])->name('update-status');
+                    Route::post('update', [ClinicUserController::class, 'update'])->name('update');
                 });
 
-
-
+            Route::resource('role', ClinicRoleController::class);
+        });
 });

@@ -45,6 +45,6 @@ class Clinic extends Model
 
     public function documents()
     {
-        return $this->hasMany(PharmacyImage::class, 'pharmacy_id', 'id'); // or whatever your model is
+        return $this->hasMany(ClinicImage::class, 'clinic_id', 'id'); // or whatever your model is
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Clinic, ClinicSchedule,ClinicImage};
+use App\Models\{Clinic, ClinicSchedule, ClinicImage};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Hash;
@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use ZipArchive;
 
 class ClinicController extends Controller
 {
@@ -196,6 +197,9 @@ class ClinicController extends Controller
                 'country' => 'required|string',
                 'postal_code' => 'required|string',
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                // documents validation
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
 
             //Step 2. save clinic
@@ -226,7 +230,7 @@ class ClinicController extends Controller
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
-            $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
+            $validationErrors = CommonController::validateSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
                 return back()->withErrors($validationErrors)->withInput();
@@ -314,8 +318,14 @@ class ClinicController extends Controller
             $clinic = Clinic::findorfail(decrypt($id));
             $extra = !empty($clinic->extra) ? json_decode($clinic->extra, true) : [];
             $schedules = $clinic->schedules->groupBy('day');
-            $documents = $clinic->documents;
-            return view('admin.clinics.edit', compact('clinic', 'extra', 'schedules','documents'));
+            $documents = $clinic->documents->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'name' => basename($doc->img),
+                    'url' => env('IMAGE_ROOT') . $doc->img,
+                ];
+            });
+            return view('admin.clinics.edit', compact('clinic', 'extra', 'schedules', 'documents'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.clinic.index')->with('error', 'Something went wrong');
         }
@@ -344,6 +354,10 @@ class ClinicController extends Controller
                 'country' => 'required|string',
                 'postal_code' => 'required|string',
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+
+                // documents validation
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
             //Step 2. save clinic
             $clinic->name = $request->clinic_name ?? '';
@@ -377,7 +391,7 @@ class ClinicController extends Controller
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
-            $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
+            $validationErrors = CommonController::validateSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
                 return redirect()->back()->withErrors($validationErrors)->withInput();
@@ -412,6 +426,22 @@ class ClinicController extends Controller
                 ]);
             }
 
+            $removedFileIds = json_decode($request->removed_files, true);
+            if (!empty($removedFileIds)) {
+                $removedFileIds = implode(',', $removedFileIds);
+                ClinicImage::whereRaw('FIND_IN_SET(id, ?)', [$removedFileIds])->delete();
+            }
+
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/clinics/documents/');
+                    ClinicImage::create([
+                        'clinic_id' => $clinic->id,
+                        'img' => $path,
+                    ]);
+                }
+            }
+
             //Step 6. sync permissions
             $role = Role::where('name', $clinic->clinic_id)->where('guard_name', 'clinic')->first();
 
@@ -425,8 +455,39 @@ class ClinicController extends Controller
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
+            dd($e);
             return redirect()->route('superadmin.clinic.edit', encrypt($id))->with('error', $e->getMessage())->withInput();
         }
+    }
+
+    public function downloadDocuments(Request $request,$id)
+    {
+        $id = decrypt($id);
+        $ids = json_decode($request->document_ids, true);
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Documents not selected.');
+        }
+
+        $documents = ClinicImage::whereIn('id', $ids)->get();
+        $zipFileName = 'clinic_documents_' . now()->format('YmdHis') . '.zip';
+        $zipPath = storage_path("app/public/zips/{$zipFileName}");
+
+        if (!file_exists(storage_path('app/public/zips'))) {
+            mkdir(storage_path('app/public/zips'), 0755, true);
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
+            foreach ($documents as $doc) {
+                if (Storage::disk('public')->exists($doc->img)) {
+                    $filePath = storage_path('app/public/' . $doc->img);
+                    $zip->addFile($filePath, basename($doc->img));
+                }
+            }
+            $zip->close();
+        }
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 
     /**

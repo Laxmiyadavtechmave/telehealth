@@ -37,6 +37,9 @@
                         @method('patch')
                         @csrf
 
+                        <input type="file" id="finalImageInput" name="documents[]" multiple hidden>
+                        <input type="hidden" id="removed_files" name="removed_files" hidden>
+
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -183,10 +186,10 @@
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="form-group position-relative">
-                                                            <label for="password">Password <span>*</span></label>
+                                                            <label for="password">Password</label>
                                                             <input type="password" class="form-control password-field"
                                                                 placeholder="Enter Password here.." name="password"
-                                                                autocomplete="new-password" required>
+                                                                autocomplete="new-password">
                                                             <span class="toggle-password"
                                                                 style="position:absolute; top:38px; right:15px; cursor:pointer;">
                                                                 <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
@@ -387,7 +390,8 @@
                                                                     aria-labelledby="{{ $day }}-tab">
 
                                                                     <div class="day-row" id="{{ $day }}">
-                                                                        <div class="time-slots" style="{{ $dayAvailable ? '' : 'display:none' }}"
+                                                                        <div class="time-slots"
+                                                                            style="{{ $dayAvailable ? '' : 'display:none' }}"
                                                                             id="{{ $day }}-slots">
                                                                             @if (isset($schedules[$day]) && $dayAvailable)
                                                                                 @foreach ($schedules[$day] as $k => $slot)
@@ -437,7 +441,8 @@
 
                                                                         <button type="button"
                                                                             class="add-button addMultislot_button"
-                                                                            onclick="addSlot('{{ $day }}')" {{ $dayAvailable ? '' : 'disabled' }}>
+                                                                            onclick="addSlot('{{ $day }}')"
+                                                                            {{ $dayAvailable ? '' : 'disabled' }}>
                                                                             <iconify-icon
                                                                                 icon="basil:add-outline"></iconify-icon>
                                                                             Add Time
@@ -504,14 +509,13 @@
                         </div>
 
                         <div class="FormSubmit_fix_container">
-                            <a href="pharmacy.php">
-                                <button type="button" class="btn btn-primary commonUpdateButton"
-                                    onclick="showSweetAlert()">
+                            <a href="javascript:void(0)">
+                                <button type="submit" class="btn btn-primary commonUpdateButton">
                                     <iconify-icon icon="mynaui:save"></iconify-icon> Submit & Save
                                 </button>
                             </a>
 
-                            <a href="pharmacy.php">
+                            <a href="{{ route('superadmin.pharmacies.index') }}">
                                 <button type="button" class="btn commonCancleButton">
                                     Cancel
                                 </button>
@@ -545,7 +549,7 @@
                     <div class="loaderCenter">
                         <div class="loader" id="uploadLoaderNew">
                             <!-- <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." />
-                                                                <p>Uploading...</p> -->
+                                                                            <p>Uploading...</p> -->
                         </div>
                     </div>
 
@@ -637,6 +641,351 @@
             };
 
             reader.readAsDataURL(file);
+        });
+
+
+        /********************************* gallery/documents ************************/
+        const uploadAreaNew = document.getElementById("uploadAreaNew");
+        const imageInputNew = document.getElementById("imageInputNew");
+        const imageGalleryNew = document.getElementById("imageGalleryNew");
+        const uploadLoaderNew = document.getElementById("uploadLoaderNew");
+        const addImageBtnNew = document.getElementById("addImageBtnNew");
+        const addImagesLinkNew = document.querySelector("[data-bs-target='#uploadModalNew']");
+        let uploadedFilesNew = [];
+        let finalImagesArray = [];
+
+        imageGalleryNew.style.display = "none";
+
+        const MAX_FILES = 7;
+        const MAX_SIZE_MB = 5;
+
+        // Helper
+        function isValidFile(file) {
+            const validTypes = [
+                "image/",
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ];
+            return (
+                (validTypes.some(type => file.type.startsWith(type)) ||
+                    file.name.endsWith(".doc") || file.name.endsWith(".docx"))
+            );
+        }
+
+        // Drag & Drop
+        uploadAreaNew.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.add("drag-over");
+        });
+
+        uploadAreaNew.addEventListener("dragleave", () => {
+            uploadAreaNew.classList.remove("drag-over");
+        });
+
+        uploadAreaNew.addEventListener("drop", (event) => {
+            event.preventDefault();
+            uploadAreaNew.classList.remove("drag-over");
+            const files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // Click to Upload
+        uploadAreaNew.addEventListener("click", () => {
+            imageInputNew.click();
+        });
+
+        imageInputNew.addEventListener("change", (event) => {
+            const files = event.target.files;
+            handleFiles(files);
+        });
+
+        // Handle File Uploads
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+
+            const newFiles = Array.from(files);
+            for (let file of newFiles) {
+                if (!isValidFile(file)) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} is not a valid file type.`
+                    });
+                    continue;
+                }
+
+                if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} exceeds the 5MB limit.`
+                    });
+                    continue;
+                }
+
+                if (uploadedFilesNew.length >= MAX_FILES) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `You can upload a maximum of ${MAX_FILES} files.`
+                    });
+                    break;
+                }
+
+                if (!uploadedFilesNew.includes(file)) {
+                    uploadedFilesNew.push(file);
+                }
+            }
+
+            showPreviewNew(uploadedFilesNew);
+        }
+
+        // Show Preview
+        function showPreviewNew(files) {
+            uploadAreaNew.innerHTML = ""; // Clear previous previews
+            files.forEach((file) => {
+                const fileDiv = document.createElement("div");
+                fileDiv.style.marginBottom = "10px";
+                fileDiv.style.border = "1px solid #ccc";
+                fileDiv.style.padding = "5px";
+
+                const fileName = document.createElement("p");
+                fileName.textContent = file.name;
+                fileName.style.fontSize = "14px";
+                fileName.style.margin = "5px 0";
+
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.style.width = "100%";
+                        img.style.border = "1px solid #ccc";
+                        fileDiv.appendChild(img);
+                        fileDiv.appendChild(fileName);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    const img = document.createElement("img");
+                    img.style.width = "50px";
+                    img.style.marginRight = "10px";
+                    img.src = file.name.endsWith(".pdf") ?
+                        "{{ asset('common/img/file.png') }}" :
+                        "{{ asset('common/img/docx-file.png') }}";
+                    fileDiv.appendChild(img);
+                    fileDiv.appendChild(fileName);
+                }
+
+                uploadAreaNew.appendChild(fileDiv);
+            });
+        }
+
+        // Final Submit Preview
+        addImageBtnNew.addEventListener("click", () => {
+            if (uploadedFilesNew.length === 0) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Please upload at least one file first.',
+                });
+                return;
+            }
+
+            uploadLoaderNew.style.display = "block";
+
+            uploadedFilesNew.forEach((file, index) => {
+                setTimeout(() => {
+                    if (!finalImagesArray.includes(file)) {
+                        finalImagesArray.push(file);
+                    }
+
+                    const container = document.createElement("div");
+                    container.classList.add("image-container");
+
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.createElement("img");
+                            img.src = e.target.result;
+                            img.style.width = "100px";
+                            img.style.marginRight = "10px";
+
+                            const removeBtn = document.createElement("button");
+                            removeBtn.classList.add("remove-btn");
+                            removeBtn.innerHTML = "×";
+                            removeBtn.addEventListener("click", () => {
+                                container.remove();
+                                finalImagesArray = finalImagesArray.filter(f => f !==
+                                    file);
+                                checkAndHideGallery();
+                            });
+
+                            container.appendChild(img);
+                            container.appendChild(removeBtn);
+                            imageGalleryNew.appendChild(container);
+                            imageGalleryNew.style.display = "flex";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        const fileWrapper = document.createElement("div");
+                        fileWrapper.style.display = "flex";
+                        fileWrapper.style.alignItems = "center";
+                        fileWrapper.style.border = "1px solid #ccc";
+                        fileWrapper.style.padding = "5px";
+                        fileWrapper.style.flexDirection = "column";
+                        fileWrapper.style.textAlign = "center";
+
+                        const img = document.createElement("img");
+                        img.style.width = "60px";
+                        img.style.marginRight = "10px";
+                        img.src = file.name.endsWith(".pdf") ?
+                            "{{ asset('common/img/file.png') }}" :
+                            "{{ asset('common/img/docx-file.png') }}";
+
+                        const fileText = document.createElement("span");
+                        fileText.textContent = file.name;
+                        fileText.style.fontSize = "12px";
+                        fileText.style.lineHeight = "13px";
+                        fileText.style.marginTop = "10px";
+
+                        const removeBtn = document.createElement("button");
+                        removeBtn.classList.add("remove-btn");
+                        removeBtn.innerHTML = "×";
+                        removeBtn.style.marginLeft = "10px";
+                        removeBtn.addEventListener("click", () => {
+                            container.remove();
+                            finalImagesArray = finalImagesArray.filter(f => f !== file);
+                            checkAndHideGallery();
+                        });
+
+                        fileWrapper.appendChild(img);
+                        fileWrapper.appendChild(fileText);
+                        container.appendChild(fileWrapper);
+                        container.appendChild(removeBtn);
+                        imageGalleryNew.appendChild(container);
+                        imageGalleryNew.style.display = "flex";
+                    }
+                }, index * 2000);
+            });
+
+            setTimeout(() => {
+                uploadLoaderNew.style.display = "none";
+                uploadedFilesNew = [];
+                uploadAreaNew.innerHTML = "Drag & drop images here or click to upload";
+                const modal = bootstrap.Modal.getInstance(document.getElementById("uploadModalNew"));
+                modal.hide();
+                addImagesLinkNew.style.display = "none";
+            }, uploadedFilesNew.length * 2000);
+        });
+
+        function checkAndHideGallery() {
+            if (imageGalleryNew.childElementCount === 0) {
+                imageGalleryNew.style.display = "none";
+            }
+        }
+
+        $('form').on('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            finalImagesArray.forEach((file) => {
+                dataTransfer.items.add(file);
+            });
+            document.getElementById("finalImageInput").files = dataTransfer.files;
+        });
+
+        /*********************** edit gallery ***************************/
+        const existingFiles = @json($documents ?? []);
+        const removedFileIds = [];
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!existingFiles || !Array.isArray(existingFiles)) return;
+
+            const imageGalleryNew = document.getElementById("imageGalleryNew");
+
+
+            existingFiles.forEach(file => {
+                if (!file || !file.name || !file.url || !file.id) return;
+
+                const container = document.createElement("div");
+                container.classList.add("image-container");
+                container.setAttribute("data-id", file.id);
+
+                const isImage = file.name.match(/\.(jpg|jpeg|png|gif)$/i);
+                const isPDF = file.name.match(/\.pdf$/i);
+                const isDoc = file.name.match(/\.(doc|docx)$/i);
+
+                if (isImage) {
+                    const img = document.createElement("img");
+                    img.src = file.url;
+                    img.style.width = "100px";
+                    img.style.marginRight = "10px";
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.classList.add("remove-btn");
+                    removeBtn.innerHTML = "×";
+                    removeBtn.addEventListener("click", () => {
+                        container.remove();
+                        removedFileIds.push(file.id);
+                    });
+
+                    container.appendChild(img);
+                    container.appendChild(removeBtn);
+                } else {
+                    const fileWrapper = document.createElement("div");
+                    fileWrapper.style.display = "flex";
+                    fileWrapper.style.alignItems = "center";
+                    fileWrapper.style.border = "1px solid #ccc";
+                    fileWrapper.style.padding = "5px";
+                    fileWrapper.style.flexDirection = "column";
+                    fileWrapper.style.textAlign = "center";
+
+                    const icon = document.createElement("img");
+                    icon.style.width = "60px";
+                    icon.src = isPDF ?
+                        "{{ asset('common/img/file.png') }}" :
+                        "{{ asset('common/img/docx-file.png') }}";
+
+                    // const fileText = document.createElement("span");
+                    // fileText.textContent = file.name;
+                    // fileText.style.fontSize = "12px";
+                    // fileText.style.lineHeight = "13px";
+                    // fileText.style.marginTop = "10px";
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.classList.add("remove-btn");
+                    removeBtn.innerHTML = "×";
+                    removeBtn.style.marginLeft = "10px";
+                    removeBtn.addEventListener("click", () => {
+                        container.remove();
+                        removedFileIds.push(file.id);
+                    });
+
+                    fileWrapper.appendChild(icon);
+                    // fileWrapper.appendChild(fileText);
+                    container.appendChild(fileWrapper);
+                    container.appendChild(removeBtn);
+                }
+
+                imageGalleryNew.appendChild(container);
+                imageGalleryNew.style.display = "flex";
+            });
+        });
+
+        // Append removed IDs and files to the form on submit
+        $('form').on('submit', function(e) {
+            const dataTransfer = new DataTransfer();
+            finalImagesArray.forEach((file) => {
+                dataTransfer.items.add(file);
+            });
+            document.getElementById("finalImageInput").files = dataTransfer.files;
+            document.getElementById("removed_files").value = JSON.stringify(removedFileIds);
         });
     </script>
     @include('admin.common.schedule-js')
