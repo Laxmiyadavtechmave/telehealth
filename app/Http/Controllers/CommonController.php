@@ -19,7 +19,7 @@ class CommonController extends Controller
         }
     }
 
-    public static function validateClinicSchedule($workingHours, $notAvailable)
+    public static function validateSchedule($workingHours, $notAvailable)
     {
         $errors = [];
         $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
