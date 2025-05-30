@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Clinic, ClinicSchedule};
+use App\Models\{Clinic, ClinicSchedule,ClinicImage};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Hash;
@@ -43,7 +43,8 @@ class ClinicController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data'] ?? 'name';
         $columnSortOrder = $columnIndex_arr[0]['dir'] ?? 'asc';
         $searchValue = $search_arr['value'] ?? '';
-
+        $status = $request->status;
+        $daterange = $request->daterange;
         // Whitelist of sortable fields
         $sortableColumns = ['id', 'name', 'email', 'phone', 'license_no', 'address1', 'status', 'created_at'];
         if (!in_array($columnName, $sortableColumns)) {
@@ -53,15 +54,42 @@ class ClinicController extends Controller
         // Count total records
         $totalRecords = Clinic::count();
 
+        // Base query
+        $query = Clinic::query();
+
+        // Apply search text
+        if (!empty($searchValue)) {
+            $query->search($searchValue);
+        }
+
+        // Apply status filter
+        if (!empty($status)) {
+            $query->where('status', $status);
+        }
+
+        // // Apply daterange filter
+        if (!empty($daterange)) {
+            try {
+                [$startRange, $endRange] = explode(' - ', $daterange);
+
+                $startDate = Carbon::createFromFormat('m/d/Y', trim($startRange))->format('Y-m-d');
+                $endDate = Carbon::createFromFormat('m/d/Y', trim($endRange))->format('Y-m-d');
+
+                $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
+            } catch (\Exception $e) {
+                \Log::error('Invalid date range: ' . $e->getMessage());
+            }
+        }
+
         // Count with filter
-        $totalRecordswithFilter = Clinic::search($searchValue)->count();
+        $totalRecordswithFilter = $query->count();
 
         // Fetch data
-        $clinics = Clinic::search($searchValue)->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
+        $records = $query->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
 
         // Data formatting
         $data_arr = [];
-        foreach ($clinics as $key => $row) {
+        foreach ($records as $key => $row) {
             $statusBg = CommonController::statusBg($row->status ?? '');
 
             $address =
@@ -76,7 +104,27 @@ class ClinicController extends Controller
                                         </button>
                                     </div>';
 
+            // $image = asset('common/img/logoicon.png');
+            // if ($row->img && Storage::disk('public')->exists($row->img)) {
+            //     $image = env('IMAGE_ROOT') . $row->img;
+            // }
+
+            // $clinic =
+            //     '<div class="productimgname">
+            //                             <a href="' .
+            //     ($image ?? '') .
+            //     '" data-fancybox="gallery" class="product-img stock-img">
+            //                                 <img src="' .
+            //     ($image ?? '') .
+            //     '" alt="product">
+            //                             </a>
+            //                             <a href="'.(route('superadmin.clinic.show',encrypt($row->id??''))).'">' .
+            //     ($row->name ?? '') .
+            //     '</a>
+            //                         </div>';
+
             $data_arr[] = [
+                'id' => $row->id ?? '',
                 'clinic_id' => $row->clinic_id ?? '',
                 'name' => $row->name ?? '',
                 'phone' => $row->phone ?? '',
@@ -85,7 +133,7 @@ class ClinicController extends Controller
                 'address1' => $address,
                 'total_doctors' => 7,
                 'created_at' => !empty($row->created_at) ? date('d M, Y', strtotime($row->created_at)) : '',
-                'status' => $row->status ?? '',
+                'status' => '<span class="badge ' . ($statusBg ?? '') . '" data-bs-toggle="tooltip" data-placement="top" data-bs-original-title="Clinic is currently ' . ($row->status ?? '') . '">' . ucfirst($row->status ?? '') . '</span>',
                 'action' =>
                     '<div class="d-flex align-items-center ActionDropdown">
                                         <div class="d-flex">
@@ -133,7 +181,6 @@ class ClinicController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-
         try {
             $request->validate([
                 'clinic_name' => 'required|string|max:255',
@@ -187,14 +234,19 @@ class ClinicController extends Controller
 
             // Step 4: Save available slots
             foreach ($workingHours as $day => $info) {
-                foreach ($info['slots'] ?? [] as $slot) {
-                    ClinicSchedule::create([
-                        'clinic_id' => $clinic->id,
-                        'day' => $day,
-                        'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
-                        'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
-                        'is_available' => true,
-                    ]);
+                if (isset($notAvailable[$day])) {
+                    continue;
+                }
+                if (!empty($info['slots'])) {
+                    foreach ($info['slots'] ?? [] as $slot) {
+                        ClinicSchedule::create([
+                            'clinic_id' => $clinic->id,
+                            'day' => $day,
+                            'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
+                            'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
+                            'is_available' => true,
+                        ]);
+                    }
                 }
             }
 
@@ -209,9 +261,19 @@ class ClinicController extends Controller
                 ]);
             }
 
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/clinics/documents/');
+                    ClinicImage::create([
+                        'clinic_id' => $clinic->id,
+                        'img' => $path,
+                    ]);
+                }
+            }
+
             //Step 6. assign role and sync permissions
             $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
-            $clinic->assignRole($request->role_name);
+            $clinic->assignRole($clinic->clinic_id);
 
             $clinicPermissions = Permission::where('guard_name', 'clinic')->get();
 
@@ -222,9 +284,8 @@ class ClinicController extends Controller
             DB::commit();
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic created successfully!');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
-            return redirect()->route('superadmin.clinic.create')->with('error', 'Something went wrong')->withInput();
+            return redirect()->route('superadmin.clinic.create')->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -233,7 +294,15 @@ class ClinicController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $clinic = Clinic::findorfail(decrypt($id));
+            $extra = !empty($clinic->extra) ? json_decode($clinic->extra, true) : [];
+            $schedules = $clinic->schedules->groupBy('day');
+            $documents = $clinic->documents->sortByDesc('id');
+            return view('admin.clinics.detail', compact('clinic', 'extra', 'schedules', 'documents'));
+        } catch (Exception $e) {
+            return redirect()->route('superadmin.clinic.index')->with('error', 'Something went wrong');
+        }
     }
 
     /**
@@ -245,7 +314,8 @@ class ClinicController extends Controller
             $clinic = Clinic::findorfail(decrypt($id));
             $extra = !empty($clinic->extra) ? json_decode($clinic->extra, true) : [];
             $schedules = $clinic->schedules->groupBy('day');
-            return view('admin.clinics.edit', compact('clinic', 'extra','schedules'));
+            $documents = $clinic->documents;
+            return view('admin.clinics.edit', compact('clinic', 'extra', 'schedules','documents'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.clinic.index')->with('error', 'Something went wrong');
         }
@@ -276,7 +346,6 @@ class ClinicController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             ]);
             //Step 2. save clinic
-// dd("Sdfds");
             $clinic->name = $request->clinic_name ?? '';
             $clinic->email = $request->email ?? '';
             $clinic->license_no = $request->license_no ?? '';
@@ -302,7 +371,7 @@ class ClinicController extends Controller
 
             $clinic->extra = $request->filled('extra') ? json_encode($request->extra) : null;
             $clinic->save();
-            // dd($clinic,$request->all());
+
             // Step 3: Validate and store schedule
             ClinicSchedule::where('clinic_id', $clinic->id)->delete();
             $workingHours = $request->input('working_hours', []);
@@ -311,20 +380,24 @@ class ClinicController extends Controller
             $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
-                dd($validationErrors);
                 return redirect()->back()->withErrors($validationErrors)->withInput();
             }
 
             // Step 4: Save available slots
             foreach ($workingHours as $day => $info) {
-                foreach ($info['slots'] ?? [] as $slot) {
-                    ClinicSchedule::create([
-                        'clinic_id' => $clinic->id,
-                        'day' => $day,
-                        'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
-                        'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
-                        'is_available' => true,
-                    ]);
+                if (isset($notAvailable[$day])) {
+                    continue;
+                }
+                if (!empty($info['slots'])) {
+                    foreach ($info['slots'] ?? [] as $slot) {
+                        ClinicSchedule::create([
+                            'clinic_id' => $clinic->id,
+                            'day' => $day,
+                            'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
+                            'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
+                            'is_available' => true,
+                        ]);
+                    }
                 }
             }
 
@@ -352,7 +425,6 @@ class ClinicController extends Controller
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
             return redirect()->route('superadmin.clinic.edit', encrypt($id))->with('error', $e->getMessage())->withInput();
         }
     }

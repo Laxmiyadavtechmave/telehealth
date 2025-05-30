@@ -33,7 +33,6 @@
             }
         });
 
-
         // Handle Not Available checkbox
         days.forEach((day, index) => {
             // Conditionally add default slot only for create
@@ -57,11 +56,11 @@
             });
         });
 
-        if (!isEditPage) {
-                initializeTimePickers();
-        }else{
-            ReinitializeTimePickers();
-        }
+
+        $('.from-time, .to-time').each(function() {
+            initializeTimePickers($(this));
+        });
+
     });
 
     // Copy slots from sourceDay to other days except those marked Not Available
@@ -80,14 +79,13 @@
                 to: toTime
             });
         });
-        console.log("slotsData", slotsData);
+
 
         // Apply to all other days
         days.forEach((day, index) => {
             if (day !== sourceDay && !$('#NotAvailable' + (index + 1)).is(':checked')) {
                 const $target = $('#' + day + '-slots');
                 $target.empty(); // Clear old slots
-                console.log("target", $target);
                 slotsData.forEach((slot, idx) => {
                     const slotHTML = `
                     <div class="time-slot">
@@ -98,25 +96,17 @@
                         </button>
                     </div>
                 `;
-                    console.log("slot.from", slot.from);
-                    console.log(slotHTML);
                     $target.append(slotHTML);
                 });
             }
         });
 
-        ReinitializeTimePickers();
-    }
-
-    function ReinitializeTimePickers() {
-        $(".from-time, .to-time").flatpickr({
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "h:i K",
-            defaultDate: null,
-            onChange: validateTimeSlot
+        $('.from-time, .to-time').each(function() {
+            initializeTimePickers($(this));
         });
     }
+
+
 
     // Add new time slot respecting Not Available
     function addSlot(day) {
@@ -124,7 +114,17 @@
         const index = days.indexOf(day) + 1;
 
         if ($('#NotAvailable' + index).is(':checked')) {
-            alert(`${capitalize(day)} is marked as Not Available.`);
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: `${capitalize(day)} is marked as Not Available.`,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                background: '#fff',
+                color: '#333',
+            });
             return;
         }
 
@@ -136,14 +136,16 @@
 
         const $container = $('#' + day + '-slots');
         const slotIndex = $container.find('.time-slot').length;
-        $container.append(`
-        <div class="time-slot">
+        const timeSlot = $(`
+             <div class="time-slot">
             <input type="text" class="flatpickr-input form-control from-time" name="working_hours[${day}][slots][${slotIndex}][from]"> to
             <input type="text" class="flatpickr-input form-control to-time" name="working_hours[${day}][slots][${slotIndex}][to]">
             <button type="button" class="deleteslot" onclick="removeSlot(this)"><iconify-icon icon="proicons:delete"></iconify-icon></button>
         </div>
-    `);
-        initializeTimePickers();
+        `);
+        $container.append(timeSlot);
+        initializeTimePickers(timeSlot.find('.from-time'));
+        initializeTimePickers(timeSlot.find('.to-time'));
 
         // If apply-all is active and current day is the source, propagate to others
         if (applyAllSourceDay === day) {
@@ -184,34 +186,19 @@
     }
 
     // Initialize flatpickr on all inputs not yet initialized
-    function initializeTimePickers() {
-        $('.from-time').each(function() {
-            if (!$(this).hasClass('flatpickr-initialized')) {
-                flatpickr(this, {
-                    enableTime: true,
-                    noCalendar: true,
-                    dateFormat: "h:i K",
-                    defaultDate: "09:00", // Default start time
-                    minuteIncrement: 1,
-                    onChange: validateTimeSlot
-                });
-                $(this).addClass('flatpickr-initialized');
-            }
-        });
+    function initializeTimePickers(input) {
+        if (!input || input.length === 0) return; // <-- prevent error if input is empty
 
-        $('.to-time').each(function() {
-            if (!$(this).hasClass('flatpickr-initialized')) {
-                flatpickr(this, {
-                    enableTime: true,
-                    noCalendar: true,
-                    dateFormat: "h:i K",
-                    defaultDate: "17:00", // Default end time
-                    minuteIncrement: 1,
-                    onChange: validateTimeSlot
-                });
-                $(this).addClass('flatpickr-initialized');
-            }
-        });
+        if (!input[0]._flatpickr) {
+            flatpickr(input[0], {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "h:i K",
+                defaultDate: input.val() ? input.val() : "09:00",
+                minuteIncrement: 1,
+                onChange: validateTimeSlot
+            });
+        }
     }
 
     function validateTimeSlot(selectedDates, dateStr, instance) {
@@ -321,6 +308,7 @@
             let timeFormatError = false;
 
             slots.each(function(index) {
+                if (notAvailableChecked) return;
                 const from = $(this).find('.from-time').val();
                 const to = $(this).find('.to-time').val();
 
@@ -332,7 +320,7 @@
                 if (fromMinutes >= toMinutes) {
                     valid = false;
                     timeSlotErrors.push(
-                        `${capitalize(day)} slot #${index + 1}: "From" time must be before "To" time.`
+                        `${capitalize(day)} slot : "From" time must be before "To" time.`
                     );
                     timeFormatError = true;
                 }
@@ -372,7 +360,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Validation Error',
-                text: message,
+                html: message.replace(/\n/g, '<br>'),
                 confirmButtonText: 'OK',
                 background: '#fff',
                 color: '#333'

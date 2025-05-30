@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+@section('title', 'Tele Health Super Admin | Edit Clinic')
 @section('content')
     <div class="page-wrapper">
         <div class="content">
@@ -348,25 +349,33 @@
                                                         <div class="tab-content" id="weekTabContent">
 
                                                             @foreach ($weekDays as $index => $day)
+                                                                @php
+                                                                    $dayAvailable = true;
+                                                                    if (!empty($schedules[$day])) {
+                                                                        $dayAvailable = collect(
+                                                                            $schedules[$day],
+                                                                        )->contains(fn($slot) => $slot->is_available);
+                                                                    }
+                                                                @endphp
                                                                 <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
                                                                     id="{{ $day }}" role="tabpanel"
                                                                     aria-labelledby="{{ $day }}-tab">
 
                                                                     <div class="day-row" id="{{ $day }}">
-                                                                        <div class="time-slots"
+                                                                        <div class="time-slots" style="{{ $dayAvailable ? '' : 'display:none' }}"
                                                                             id="{{ $day }}-slots">
-                                                                            @if (isset($schedules[$day]))
-                                                                                @foreach ($schedules[$day] as $k=>$slot)
+                                                                            @if (isset($schedules[$day]) && $dayAvailable)
+                                                                                @foreach ($schedules[$day] as $k => $slot)
                                                                                     <div class="time-slot">
                                                                                         <input type="text"
-                                                                                            name="working_hours[{{ $day }}][slots][{{$k}}][from]"
-                                                                                            value="{{ $slot->start_time ?? '' }}"
+                                                                                            name="working_hours[{{ $day }}][slots][{{ $k }}][from]"
+                                                                                            value="{{ !empty($slot->start_time) ? $slot->start_time->format('h:i A') : '' }}"
                                                                                             class="flatpickr-input form-control from-time"
                                                                                             required>
                                                                                         <span>to</span>
                                                                                         <input type="text"
-                                                                                            name="working_hours[{{ $day }}][slots][{{$k}}][to]"
-                                                                                            value="{{ $slot->end_time }}"
+                                                                                            name="working_hours[{{ $day }}][slots][{{ $k }}][to]"
+                                                                                            value="{{ !empty($slot->end_time) ? $slot->end_time->format('h:i A') : '' }}"
                                                                                             class="flatpickr-input form-control to-time"
                                                                                             required>
                                                                                         <button type="button"
@@ -391,9 +400,10 @@
                                                                             <div class="form-check">
                                                                                 <input type="checkbox"
                                                                                     class="form-check-input"
-                                                                                    id="NotAvailable{{ $index + 1 }}">
-                                                                                <label class="form-check-label"
+                                                                                    id="NotAvailable{{ $index + 1 }}"
                                                                                     name="not_available[{{ $day }}]"
+                                                                                    {{ $dayAvailable ? '' : 'checked' }}>
+                                                                                <label class="form-check-label"
                                                                                     for="NotAvailable{{ $index + 1 }}">
                                                                                     Not Available
                                                                                 </label>
@@ -401,7 +411,7 @@
                                                                         </div>
 
                                                                         <button type="button"
-                                                                            class="add-button addMultislot_button"
+                                                                            class="add-button addMultislot_button" {{ $dayAvailable ? '' : 'disabled' }}
                                                                             onclick="addSlot('{{ $day }}')">
                                                                             <iconify-icon
                                                                                 icon="basil:add-outline"></iconify-icon>
@@ -488,10 +498,8 @@
 
                                                     <div class="card-body">
                                                         <div class="adding_fildswrap multipleimage_wrap">
-                                                            <!-- Product Gallery Images Section -->
                                                             <div class="image-gallery" id="imageGalleryNew"
                                                                 style="display: none;">
-                                                                <!-- Placeholder for uploaded images -->
                                                             </div>
 
                                                             <!-- Add Product Gallery Images Link -->
