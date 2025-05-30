@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Clinic;
 
 use App\Models\User;
+use App\Models\Clinic;
 use Illuminate\Http\Request;
 use App\Traits\GeneratesCustomId;
 use Illuminate\Support\Facades\DB;
@@ -27,12 +28,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('role_name','!=' ,'Superadmin')
+        $users = Clinic::where('role_name','!=' ,'Superadmin')
                     ->orderByDesc('created_at')->get();
 
         $roles = Role::where( 'name' , '!=' ,'Superadmin')
                         ->where('status','Active')
-                            ->where('guard_name','web')
+                            ->where('guard_name','clinic')
                                 ->get();
         return view('clinic.users.index',compact('users' ,'roles'));
     }
@@ -62,7 +63,7 @@ class UserController extends Controller
         $customId = $this->generateCustomUniqueId('users','custom_id','CU', 6);
         $data['custom_id'] = $customId;
         $data['status'] = 'Active';
-        $user = User::create($data); // Use appropriate model based on role
+        $user = Clinic::create($data); // Use appropriate model based on role
         $user->assignRole($request->role_name);
         DB::commit();
             return response()->json([
@@ -112,7 +113,7 @@ class UserController extends Controller
     public function update(Request $request)
     {
         // dd($request->all());
-        $user = User::findOrFail($request->user_id);
+        $user = Clinic::findOrFail($request->user_id);
         try {
           $data =  $request->validate([
                 'name' => 'required|string|max:255',
@@ -184,7 +185,7 @@ class UserController extends Controller
 
         try {
             // Find the user
-            $user = User::findOrFail($request->user_id);
+            $user = Clinic::findOrFail($request->user_id);
 
             // Update the user's status
             $user->status = $request->status;

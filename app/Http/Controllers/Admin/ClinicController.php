@@ -7,13 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\{Clinic, ClinicSchedule, ClinicImage};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
-use Hash;
-use App\Traits\GeneratesCustomId;
 use Carbon\Carbon;
-use Spatie\Permission\Models\{Role, Permission};
+use Illuminate\Http\Request;
+use App\Traits\GeneratesCustomId;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
+use Spatie\Permission\Models\{Role, Permission};
+use App\Models\{Clinic, ClinicSchedule,ClinicImage};
+use Illuminate\Foundation\Exceptions\Renderer\Exception;
+use App\Http\Controllers\{CommonController, ImageController};
 
 class ClinicController extends Controller
 {
@@ -215,12 +220,13 @@ class ClinicController extends Controller
             $clinic->phone = $request->phone ?? '';
             $clinic->web_url = $request->web_url ?? '';
             $clinic->address1 = $request->address1 ?? '';
+            $clinic->address2 = $request->address2 ?? '';
             $clinic->city = $request->city ?? '';
             $clinic->country = $request->country ?? '';
             $clinic->postal_code = $request->postal_code ?? '';
             $clinic->map_link = $request->map_link ?? '';
             if ($request->hasFile('profile_pic')) {
-                $clinic->img = ImageController::upload($request->file('profile_pic'), '/clinics/');
+                $clinic->img = ImageController::upload($request->file('profile_pic'), 'clinics');
             }
 
             $clinic->extra = $request->filled('extra') ? json_encode($request->extra) : null;
@@ -371,6 +377,7 @@ class ClinicController extends Controller
             $clinic->phone = $request->phone ?? '';
             $clinic->web_url = $request->web_url ?? '';
             $clinic->address1 = $request->address1 ?? '';
+            $clinic->address2 = $request->address2 ?? '';
             $clinic->city = $request->city ?? '';
             $clinic->country = $request->country ?? '';
             $clinic->postal_code = $request->postal_code ?? '';

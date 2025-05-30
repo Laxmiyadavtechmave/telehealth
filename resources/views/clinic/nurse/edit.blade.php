@@ -2,133 +2,204 @@
 @section('title', 'Tele Health Clinic Admin | Nurse-edit')
 @section('content')
 
-<div class="page-wrapper">
-    <div class="content">
+    <div class="page-wrapper">
+        <div class="content">
 
-        <div class="rightSideWrapper">
-            <div
-                class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
-                <div class="my-auto ">
-                <h2 class="mb-1 flexpagetitle">
-                    <div class="backbtnwrap">
-                        <a href="nurse.php">
-                            <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
-                        </a>
+            <div class="rightSideWrapper">
+                <div
+                    class="d-md-flex pagetop_headercmntb d-block align-items-center justify-content-between page-breadcrumb ">
+                    <div class="my-auto ">
+                        <h2 class="mb-1 flexpagetitle">
+                            <div class="backbtnwrap">
+                                <a href="nurse.php">
+                                    <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
+                                </a>
+                            </div>
+                            Edit Nurse Detail
+                        </h2>
                     </div>
-                   Edit Nurse Detail
-                </h2>
-                </div>
-                <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
+                    <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
 
-                    <div class="ActionWrapper">
-                        <!-- <a href="#" class="btn btn-primary d-flex align-items-center cmnaddbtn">
-                        <iconify-icon icon="fluent-mdl2:add-to"></iconify-icon> Add New Item
-                    </a> -->
-                        <!-- <a href="sales-return-new.php" class="btn btn-info d-flex align-items-center cmnaddbtn">
-                     <iconify-icon icon="carbon:return"></iconify-icon> Sales Return
-                    </a> -->
-                    <!-- <a href="nurse.php" class="AttchmentBtn"><iconify-icon icon="typcn:arrow-back-outline"></iconify-icon> Back</a> -->
-                    </div>
-                    <div class="head-icons ms-2 headicon_innerpage">
-                        <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
-                            data-bs-original-title="Collapse" id="collapse-header">
-                            <i class="ti ti-chevrons-up"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="tablemaincard_nopaddingleftright">
-                <form action="#">
-                    <!-- <div class="ItemContainerTop">
-                        <div class="row">
-
-
+                        <div class="ActionWrapper">
+                            <!-- <a href="#" class="btn btn-primary d-flex align-items-center cmnaddbtn">
+                            <iconify-icon icon="fluent-mdl2:add-to"></iconify-icon> Add New Item
+                        </a> -->
+                            <!-- <a href="sales-return-new.php" class="btn btn-info d-flex align-items-center cmnaddbtn">
+                         <iconify-icon icon="carbon:return"></iconify-icon> Sales Return
+                        </a> -->
+                            <!-- <a href="nurse.php" class="AttchmentBtn"><iconify-icon icon="typcn:arrow-back-outline"></iconify-icon> Back</a> -->
                         </div>
-                    </div> -->
-
-                    <div class="ItemContainerTop no-bg">
-                        <div class="row">
-                        <div class="col-lg-12">
-                            <h6 class="sectionTitle">Basic Info</h6>
+                        <div class="head-icons ms-2 headicon_innerpage">
+                            <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-original-title="Collapse" id="collapse-header">
+                                <i class="ti ti-chevrons-up"></i>
+                            </a>
                         </div>
-                        <div class="col-lg-6">
-                                <div class="ItemNewContainer1 pe-3">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="row">
+                    </div>
+                </div>
+                <div class="tablemaincard_nopaddingleftright">
+                    <form action="{{ route('clinic.nurse.update', ['nurse' => $nurse->id]) }}"
+                        class="form needs-validation" method="post" enctype="multipart/form-data" novalidate>
+                        <div class="ItemContainerTop no-bg">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h6 class="sectionTitle">Basic Info</h6>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="ItemNewContainer1 pe-3">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="row">
 
-                                                <div class="col-lg-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-3">
-                                                        <div class="image-upload-container">
-                                                            <div class="profile-pic-wrapper">
-                                                                <div class="pic-holder">
-                                                                    <!-- uploaded pic shown here -->
-                                                                    <img id="profilePic" class="pic" src="">
+                                                    <div class="col-lg-12">
+                                                        <div class="row">
+                                                            <div class="col-lg-3">
+                                                                <div class="image-upload-container">
+                                                                    <div class="profile-pic-wrapper">
+                                                                        <div class="pic-holder">
+                                                                            <!-- uploaded pic shown here -->
+                                                                            <img id="profilePic" class="pic"
+                                                                                src="">
 
-                                                                    <Input class="uploadProfileInput" type="file" name="profile_pic"
-                                                                        id="newProfilePhoto" accept="image/*" style="opacity: 0;" />
-                                                                    <label for="newProfilePhoto" class="upload-file-block">
-                                                                        <div class="text-center">
-                                                                            <div class="uploadicon_template">
-                                                                                <iconify-icon icon="bytesize:upload"></iconify-icon>
-                                                                            </div>
-                                                                            <div class="text-uppercase">
-                                                                                Update <br /> Profile Photo
-                                                                            </div>
+                                                                            <Input class="uploadProfileInput" type="file"
+                                                                                name="profile_pic" id="newProfilePhoto"
+                                                                                accept="image/*" style="opacity: 0;" />
+                                                                            <label for="newProfilePhoto"
+                                                                                class="upload-file-block">
+                                                                                <div class="text-center">
+                                                                                    <div class="uploadicon_template">
+                                                                                        <iconify-icon
+                                                                                            icon="bytesize:upload"></iconify-icon>
+                                                                                    </div>
+                                                                                    <div class="text-uppercase">
+                                                                                        Update <br /> Profile Photo
+                                                                                    </div>
+                                                                                </div>
+                                                                            </label>
                                                                         </div>
-                                                                    </label>
-                                                                </div>
 
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-9">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label for="#">Nurse Name</label>
+                                                                            <input type="text" placeholder="Nurse Name"
+                                                                                id="name" class="form-control"
+                                                                                name="name" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label for="#">Date of Birth
+                                                                                (DOB)</label>
+                                                                            <input type="text"
+                                                                                placeholder="Date of Birth (DOB)"
+                                                                                id="name"
+                                                                                class="form-control customdataPicker"
+                                                                                name="dob" value="{{ old('dob') }}"
+                                                                                required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label for="#">Gender</label>
+                                                                            <select class="select2 form-control"
+                                                                                data-placeholder="Select Gender"
+                                                                                name="gender" required>
+                                                                                <option value="" selected disabled>
+                                                                                </option>
+                                                                                <option value="Male"
+                                                                                    {{ old('gender') == 'Male' ? 'selected' : '' }}>
+                                                                                    Male</option>
+                                                                                <option value="Female"
+                                                                                    {{ old('gender') == 'Female' ? 'selected' : '' }}>
+                                                                                    Female</option>
+                                                                                <option value="Other"
+                                                                                    {{ old('gender') == 'Other' ? 'selected' : '' }}>
+                                                                                    Other</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-6">
+                                                                        <div class="form-group">
+                                                                            <label for="#">Marital Status</label>
+                                                                            <select class="js-example-basic-single select2"
+                                                                                data-placeholder='Select Type'
+                                                                                name="marital_status" required>
+                                                                                <option value="" selected disabled>
+
+                                                                                </option>
+                                                                                <option value="Married"
+                                                                                    {{ old('marital_status') == 'Married' ? 'selected' : '' }}>
+                                                                                    Married</option>
+                                                                                <option value="Unmarried"
+                                                                                    {{ old('marital_status') == 'Unmarried' ? 'selected' : '' }}>
+                                                                                    Unmarried</option>
+                                                                                <option value="Single"
+                                                                                    {{ old('marital_status') == 'Single' ? 'selected' : '' }}>
+                                                                                    Single</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        </div>
-                                                        <div class="col-lg-9">
-                                                            <div class="row">
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label for="#">Nurse Name</label>
-                                                                        <input type="text"
-                                                                            placeholder="Nurse Name"
-                                                                            id="name" class="form-control">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label for="#">Date of Birth (DOB)</label>
-                                                                        <input type="text"
-                                                                            placeholder="Date of Birth (DOB)"
-                                                                            id="name" class="form-control customdataPicker">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                                    <div class="form-group">
-                                                                        <label for="#">Gender</label>
-                                                                        <select class="select2 form-control"
-                                                                            data-placeholder="Select Gender">
-                                                                            <option value=""></option>
-                                                                            <option value="Male">Male</option>
-                                                                            <option value="Female">Female</option>
-                                                                            <option value="Other">Other</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Marital Status</label>
-                                                        <select class="js-example-basic-single select2">
-                                                            <option value="" disabled selected>Select Type</option>
-                                                            <option value="Married">Married</option>
-                                                            <option value="Unmarried">Unmarried</option>
-                                                            <option value="Single">Single</option>
-                                                        </select>
                                                     </div>
                                                 </div>
-                                                            </div>
-
-
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="ItemNewContainer1">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">Email</label>
+                                                            <input type="email" id="name" class="form-control"
+                                                                value="{{ old('email') }}" name="email" required
+                                                                autocomplete="off" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                                                                title="Please enter a valid email" required>
                                                         </div>
                                                     </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group position-relative">
+                                                            <label for="#">Password <span>*</span></label>
+                                                            <input type="password" class="form-control password-field"
+                                                                placeholder="Enter Password here.." name="password"
+                                                                required>
+                                                            <span class="toggle-password"
+                                                                style="position:absolute; top:38px; right:15px; cursor:pointer;">
+                                                                <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">Phone No.</label>
+                                                            <input type="text" placeholder="Phone No." id="name"
+                                                                class="form-control" name="phone"
+                                                                value="{{ request('phone') }}" maxlength="13"
+                                                                minlength="8"
+                                                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,13);"
+                                                                pattern="\d{8,13}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">National ID</label>
+                                                            <input type="text" placeholder="National ID"
+                                                                id="name" class="form-control" name="national_id"
+                                                                value = "{{ old('national_id') }}" required>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
 
@@ -136,495 +207,226 @@
 
 
                                         </div>
-
-
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="ItemNewContainer1">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="ItemNewContainer1">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="row">
 
-
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Email</label>
-                                                        <input type="text"
-                                                            placeholder="Phone No."
-                                                            id="name" class="form-control">
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Address 1</label>
+                                                            <input type="text" placeholder="Address 1" id="name"
+                                                                class="form-control" name="address1"
+                                                                value="{{ old('address1') }}" required>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group position-relative">
-                                                        <label for="#">Password <span>*</span></label>
-                                                        <input type="password" class="form-control password-field" placeholder="Enter Password here..">
-                                                        <span class="toggle-password" style="position:absolute; top:38px; right:15px; cursor:pointer;">
-                                                            <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
-                                                        </span>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Address 2 (Optional)</label>
+                                                            <input type="text" placeholder="Address 1" id="name"
+                                                                class="form-control" name="address2"
+                                                                value="{{ old('address2') }}">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Phone No.</label>
-                                                        <input type="text"
-                                                            placeholder="Phone No."
-                                                            id="name" class="form-control">
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label for="#">Town/City</label>
+                                                            <input type="text" placeholder="Town/City" id="name"
+                                                                class="form-control" name="city"
+                                                                value="{{ old('city') }}" required>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">National ID</label>
-                                                        <input type="text"
-                                                            placeholder="National ID"
-                                                            id="name" class="form-control">
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label for="#">Country</label>
+                                                            <input type="text" placeholder="country" id="name"
+                                                                class="form-control" name="country"
+                                                                value="{{ old('country') }}" required>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                            </div>
-
-
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="ItemNewContainer1">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="row">
-
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Address 1</label>
-                                                        <input type="text"
-                                                            placeholder="Address 1"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Address 2 (Optional)</label>
-                                                        <input type="text"
-                                                            placeholder="Address 1"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-2">
-                                                    <div class="form-group">
-                                                        <label for="#">Town/City</label>
-                                                        <input type="text"
-                                                            placeholder="Town/City"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-2">
-                                                    <div class="form-group">
-                                                        <label for="#">Country</label>
-                                                        <input type="text"
-                                                            placeholder="Town/City"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-2">
-                                                    <div class="form-group">
-                                                        <label for="#">Postal Code</label>
-                                                        <input type="text"
-                                                            placeholder="Town/City"
-                                                            id="name" class="form-control">
+                                                    <div class="col-lg-2">
+                                                        <div class="form-group">
+                                                            <label for="#">Postal Code</label>
+                                                            <input type="text" placeholder="Postal Code"
+                                                                id="name" class="form-control" name="postal_code"
+                                                                value="{{ old('postal_code') }}" required>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                         </div>
-
-
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="ItemContainerTop">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="ItemNewContainer1 pe-2">
-                                    <div class="row mb-3">
-                                    <div class="col-lg-12">
-                                        <h6 class="sectionTitle">Professional Details</h6>
-                                    </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
+                        <div class="ItemContainerTop">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="ItemNewContainer1 pe-2">
+                                        <div class="row mb-3">
+                                            <div class="col-lg-12">
+                                                <h6 class="sectionTitle">Professional Details</h6>
+                                            </div>
                                             <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Qualification</label>
-                                                        <input type="text"
-                                                            placeholder="eg. Diploma, B.Sc Nursing, GNM, etc."
-                                                            id="name" class="form-control">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">Qualification</label>
+                                                            <input type="text"
+                                                                placeholder="eg. Diploma, B.Sc Nursing, GNM, etc."
+                                                                id="name" class="form-control" name="qualification"
+                                                                value="{{ old('qualification') }}" required>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Select Doctor</label>
-                                                        <select class="select">
-                                                            <option selected disabled>Select Doctor</option>
-                                                            <option>Dr. John Smith</option>
-                                                            <option>Dr. Emily Johnson</option>
-                                                            <option>Dr. Michael Brown</option>
-                                                            <option>Dr. Sarah Davis</option>
-                                                            <option>Dr. William Martinez</option>
-                                                            <option>Dr. Linda Thompson</option>
-                                                            <option>Dr. James Wilson</option>
-                                                            <option>Dr. Olivia Taylor</option>
-                                                        </select>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Select Doctor</label>
+                                                            <select class="select" data-placeholder='Select Doctor'
+                                                                name="doctor_id" required>
+                                                                <option value="" selected></option>
+                                                                <option value="1">Dr. John Smith</option>
+                                                                <option value="2">Dr. Emily Johnson</option>
+                                                                <option value="3">Dr. Michael Brown</option>
+                                                                <option value="4">Dr. Sarah Davis</option>
+                                                                <option value="5">Dr. William Martinez</option>
+                                                                <option value="6">Dr. Linda Thompson</option>
+                                                                <option value="7">Dr. James Wilson</option>
+                                                                <option value="8">Dr. Olivia Taylor</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Role Type</label>
-                                                        <select class="select">
-                                                            <option selected disabled>Select Doctor</option>
-                                                            <option>Jr. Nurse</option>
-                                                            <option>Sr. Nurse</option>
-                                                            <option>Visiting Nurse</option>
-                                                        </select>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Role Type</label>
+                                                            <select class="select" data-placeholder='Select Role'
+                                                                name="role_id" required>
+                                                                <option value="" selected></option>
+                                                                <option value="1">Jr. Nurse</option>
+                                                                <option value="2">Sr. Nurse</option>
+                                                                <option value="3">Visiting Nurse</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">License Number</label>
+                                                            <input type="text" placeholder="License Number"
+                                                                id="name" class="form-control" name="license_no"
+                                                                value="{{ old('license_no') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Valid From</label>
+                                                            <input type="text" placeholder="Valid From" id="name"
+                                                                class="form-control customdataPicker" name="valid_from"
+                                                                value="{{ old('valid_from') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label for="#">Valid To</label>
+                                                            <input type="text" placeholder="Valid To" id="name"
+                                                                class="form-control customdataPicker" name="valid_to"
+                                                                value="{{ old('valid_to') }}" required>
+                                                        </div>
+                                                    </div>
+
+
                                                 </div>
 
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">License Number</label>
-                                                        <input type="text"
-                                                            placeholder="License Number"
-                                                            id="name" class="form-control">
+
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row">
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group">
+                                                            <label for="#">Areas of Expertise</label>
+                                                            {{-- <input type="text"
+                                                                placeholder="e.g., ICU, Pediatrics, Surgical ward"
+                                                                id="name" class="form-control"> --}}
+                                                            <select name="area_expertise_id[]" class="select"
+                                                                id="" multiple required>
+                                                                @if (count($areaExpertises) > 0)
+                                                                    @foreach ($areaExpertises as $expertise)
+                                                                        <option value="{{ $expertise->id }}"
+                                                                            title="{{ $expertise->description }}"
+                                                                            {{ is_array(old('area_expertise_id')) && in_array($expertise->id, old('area_expertise_id')) ? 'selected' : '' }}>
+                                                                            {{ $expertise->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Valid From</label>
-                                                        <input type="text"
-                                                            placeholder="Valid From"
-                                                            id="name" class="form-control customdataPicker">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">Years of Experience</label>
+                                                            <input type="number" min=1 placeholder="" id="name"
+                                                                class="form-control" name="year_of_experience"
+                                                                value="year_of_experience"
+                                                                value="{{ old('year_of_experience') }}" required>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label for="#">Valid To</label>
-                                                        <input type="text"
-                                                            placeholder="Valid To"
-                                                            id="name" class="form-control customdataPicker">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="#">Languages Spoken</label>
+                                                            <input type="text" placeholder="eg. Hindi,English etc."
+                                                                id="name" class="form-control" name="language"
+                                                                value="{{ old('language') }}" required>
+                                                        </div>
                                                     </div>
+
                                                 </div>
 
-                                                <!-- <div class="col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="#">Bio</label>
-                                                       <textarea name="" id="" placeholder="Enter here.." class="form-control"></textarea>
-                                                    </div>
-                                                </div>  -->
+
                                             </div>
 
-
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
-
-                                                <div class="col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="#">Areas of Expertise</label>
-                                                        <input type="text"
-                                                            placeholder="e.g., ICU, Pediatrics, Surgical ward"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Years of Experience</label>
-                                                        <input type="text"
-                                                            placeholder="eg. 1 year"
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="#">Languages Spoken</label>
-                                                        <input type="text"
-                                                            placeholder="eg. Hindi,English etc."
-                                                            id="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <!-- <div class="col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="#">Bio</label>
-                                                       <textarea name="" id="" placeholder="Enter here.." class="form-control"></textarea>
-                                                    </div>
-                                                </div>  -->
-                                            </div>
-
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- <div class="col-lg-6">
-                                <div class="ItemNewContainer1">
-                                    <div class="row">
-                                    <div class="col-lg-12">
-                                        <h6 class="sectionTitle">Professional Availability</h6>
-                                    </div>
-                                        <div class="col-lg-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                            <div class="WeekDays_row">
-                            <ul class="nav nav-tabs" id="weekTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="monday-tab" data-bs-toggle="tab" data-bs-target="#monday" type="button" role="tab" aria-controls="monday" aria-selected="true">Monday</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tuesday-tab" data-bs-toggle="tab" data-bs-target="#tuesday" type="button" role="tab" aria-controls="tuesday" aria-selected="false">Tuesday</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="wednesday-tab" data-bs-toggle="tab" data-bs-target="#wednesday" type="button" role="tab" aria-controls="wednesday" aria-selected="false">Wednesday</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="thursday-tab" data-bs-toggle="tab" data-bs-target="#thursday" type="button" role="tab" aria-controls="thursday" aria-selected="false">Thursday</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="friday-tab" data-bs-toggle="tab" data-bs-target="#friday" type="button" role="tab" aria-controls="friday" aria-selected="false">Friday</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="saturday-tab" data-bs-toggle="tab" data-bs-target="#saturday" type="button" role="tab" aria-controls="saturday" aria-selected="false">Saturday</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="sunday-tab" data-bs-toggle="tab" data-bs-target="#sunday" type="button" role="tab" aria-controls="sunday" aria-selected="false">Sunday</button>
-                            </li>
-                        </ul>
-                        </div>
-                        <div class="tab-content" id="weekTabContent">
-                            <div class="tab-pane fade show active" id="monday" role="tabpanel" aria-labelledby="monday-tab">
-
-                                <div class="day-row" id="monday">
-
-                                    <div class="time-slots" id="monday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
                                         </div>
                                     </div>
-
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable1">
-                                        <label class="form-check-label" for="NotAvailable1">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('monday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="tuesday" role="tabpanel" aria-labelledby="tuesday-tab">
-
-                                <div class="day-row" id="tuesday">
-
-                                    <div class="time-slots" id="tuesday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable2">
-                                        <label class="form-check-label" for="NotAvailable2">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('tuesday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="wednesday" role="tabpanel" aria-labelledby="wednesday-tab">
-
-                                <div class="day-row" id="wednesday">
-
-                                    <div class="time-slots" id="wednesday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable3">
-                                        <label class="form-check-label" for="NotAvailable3">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('wednesday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="thursday" role="tabpanel" aria-labelledby="thursday-tab">
-
-                                <div class="day-row" id="thursday">
-
-                                    <div class="time-slots" id="thursday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable4">
-                                        <label class="form-check-label" for="NotAvailable4">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('thursday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="friday" role="tabpanel" aria-labelledby="friday-tab">
-
-                                <div class="day-row" id="friday">
-
-                                    <div class="time-slots" id="friday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable5">
-                                        <label class="form-check-label" for="NotAvailable5">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('friday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="saturday" role="tabpanel" aria-labelledby="saturday-tab">
-
-                                <div class="day-row" id="saturday">
-
-                                <div class="time-slots" id="saturday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable6">
-                                        <label class="form-check-label" for="NotAvailable6">Not Available</label>
-                                    </div>
                                 </div>
 
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('saturday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="sunday" role="tabpanel" aria-labelledby="sunday-tab">
-
-                                <div class="day-row" id="sunday">
-
-                                <div class="time-slots" id="sunday-slots">
-                                        <div class="time-slot">
-                                            <input type="text" class="flatpickr-input form-control" value="09:00 AM">
-                                            to
-                                            <input type="text" class="flatpickr-input form-control" value="05:30 PM">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group applyonallcheckbbox">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input apply-all" id="applyAllMonday">
-                                        <label class="form-check-label" for="applyAllMonday">Do you want to apply this on all days</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="NotAvailable7">
-                                        <label class="form-check-label" for="NotAvailable7">Not Available</label>
-                                    </div>
-                                </div>
-                                    <button type="button" class="add-button addMultislot_button" onclick="addSlot('sunday')"><iconify-icon icon="basil:add-outline"></iconify-icon> Add Time</button>
-                                </div>
                             </div>
                         </div>
-                                            </div>
-                                        </div>
+
+                        <div class="FormSubmit_fix_container">
+
+                                <button type="submit" class="btn btn-primary commonUpdateButton">
+                                    <iconify-icon icon="mynaui:save"></iconify-icon> Submit & Save
+                                </button>
 
 
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </div> -->
+                            <a href="{{ route('clinic.nurse.index') }}">
+                                <button type="button" class="btn commonCancleButton">
+                                    Cancel
+                                </button>
+                            </a>
                         </div>
-                    </div>
+                    </form>
 
-                    <div class="FormSubmit_fix_container">
-                <a href="nurse.php">
-                    <button type="button" class="btn btn-primary commonUpdateButton" onclick="showSweetAlert()">
-                    <iconify-icon icon="mynaui:save"></iconify-icon> Submit & Save
-                    </button>
-                </a>
-
-            <a href="nurse.php">
-                <button type="button" class="btn commonCancleButton">
-                    Cancel
-                </button>
-            </a>
-            </div>
-                </form>
+                </div>
 
             </div>
-
         </div>
+
+    </div>
     </div>
 
-</div>
-</div>
 
-
-</div>
-</div>
+    </div>
+    </div>
 @endsection
 
 @push('custom_scripts')
     <!-- template icon upload js -->
-<script>
+    <script>
         document.addEventListener("change", function(event) {
             if (event.target.classList.contains("uploadProfileInput")) {
                 var triggerInput = event.target;
@@ -693,7 +495,7 @@
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             initializeTimePickers();
         });
 
@@ -703,10 +505,10 @@
                 if (!tp._flatpickr) {
                     flatpickr(tp, {
                         enableTime: true,
-                            noCalendar: true,
-                            dateFormat: "H:i",
-                            time_24hr: true,
-                            minuteIncrement: 1,
+                        noCalendar: true,
+                        dateFormat: "H:i",
+                        time_24hr: true,
+                        minuteIncrement: 1,
                         onChange: function(selectedDates, dateStr, instance) {
                             tp.value = dateStr;
                         }
@@ -766,7 +568,8 @@
                 const startTime = timeSlot.querySelector('.flatpickr-input').value || '09:00 AM'; // Fallback to default
                 document.querySelectorAll('.tab-pane').forEach(tab => {
                     if (tab.id !== day) {
-                        const otherSlot = tab.querySelector(`.time-slot:not(.default-slot):has(.flatpickr-input[value="${startTime}"])`);
+                        const otherSlot = tab.querySelector(
+                            `.time-slot:not(.default-slot):has(.flatpickr-input[value="${startTime}"])`);
                         if (otherSlot) otherSlot.remove();
                     }
                 });
@@ -835,21 +638,20 @@
         });
     </script>
     <!-- end -->
-     <!-----------------------------------
-Password Hide and show js start here
-------------------------------------->
+    <!-----------------------------------
+    Password Hide and show js start here
+    ------------------------------------->
     <script>
-    $(document).on('click', '.toggle-password', function () {
-        const input = $(this).siblings('.password-field');
-        const type = input.attr('type') === 'password' ? 'text' : 'password';
-        input.attr('type', type);
+        $(document).on('click', '.toggle-password', function() {
+            const input = $(this).siblings('.password-field');
+            const type = input.attr('type') === 'password' ? 'text' : 'password';
+            input.attr('type', type);
 
-        const icon = type === 'password' ? 'mdi:eye-off-outline' : 'mdi:eye-outline';
-        $(this).html(`<iconify-icon icon="${icon}"></iconify-icon>`);
-    });
-</script>
-<!-----------------------------------
-Password Hide and show js End here
-------------------------------------->
-
+            const icon = type === 'password' ? 'mdi:eye-off-outline' : 'mdi:eye-outline';
+            $(this).html(`<iconify-icon icon="${icon}"></iconify-icon>`);
+        });
+    </script>
+    <!-----------------------------------
+    Password Hide and show js End here
+    ------------------------------------->
 @endpush
