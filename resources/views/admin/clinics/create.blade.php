@@ -124,7 +124,7 @@
                                                                         <div class="form-group">
                                                                             <label for="description">Description / Bio
                                                                                 <span>*</span></label>
-                                                                            <textarea name="extra[description]" id="description" class="form-control" required>{{ old('description') }}</textarea>
+                                                                            <textarea name="extra[description]" id="description" class="form-control" required>{{ old('extra.description') }}</textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -893,17 +893,35 @@
             const newFiles = Array.from(files);
             for (let file of newFiles) {
                 if (!isValidFile(file)) {
-                    alert(`${file.name} is not a valid file type.`);
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} is not a valid file type.`
+                    });
                     continue;
                 }
 
                 if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                    alert(`${file.name} exceeds the 5MB limit.`);
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `${file.name} exceeds the 5MB limit.`
+                    });
                     continue;
                 }
 
                 if (uploadedFilesNew.length >= MAX_FILES) {
-                    alert(`You can upload a maximum of ${MAX_FILES} files.`);
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `You can upload a maximum of ${MAX_FILES} files.`
+                    });
                     break;
                 }
 
@@ -958,7 +976,13 @@
         // Final Submit Preview
         addImageBtnNew.addEventListener("click", () => {
             if (uploadedFilesNew.length === 0) {
-                alert("Please upload at least one file first.");
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Please upload at least one file first.',
+                });
                 return;
             }
 

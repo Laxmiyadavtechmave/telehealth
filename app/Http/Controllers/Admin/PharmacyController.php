@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Pharmacy, PharmacySchedule, Clinic};
+use App\Models\{Pharmacy, PharmacySchedule, Clinic, PharmacyImage};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Hash;
@@ -109,7 +109,7 @@ class PharmacyController extends Controller
                                     </div>';
 
             $data_arr[] = [
-                'id'=>$row->id??'',
+                'id' => $row->id ?? '',
                 'pharmacy_id' => $row->pharmacy_id ?? '',
                 'name' => $row->name ?? '',
                 'phone' => $row->phone ?? '',
@@ -167,7 +167,6 @@ class PharmacyController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -182,6 +181,9 @@ class PharmacyController extends Controller
                 'country' => 'required|string',
                 'postal_code' => 'required|string',
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                // documents validation
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
 
             //Step 2. save clinic
@@ -213,7 +215,7 @@ class PharmacyController extends Controller
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
-            $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
+            $validationErrors = CommonController::validateSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
                 return back()->withErrors($validationErrors)->withInput();
@@ -246,6 +248,16 @@ class PharmacyController extends Controller
                     'end_time' => null,
                     'is_available' => false,
                 ]);
+            }
+
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/pharmacies/documents/');
+                    PharmacyImage::create([
+                        'pharmacy_id' => $pharmacy->id,
+                        'img' => $path,
+                    ]);
+                }
             }
 
             //Step 6. assign role and sync permissions
@@ -293,7 +305,14 @@ class PharmacyController extends Controller
             $extra = !empty($pharmacy->extra) ? json_decode($pharmacy->extra, true) : [];
             $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
             $schedules = $pharmacy->schedules->groupBy('day', 'extra');
-            return view('admin.pharmacy.edit', compact('pharmacy', 'schedules', 'clinics', 'extra'));
+            $documents = $pharmacy->documents->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'name' => basename($doc->img),
+                    'url' => env('IMAGE_ROOT') . $doc->img,
+                ];
+            });
+            return view('admin.pharmacy.edit', compact('pharmacy', 'schedules', 'clinics', 'extra', 'documents'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
         }
@@ -321,6 +340,9 @@ class PharmacyController extends Controller
                 'country' => 'required|string',
                 'postal_code' => 'required|string',
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                // documents validation
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
             //Step 2. save pharmacy
             $pharmacy->name = $request->name ?? '';
@@ -355,7 +377,7 @@ class PharmacyController extends Controller
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
-            $validationErrors = CommonController::validateClinicSchedule($workingHours, $notAvailable);
+            $validationErrors = CommonController::validateSchedule($workingHours, $notAvailable);
 
             if (!empty($validationErrors)) {
                 return redirect()->back()->withErrors($validationErrors)->withInput();
@@ -390,6 +412,22 @@ class PharmacyController extends Controller
                 ]);
             }
 
+            $removedFileIds = json_decode($request->removed_files, true);
+            if (!empty($removedFileIds)) {
+                $removedFileIds = implode(',', $removedFileIds);
+                PharmacyImage::whereRaw('FIND_IN_SET(id, ?)', [$removedFileIds])->delete();
+            }
+
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/pharmacies/documents/');
+                    PharmacyImage::create([
+                        'pharmacy_id' => $pharmacy->id,
+                        'img' => $path,
+                    ]);
+                }
+            }
+
             //Step 6. sync permissions
             $role = Role::where('name', $pharmacy->pharmacy_id)->where('guard_name', 'pharmacy')->first();
 
@@ -415,13 +453,13 @@ class PharmacyController extends Controller
         //
     }
 
-    public function downloadDocuments($id)
+    public function downloadDocuments(Request $request, $id)
     {
         $id = decrypt($id);
         $ids = json_decode($request->document_ids, true);
 
         if (empty($ids)) {
-            return redirect()->back()->with('error', 'No documents selected.');
+            return redirect()->back()->with('error', 'Documents not selected.');
         }
 
         $documents = PharmacyImage::whereIn('id', $ids)->get();
