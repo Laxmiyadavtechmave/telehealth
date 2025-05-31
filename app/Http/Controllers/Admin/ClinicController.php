@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Clinic, ClinicSchedule, ClinicImage};
+use App\Models\{Clinic, Schedule, Document};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Carbon\Carbon;
@@ -110,25 +110,6 @@ class ClinicController extends Controller
                                         </button>
                                     </div>';
 
-            // $image = asset('common/img/logoicon.png');
-            // if ($row->img && Storage::disk('public')->exists($row->img)) {
-            //     $image = env('IMAGE_ROOT') . $row->img;
-            // }
-
-            // $clinic =
-            //     '<div class="productimgname">
-            //                             <a href="' .
-            //     ($image ?? '') .
-            //     '" data-fancybox="gallery" class="product-img stock-img">
-            //                                 <img src="' .
-            //     ($image ?? '') .
-            //     '" alt="product">
-            //                             </a>
-            //                             <a href="'.(route('superadmin.clinic.show',encrypt($row->id??''))).'">' .
-            //     ($row->name ?? '') .
-            //     '</a>
-            //                         </div>';
-
             $data_arr[] = [
                 'id' => $row->id ?? '',
                 'clinic_id' => $row->clinic_id ?? '',
@@ -211,22 +192,22 @@ class ClinicController extends Controller
             $customId = $this->generateCustomUniqueId('clinics', 'clinic_id', 'CL-', 6);
             $clinic = new Clinic();
             $clinic->clinic_id = $customId;
-            $clinic->name = $request->clinic_name ?? '';
-            $clinic->email = $request->email ?? '';
-            $clinic->license_no = $request->license_no ?? '';
-            $clinic->valid_from = $request->valid_from ?? '';
-            $clinic->valid_to = $request->valid_to ?? '';
+            $clinic->name = $request->clinic_name ?? null;
+            $clinic->email = $request->email ?? null;
+            $clinic->license_no = $request->license_no ?? null;
+            $clinic->valid_from = $request->valid_from ?? null;
+            $clinic->valid_to = $request->valid_to ?? null;
             $clinic->password = Hash::make($request->password ?? '');
-            $clinic->phone = $request->phone ?? '';
-            $clinic->web_url = $request->web_url ?? '';
-            $clinic->address1 = $request->address1 ?? '';
-            $clinic->address2 = $request->address2 ?? '';
-            $clinic->city = $request->city ?? '';
-            $clinic->country = $request->country ?? '';
-            $clinic->postal_code = $request->postal_code ?? '';
-            $clinic->map_link = $request->map_link ?? '';
+            $clinic->phone = $request->phone ?? null;
+            $clinic->web_url = $request->web_url ?? null;
+            $clinic->address1 = $request->address1 ?? null;
+            $clinic->address2 = $request->address2 ?? null;
+            $clinic->city = $request->city ?? null;
+            $clinic->country = $request->country ?? null;
+            $clinic->postal_code = $request->postal_code ?? null;
+            $clinic->map_link = $request->map_link ?? null;
             if ($request->hasFile('profile_pic')) {
-                $clinic->img = ImageController::upload($request->file('profile_pic'), 'clinics');
+                $clinic->img = ImageController::upload($request->file('profile_pic'), '/clinics');
             }
 
             $clinic->extra = $request->filled('extra') ? json_encode($request->extra) : null;
@@ -249,8 +230,7 @@ class ClinicController extends Controller
                 }
                 if (!empty($info['slots'])) {
                     foreach ($info['slots'] ?? [] as $slot) {
-                        ClinicSchedule::create([
-                            'clinic_id' => $clinic->id,
+                        $clinic->schedules()->create([
                             'day' => $day,
                             'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
                             'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
@@ -262,8 +242,7 @@ class ClinicController extends Controller
 
             // Step 5: Save not available days
             foreach ($notAvailable as $day => $val) {
-                ClinicSchedule::create([
-                    'clinic_id' => $clinic->id,
+                $clinic->schedules()->create([
                     'day' => $day,
                     'start_time' => null,
                     'end_time' => null,
@@ -273,9 +252,8 @@ class ClinicController extends Controller
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $image) {
-                    $path = ImageController::upload($image, '/clinics/documents/');
-                    ClinicImage::create([
-                        'clinic_id' => $clinic->id,
+                    $path = ImageController::upload($image, '/clinics/documents');
+                    $clinic->documents()->create([
                         'img' => $path,
                     ]);
                 }
@@ -366,35 +344,35 @@ class ClinicController extends Controller
                 'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
             ]);
             //Step 2. save clinic
-            $clinic->name = $request->clinic_name ?? '';
-            $clinic->email = $request->email ?? '';
-            $clinic->license_no = $request->license_no ?? '';
-            $clinic->valid_from = $request->valid_from ?? '';
-            $clinic->valid_to = $request->valid_to ?? '';
+            $clinic->name = $request->clinic_name ?? null;
+            $clinic->email = $request->email ?? null;
+            $clinic->license_no = $request->license_no ?? null;
+            $clinic->valid_from = $request->valid_from ?? null;
+            $clinic->valid_to = $request->valid_to ?? null;
             if ($request->filled('password')) {
                 $clinic->password = Hash::make($request->password ?? '');
             }
-            $clinic->phone = $request->phone ?? '';
-            $clinic->web_url = $request->web_url ?? '';
-            $clinic->address1 = $request->address1 ?? '';
-            $clinic->address2 = $request->address2 ?? '';
-            $clinic->city = $request->city ?? '';
-            $clinic->country = $request->country ?? '';
-            $clinic->postal_code = $request->postal_code ?? '';
-            $clinic->map_link = $request->map_link ?? '';
-
+            $clinic->phone = $request->phone ?? null;
+            $clinic->web_url = $request->web_url ?? null;
+            $clinic->address1 = $request->address1 ?? null;
+            $clinic->address2 = $request->address2 ?? null;
+            $clinic->city = $request->city ?? null;
+            $clinic->country = $request->country ?? null;
+            $clinic->postal_code = $request->postal_code ?? null;
+            $clinic->map_link = $request->map_link ?? null;
             if ($request->hasFile('profile_pic')) {
                 if ($clinic->img && Storage::disk('public')->exists($clinic->img)) {
                     Storage::disk('public')->delete($clinic->img);
                 }
-                $clinic->img = ImageController::upload($request->file('profile_pic'), '/clinics/');
+                $clinic->img = ImageController::upload($request->file('profile_pic'), '/clinics');
             }
 
             $clinic->extra = $request->filled('extra') ? json_encode($request->extra) : null;
             $clinic->save();
 
             // Step 3: Validate and store schedule
-            ClinicSchedule::where('clinic_id', $clinic->id)->delete();
+            $clinic->schedules()->delete();
+
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
@@ -411,8 +389,7 @@ class ClinicController extends Controller
                 }
                 if (!empty($info['slots'])) {
                     foreach ($info['slots'] ?? [] as $slot) {
-                        ClinicSchedule::create([
-                            'clinic_id' => $clinic->id,
+                        $clinic->schedules()->create([
                             'day' => $day,
                             'start_time' => Carbon::createFromFormat('g:i A', $slot['from'])->format('H:i:s'),
                             'end_time' => Carbon::createFromFormat('g:i A', $slot['to'])->format('H:i:s'),
@@ -424,8 +401,7 @@ class ClinicController extends Controller
 
             // Step 5: Save not available days
             foreach ($notAvailable as $day => $val) {
-                ClinicSchedule::create([
-                    'clinic_id' => $clinic->id,
+                $clinic->schedules()->create([
                     'day' => $day,
                     'start_time' => null,
                     'end_time' => null,
@@ -435,15 +411,13 @@ class ClinicController extends Controller
 
             $removedFileIds = json_decode($request->removed_files, true);
             if (!empty($removedFileIds)) {
-                $removedFileIds = implode(',', $removedFileIds);
-                ClinicImage::whereRaw('FIND_IN_SET(id, ?)', [$removedFileIds])->delete();
+                $clinic->documents()->whereIn('id', $removedFileIds)->delete();
             }
 
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $image) {
-                    $path = ImageController::upload($image, '/clinics/documents/');
-                    ClinicImage::create([
-                        'clinic_id' => $clinic->id,
+                    $path = ImageController::upload($image, '/clinics/documents');
+                    $clinic->documents()->create([
                         'img' => $path,
                     ]);
                 }
@@ -462,12 +436,11 @@ class ClinicController extends Controller
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic updated successfully!');
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
             return redirect()->route('superadmin.clinic.edit', encrypt($id))->with('error', $e->getMessage())->withInput();
         }
     }
 
-    public function downloadDocuments(Request $request,$id)
+    public function downloadDocuments(Request $request, $id)
     {
         $id = decrypt($id);
         $ids = json_decode($request->document_ids, true);
@@ -476,7 +449,7 @@ class ClinicController extends Controller
             return redirect()->back()->with('error', 'Documents not selected.');
         }
 
-        $documents = ClinicImage::whereIn('id', $ids)->get();
+        $documents = Document::whereIn('id', $ids)->get();
         $zipFileName = 'clinic_documents_' . now()->format('YmdHis') . '.zip';
         $zipPath = storage_path("app/public/zips/{$zipFileName}");
 

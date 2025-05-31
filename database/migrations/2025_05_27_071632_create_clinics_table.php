@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('clinic_id');
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('img')->nullable();
             $table->string('password');
             $table->string('license_no');
@@ -34,21 +34,19 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('clinic_images', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clinic_id');
-            $table->foreign('clinic_id')->references('id')->on('clinics')->onDelete('cascade');
+            $table->morphs('imageable');
             $table->string('img');
             $table->timestamps();
         });
 
-        Schema::create('clinic_schedules', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clinic_id');
-            $table->foreign('clinic_id')->references('id')->on('clinics')->onDelete('cascade');
+            $table->morphs('schedulable');
             $table->enum('day', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->boolean('is_available')->default(true);
             $table->timestamps();
             $table->softDeletes();
@@ -60,8 +58,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('clinic_images');
-        Schema::dropIfExists('clinic_schedules');
+        Schema::dropIfExists('documents');
+        Schema::dropIfExists('schedules');
         Schema::dropIfExists('clinics');
     }
 };
