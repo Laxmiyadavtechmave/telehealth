@@ -7,13 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\{Clinic, Schedule, Document};
 use App\Http\Controllers\{CommonController, ImageController};
 use DB;
-use Hash;
-use App\Traits\GeneratesCustomId;
 use Carbon\Carbon;
-use Spatie\Permission\Models\{Role, Permission};
+use Illuminate\Http\Request;
+use App\Traits\GeneratesCustomId;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
+use Spatie\Permission\Models\{Role, Permission};
+use App\Models\{Clinic, ClinicSchedule,ClinicImage};
+use Illuminate\Foundation\Exceptions\Renderer\Exception;
+use App\Http\Controllers\{CommonController, ImageController};
 
 class ClinicController extends Controller
 {
@@ -355,7 +360,6 @@ class ClinicController extends Controller
             $clinic->country = $request->country ?? null;
             $clinic->postal_code = $request->postal_code ?? null;
             $clinic->map_link = $request->map_link ?? null;
-
             if ($request->hasFile('profile_pic')) {
                 if ($clinic->img && Storage::disk('public')->exists($clinic->img)) {
                     Storage::disk('public')->delete($clinic->img);
