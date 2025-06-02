@@ -68,63 +68,63 @@
     </form>
 </div>
 <!-- jQuery -->
-<script src="{{asset('admin/js/jquery-3.7.1.min.js')}}"></script>
+<script src="{{asset('common/js/jquery-3.7.1.min.js')}}"></script>
 <!-- iconify icon -->
-<script src="{{asset('admin/js/iconify.js')}}"></script>
+<script src="{{asset('common/js/iconify.js')}}"></script>
 <!-- Feather Icon JS -->
-<script src="{{asset('admin/js/feather.min.js')}}"></script>
+<script src="{{asset('common/js/feather.min.js')}}"></script>
 <!-- Slimscroll JS -->
-<script src="{{asset('admin/js/jquery.slimscroll.min.js')}}"></script>
+<script src="{{asset('common/js/jquery.slimscroll.min.js')}}"></script>
 <!-- Bootstrap Core JS -->
-<script src="{{asset('admin/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('common/js/bootstrap.bundle.min.js')}}"></script>
 <!-- Chart JS -->
-<script src="{{asset('admin/plugins/apexchart/apexcharts.min.js')}}"></script>
-<script src="{{asset('admin/plugins/apexchart/chart-data.js')}}"></script>
+<script src="{{asset('common/plugins/apexchart/apexcharts.min.js')}}"></script>
+<script src="{{asset('common/plugins/apexchart/chart-data.js')}}"></script>
 <!-- Sweetalert 2 -->
-<script src="{{asset('admin/plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
-<script src="{{asset('admin/plugins/sweetalert/sweetalerts.min.js')}}"></script>
+<script src="{{asset('common/plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
+<script src="{{asset('common/plugins/sweetalert/sweetalerts.min.js')}}"></script>
 <!-- dropify -->
-<script type="text/javascript" src="{{asset('admin/js/dropify.min.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{asset('admin/css/dropify.min.css')}}">
+<script type="text/javascript" src="{{asset('common/js/dropify.min.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{asset('common/css/dropify.min.css')}}">
 <!-- Datatable JS -->
-<script src="{{asset('admin/js/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('admin/js/dataTables.bootstrap5.min.js')}}"></script>
-<script src="{{asset('admin/js/contact-data.js')}}"></script>
+<script src="{{asset('common/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('common/js/dataTables.bootstrap5.min.js')}}"></script>
+<script src="{{asset('common/js/contact-data.js')}}"></script>
 <!-- Datetimepicker JS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="{{asset('admin/js/daterangepicker-data.js')}}"></script>
+<script src="{{asset('common/js/daterangepicker-data.js')}}"></script>
 <!-- Data Table JS -->
-<script src="{{asset('admin/vendors/datatables.net/js/dataTables.min.js')}}"></script>
-<script src="{{asset('admin/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js')}}"></script>
-<script src="{{asset('admin/vendors/datatables.net-select/js/dataTables.select.min.js')}}"></script>
+<script src="{{asset('common/vendors/datatables.net/js/dataTables.min.js')}}"></script>
+<script src="{{asset('common/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js')}}"></script>
+<script src="{{asset('common/vendors/datatables.net-select/js/dataTables.select.min.js')}}"></script>
 
 <!-- Mobile Input -->
-<link rel="stylesheet" href="{{asset('admin/plugins/intltelinput/css/intlTelInput.css')}}">
-<link rel="stylesheet" href="{{asset('admin/plugins/intltelinput/css/demo.css')}}">
-<script src="{{asset('admin/plugins/intltelinput/js/intlTelInput.js')}}"></script>
+<link rel="stylesheet" href="{{asset('common/plugins/intltelinput/css/intlTelInput.css')}}">
+<link rel="stylesheet" href="{{asset('common/plugins/intltelinput/css/demo.css')}}">
+<script src="{{asset('common/plugins/intltelinput/js/intlTelInput.js')}}"></script>
 <!-- Custom Datatable js start -->
-<link rel="stylesheet" type="text/css" href="{{asset('admin/customplugins/buttons.dataTables.min.css')}}">
-<script type="text/javascript" src="{{asset('admin/customplugins/dataTables.buttons.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('admin/customplugins/jszip.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('admin/customplugins/pdfmake.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('admin/customplugins/vfs_fonts.js')}}"></script>
-<script type="text/javascript" src="{{asset('admin/customplugins/buttons.html5.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('admin/customplugins/buttons.colVis.min.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{asset('common/customplugins/buttons.dataTables.min.css')}}">
+<script type="text/javascript" src="{{asset('common/customplugins/dataTables.buttons.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('common/customplugins/jszip.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('common/customplugins/pdfmake.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('common/customplugins/vfs_fonts.js')}}"></script>
+<script type="text/javascript" src="{{asset('common/customplugins/buttons.html5.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('common/customplugins/buttons.colVis.min.js')}}"></script>
 <!-- Select2 JS -->
-<script src="{{asset('admin/plugins/select2/js/select2.min.js')}}"></script>
+<script src="{{asset('common/plugins/select2/js/select2.min.js')}}"></script>
 <!-- Daterangepikcer JS -->
-<script src="{{asset('admin/js/moment.js')}}"></script>
+<script src="{{asset('common/js/moment.js')}}"></script>
 <!-- Custom JS -->
-<script src="{{asset('admin/js/script.js')}}" type=""></script>
+<script src="{{asset('common/js/script.js')}}" type=""></script>
 <!-- Custom JS -->
-<script src="{{asset('admin/js/theme-script.js')}}"></script>
+<script src="{{asset('common/js/theme-script.js')}}"></script>
 <!-- Datetimepicker JS -->
-<script src="{{asset('admin/js/bootstrap-datetimepicker.min.js')}}" type=""></script>
+<script src="{{asset('common/js/bootstrap-datetimepicker.min.js')}}" type=""></script>
 <!-- Daterangepikcer JS -->
-<script src="{{asset('admin/plugins/daterangepicker/daterangepicker.js')}}" type=""></script>
+<script src="{{asset('common/plugins/daterangepicker/daterangepicker.js')}}" type=""></script>
 
-<script src="{{asset('admin/js/custom-select2.js')}}"></script>
+<script src="{{asset('common/js/custom-select2.js')}}"></script>
 
 
 

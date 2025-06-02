@@ -108,7 +108,7 @@
 <!-- Datetimepicker JS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="{{asset('admin/js/daterangepicker-data.js')}}"></script>
+<script src="{{asset('common/js/daterangepicker-data.js')}}"></script>
 <!-- Data Table JS -->
 <script src="{{ asset('clinic/vendors/datatables.net/js/dataTables.min.js') }}"></script>
 <script src="{{ asset('clinic/vendors/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>

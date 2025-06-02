@@ -1,17 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
-use App\Models\{Clinic, Schedule, Document};
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\{Schedule, Clinic, Document};
+use App\Http\Controllers\{CommonController, ImageController};
 use DB;
-use Carbon\Carbon;
+use Hash;
 use App\Traits\GeneratesCustomId;
-use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
-use Spatie\Permission\Models\{Role, Permission};
-use Illuminate\Foundation\Exceptions\Renderer\Exception;
 
 class ClinicController extends Controller
 {

@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Clinic extends Model
+class Clinic extends Authenticatable
 {
-    use SoftDeletes, HasRoles;
+    use SoftDeletes, HasRoles, Notifiable;
 
     protected $guard_name = 'clinic'; // important
 
@@ -21,6 +23,7 @@ class Clinic extends Model
         'valid_to' => 'date',
     ];
 
+    protected $hidden = ['password', 'remember_token'];
     public function scopeSearch($query, $value)
     {
         return $query->where(function ($q) use ($value) {
