@@ -581,7 +581,7 @@ body {
 
 
 /************************************************************************
- custom datatable style start 
+ custom datatable style start
  ************************************************************* */
 .dt-paging.paging_simple_numbers {
 	text-align: right;
@@ -1119,7 +1119,7 @@ table.table.dataTable>thead>tr th {
 }
 
 /************************************************************************
- custom datatable style end 
+ custom datatable style end
  ************************************************************* */
 
 .tbUserWrap {
@@ -9217,19 +9217,19 @@ padding-top: 0px;
 	justify-content: space-between;
 	align-items: center;
   }
-  
+
   .doctors_schedule-title {
 	font-size: 16px;
 	font-weight: 600;
 	margin: 0;
   }
-  
+
   .doctors_schedule-options {
 	font-size: 20px;
 	cursor: pointer;
 	color: #777;
   }
-  
+
   .doctors_schedule-summary {
 	display: flex;
 	justify-content: space-between;
@@ -9242,26 +9242,26 @@ padding-top: 0px;
 	border:
   1px solid #ececec;
   }
-  
+
   .doctors_schedule-summary-item {
 	text-align: center;
   }
-  
+
   .doctors_schedule-summary-item .label {
 	font-weight: 600;
 	font-size: 14px;
   }
-  
+
   .doctors_schedule-summary-item .count {
 	font-size: 18px;
 	font-weight: 500;
   }
-  
+
   .doctors_schedule-summary-item .total-text {
 	font-size: 12px;
 	color: #888;
   }
-  
+
   .doctors_schedule-list-title {
 	margin-top: 12px;
     font-weight: 600;
@@ -9276,7 +9276,7 @@ padding-top: 0px;
   .doctors_schedule-list {
 	margin-top: 15px;
   }
-  
+
   .doctors_schedule-doctor {
     display: flex;
     align-items: center;
@@ -9285,41 +9285,41 @@ padding-top: 0px;
     margin-bottom: 12px;
     border-bottom: 1px solid #ececec;
   }
-  
+
   .doctors_schedule-info {
 	display: flex;
 	align-items: center;
 	gap: 12px;
   }
-  
+
   .doctors_schedule-info img {
 	width: 30px;
     height: 30px;
     border-radius: 50%;
   }
-  
+
   .doctors_schedule-info .name {
 	font-weight: 600;
 	font-size: 14px;
   }
-  
+
   .doctors_schedule-info .specialty {
 	font-size: 12px;
 	color: #6c757d;
   }
-  
+
   .doctors_schedule .status {
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
     font-weight: 400;
   }
-  
+
   .doctors_schedule .status.available {
 	background-color: #d1f7d673;
 	color: #1d7f42;
   }
-  
+
   .doctors_schedule .status.unavailable {
 	background-color: #fddede66;
 	color: #d93025;
@@ -9331,7 +9331,7 @@ padding-top: 0px;
  .doctors_schedule-filter .select2-container .select2-selection--single {
     height: 28px;
     line-height: 28px;
-}  
+}
 
 .doctors_schedule-filter .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #111827 !important;
@@ -9745,7 +9745,7 @@ ul.dcoumentsList {
     color: #000;
 }
 
-/* * windows style modal  */ 
+/* * windows style modal  */
   .WindowsStyleModal .modal-header {
     padding: 5px 10px;
     background: #f6f5f5;
@@ -10238,7 +10238,7 @@ span.pharmacyName {
 .PatientRecordView  h6.VitalInfoTitle {
     margin-bottom: 10px;
     margin-top: 0;
-	
+
 }
 .PatientRecordView ul.VitalsInfoList {
     max-height: unset;
@@ -11238,7 +11238,7 @@ th.DaysName {
 
 .file-preview {
 	position: relative;
-	
+
 	margin-right: 10px;
 	width: 100px;
 	height: 100px;
@@ -11618,3 +11618,13 @@ display: none;
 /*******************************
 FEEDBACK CHNAGES CSS END HERE
 **********************************/
+
+/* Phone no. country code css */
+.phone-error .iti__selected-flag {
+    height: 57% !important;
+}
+#phone,
+#phone2,
+#phone3 {
+    padding-left: 50px !important;
+}

@@ -49,4 +49,18 @@ class Clinic extends Authenticatable
     {
         return $this->morphMany(Document::class, 'imageable');
     }
+
+    public function getWholeAddressAttribute()
+    {
+        $parts = array_filter([
+            $this->address1,
+            $this->address2,
+            $this->city,
+            $this->postal_code,
+            $this->country
+        ]);
+
+        return implode(', ', $parts);
+    }
+
 }

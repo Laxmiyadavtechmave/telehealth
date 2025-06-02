@@ -208,7 +208,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Description / Bio</label>
                                                                 <!-- <input type="email" class="form-control"
-                                                                                                                                                    value="johndoe@example.com" readonly disabled> -->
+                                                                                                                                                        value="johndoe@example.com" readonly disabled> -->
                                                                 <textarea class="form-control" name="" id="" readonly disabled row="4">{{ $extra['description'] ?? '' }}</textarea>
                                                             </div>
                                                         </div>

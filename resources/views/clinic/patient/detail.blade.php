@@ -17,32 +17,7 @@
                 </h2>
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
-                <!-- <ul class="tophead_action">
-                    <li>
-                        <div class="Currentvendorstatus">
-                            <iconify-icon icon="f7:status"></iconify-icon> Current Status : &nbsp; <div class="badge badge-soft-success">
-                                Active</div>
 
-                        </div>
-                    </li>
-                    <li>
-                        <div class="enquiryDate">
-                            <iconify-icon icon="ion:calendar-outline"></iconify-icon> Added On : <div
-                                class="Onboarddate">
-                                14 Dec 2024 12:24pm</div>
-
-                        </div>
-                    </li>
-
-
-                </ul>
-                    <div class="ActionWrapper">
-                       <div class="patientAction">
-                        <a href="#"><iconify-icon icon="mi:call"></iconify-icon></a>
-                        <a href="#"><iconify-icon icon="lucide:video"></iconify-icon></a>
-                        <a href="#" data-bs-toggle="offcanvas" data-bs-target="#PatientChat" aria-controls="offcanvasRight"><iconify-icon icon="proicons:chat"></iconify-icon></a>
-                       </div>
-                  </div> -->
                     <div class="head-icons ms-2 headicon_innerpage">
                         <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
                             <i class="ti ti-chevrons-up"></i>
@@ -53,35 +28,29 @@
             <div class="card">
                 <!-- Profile Section -->
                 <div class="profile-section CommonCardPT">
-                    <img src="assets/img/newimages/userdummy.png" alt="Profile">
+                    <img src="{{ $patient && $patient->img ? env('IMAGE_ROOT') . $patient->img : asset('clinic/img/newimages/userdummy.png') }}" alt="Profile">
                     <div class="profile-details">
-                        <h3 class="PatientName">Stephan Bastian <a href="#" class="insuranceInfoCard"><iconify-icon icon="proicons:info"></iconify-icon></a></h3>
+                        <h3 class="PatientName">{{ $patient->name ?? '' }} <a href="#" class="insuranceInfoCard"><iconify-icon icon="proicons:info"></iconify-icon></a></h3>
                         <!-- <span>08/04/1959 (64y) Male • Patient ID : #PAT008</span> -->
                         <div class="InfoDt">
-                            08/04/1959 (64y) Male • Patient ID : #PAT008
+                            {{ \Carbon\Carbon::parse($patient->dob)->format('d M,Y') ?? '' }} ({{ \Carbon\Carbon::parse($patient->dob)->age }}y ) {{ $patient->gender ?? '' }} • Patient ID : #{{ $patient->patient_id ?? '' }}
                         </div>
                         <div class="InfoDt">
-                            <iconify-icon icon="mingcute:phone-line"></iconify-icon> (701) 293-4345
+                            <iconify-icon icon="mingcute:phone-line"></iconify-icon> {{ $patient->phone ?? '' }}
                         </div>
                         <div class="InfoDt">
-                            <iconify-icon icon="carbon:email"></iconify-icon> Stephan@gmail.com
+                            <iconify-icon icon="carbon:email"></iconify-icon> {{ $patient->email ?? '' }}
                         </div>
                         <div class="InfoDt">
-                           SSN No. <strong>SS001246338</strong>
+                           SSN No. <strong>{{ $patient->ssn ?? '' }}</strong>
                         </div>
-                        <!-- <div class="InfoDt">
-        <iconify-icon icon="ion:location-outline"></iconify-icon>
-        </div> -->
-                        <!-- <div class="tags">
-          <span class="tag">Clinical Enrolled Programs 6</span>
-          <span class="tag gray">Patient Notes 6</span>
-        </div> -->
+
                     </div>
                     <div class="insurance InsuranceCardShow" style="display: none;">
-                        <img src="assets/img/newimages/security.png" alt="Insurance Icon" class="InsuranceIcon">
-                        <strong>SafeLife BlueShield</strong>
-                        <small>Card No - C254125454</small>
-                        <small>Expiry - 2028/06/27</small>
+                        <img src="{{ asset('clinic/img/newimages/security.png') }}" alt="Insurance Icon" class="InsuranceIcon">
+                        <strong>{{ $extra['insurance_provider'] ?? '' }}</strong>
+                        <small>Card No - {{ $extra['card_number'] ?? '' }}</small>
+                        <small>Expiry - {{ $extra['expiry'] ?? '' }}</small>
                     </div>
                 </div>
 
@@ -99,13 +68,13 @@
       </div> -->
                     <h6 class="ContactInfo">Other Details</h6>
                     <div class="InfoDt">
-                        <iconify-icon icon="ion:location-outline"></iconify-icon> 900 Oak Ridge CIR, Brighton, MI 48116
+                        <iconify-icon icon="ion:location-outline"></iconify-icon> {{ $patient->whole_address ?? '' }}
                     </div>
                     <div class="InfoDt">
-                        <iconify-icon icon="carbon:chart-relationship"></iconify-icon> Single
+                        <iconify-icon icon="carbon:chart-relationship"></iconify-icon> {{ $patient->marital_status ?? '' }}
                     </div>
                     <div class="InfoDt">
-                        <iconify-icon icon="hugeicons:id"></iconify-icon> #NA2365KLO
+                        <iconify-icon icon="hugeicons:id"></iconify-icon> #{{ $patient->national_id ?? '' }}
                     </div>
                     <div class="InfoDt">
                     <iconify-icon icon="hugeicons:doctor-01"></iconify-icon> <span class="doctorNameClinic"><a href="#">Dr. James William</a>, Fortis Hospital</span>
@@ -115,13 +84,13 @@
                     <h6 class="ContactInfo">Emergency Contact</h6>
 
                     <div class="InfoDt">
-                        <iconify-icon icon="uil:user"></iconify-icon> David William , Brother
+                        <iconify-icon icon="uil:user"></iconify-icon> {{ $extra['emergency_name'] ?? '' }} , {{ $extra['emergency_relation'] ?? '' }}
                     </div>
                     <div class="InfoDt">
-                        <iconify-icon icon="mingcute:phone-line"></iconify-icon> (701) 293-4345
+                        <iconify-icon icon="mingcute:phone-line"></iconify-icon> {{ $extra['emergency_phone'] ?? '' }}
                     </div>
                     <div class="InfoDt">
-                        <iconify-icon icon="carbon:email"></iconify-icon> Stephan@gmail.com
+                        <iconify-icon icon="carbon:email"></iconify-icon> {{ $extra['emergency_email'] ?? '' }}
                     </div>
                 </div>
 
@@ -130,14 +99,14 @@
                     <!-- <img src="assets/img/newimages/security.png" alt="Insurance Icon" class="InsuranceIcon"> -->
                     <div class="VideoWrapper">
                         <div class="Currentvendorstatus">
-                                <iconify-icon icon="f7:status"></iconify-icon> Current Status : &nbsp; <div class="badge badge-soft-success">
-                                    Active</div>
+                                <iconify-icon icon="f7:status"></iconify-icon> Current Status : &nbsp; <div class="badge {{ $patient->satus == 'active' ? 'badge-soft-success' : 'badge-soft-warning' }}">
+                                    {{ ucfirst($patient->status) }}</div>
 
                             </div>
                             <div class="enquiryDate">
                                 <iconify-icon icon="ion:calendar-outline"></iconify-icon> Added On : <div
                                     class="Onboarddate">
-                                    14 Dec 2024 12:24pm</div>
+                                    {{ \Carbon\Carbon::parse($patient->created_at)->format('d M Y h:ia') ?? '' }}</div>
 
                             </div>
                     </div>
@@ -542,13 +511,13 @@
                 <div class="vitalsMainWrapper mt-2">
                     <div class="vitalsWrapper">
                         <div class="VitalHeader">
-                            <h5 class="VitalTitle">Files & Documents <span>Last Update : 22/04/2025 02:23 PM</span></h5>
+                            <h5 class="VitalTitle">Files & Documents <span>{{ $patient->documents->first()?->created_at ? 'Last Update : ' . $patient->documents->first()->created_at->format('d M Y h:ia') : '' }}</span></h5>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#DocumentUpload" class="UploadBtn">
                                 <iconify-icon icon="material-symbols:upload-sharp"></iconify-icon> Upload
                             </a>
                         </div>
 
-                        <ul class="dcoumentsList">
+                        {{-- <ul class="dcoumentsList">
                             <li>
                                 <div class="IconFile">
                                     <iconify-icon icon="pepicons-print:file"></iconify-icon>
@@ -611,8 +580,27 @@
                                     </a>
                                 </div>
                             </li>
-                        </ul>
-
+                        </ul> --}}
+                        @if (count($documents) > 0)
+                                <ul class="dcoumentsList">
+                                    @foreach ($documents as $document)
+                                        <li>
+                                            <div class="IconFile">
+                                                <iconify-icon icon="pepicons-print:file"></iconify-icon>
+                                                <h6>{{ $document['title'] }}</h6>
+                                            </div>
+                                            <div class="actionDoc">
+                                                <a href="{{ $document['url'] }}" target="_blank">
+                                                    <iconify-icon icon="lets-icons:view-light"></iconify-icon>
+                                                </a>
+                                                <a href="{{ $document['url'] }}" download>
+                                                    <iconify-icon icon="material-symbols-light:download"></iconify-icon>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                     </div>
                 </div>
             </div>
@@ -2726,48 +2714,57 @@
 ---------------------------------------------->
 
 <div class="WindowsStyleModal">
-    <form action="#" id="supportTicketForm">
-        <div class="modal fade" id="DocumentUpload" tabindex="-1" aria-labelledby="HelpPopupLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="HelpPopupLabel">
-                            <div class="iconModal">
-                                <iconify-icon icon="material-symbols:upload-sharp"></iconify-icon>
-                            </div>
-                            Upload File & Document
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label class="form-label">Title</label>
-                                    <input type="text" class="form-control"
-                                        placeholder="Enter the subject of your issue" required>
+        <form action="{{ route('clinic.patient.upload.document') }}" method="POST" id="supportTicketForm" enctype="multipart/form-data">
+            @csrf
+            <div class="modal fade" id="DocumentUpload" tabindex="-1" aria-labelledby="HelpPopupLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="HelpPopupLabel">
+                                <div class="iconModal">
+                                    <iconify-icon icon="material-symbols:upload-sharp"></iconify-icon>
                                 </div>
-                            </div>
+                                Upload File & Document
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
 
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="">Upload File & Document</label>
-                                    <input name="file1" type="file" class="dropify" data-height="100" />
+                        <div class="modal-body">
+                        <input type="hidden" name="patient_id" value="{{ $patient->id }}">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control"
+                                            placeholder="Enter the name of the document" name="title" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="">Upload File & Document</label>
+                                        {{-- <input name="file1" type="file" class="dropify"
+                                            required /> --}}
+
+                                            <input type="file" name="document" class="dropify"  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" data-height="100" required>
+                                            <small class="text-muted">Accepted formats: PDF, DOC, DOCX, JPG, PNG. Max size: 5MB</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btnClose" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btnSave">Submit</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btnClose" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btnSave">Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 <!---------------------------------------------
  Window Style Upload file and document Modal End Hre
 ---------------------------------------------->

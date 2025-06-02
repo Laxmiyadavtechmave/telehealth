@@ -47,7 +47,7 @@
                             </a>
                         </li>
                         <li class="nav-item ">
-                            <a class="nav-link " href="{{ route('clinic.pharmacy.index') }}" aria-expanded="false">
+                            <a class="nav-link " href="{{ route('clinic.pharmacies.index') }}" aria-expanded="false">
                                 Pharmacists
                             </a>
                         </li>

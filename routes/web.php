@@ -100,8 +100,14 @@ Route::prefix('clinic')
         Route::post('logout', [ClinicAuthController::class, 'logout'])->name('logout');
         Route::resource('doctor', DoctorController::class);
         Route::resource('nurse', NurseController::class);
+        Route::post('nurse/upload-document',[NurseController::class,'uploadDocument'])->name('nurse.upload.document');
         Route::resource('patient', PatientController::class);
-        Route::resource('pharmacy', ClinicPharmacyController::class);
+        Route::post('nurse/upload-document',[PatientController::class,'uploadDocument'])->name('patient.upload.document');
+
+        /*************************** pharmacy **********************/
+        Route::resource('pharmacies', ClinicPharmacyController::class);
+        Route::get('/pharmacy/datatable', [ClinicPharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
+        Route::post('pharmacy/documents-download/{clinicId}', [ClinicPharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
 
         Route::prefix('user')
             ->name('user.')
