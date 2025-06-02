@@ -11,15 +11,15 @@
     <title>Login - Tele Health Super Admin</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/img/newimages/logoicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('common/img/newimages/logoicon.png') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/bootstrap.min.css') }}">
     <!-- Pe7 CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/icons/themify/themify.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/icons/themify/themify.css') }}">
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
@@ -261,7 +261,7 @@
 <body class="account-page">
 
     <div id="global-loader">
-        <div class="whirly-loader"> <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="loader">
+        <div class="whirly-loader"> <img src="{{ asset('common/img/newimages/logoicon.png') }}" alt="loader">
         </div>
 
     </div>
@@ -271,7 +271,7 @@
         <div class="LoginformWrap">
 
             <div class="login-header">
-                <img src="{{ asset('admin/img/newimages/transparentlogo-tele.png') }}" class="img-fluid"
+                <img src="{{ asset('common/img/newimages/transparentlogo-tele.png') }}" class="img-fluid"
                     alt="Logo">
             </div>
 
@@ -287,12 +287,24 @@
                                 <h2 class="mb-2">Welcome Back!</h2>
                                 <p class="mb-0">Please Enter Your Details to Sign in.</p>
                             </div>
+
+
+
                             <div class="logform_fields">
+
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+
+                                    
                                 <div class="form-group Iconinp_Group">
                                     <label class="form-label">Email Address</label>
                                     <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off" required
-                                        pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" title="Please enter a valid email">
+                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off"
+                                        required pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                                        title="Please enter a valid email">
 
                                     <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
                                     </iconify-icon>
@@ -349,19 +361,19 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{ asset('admin/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('common/js/jquery-3.7.1.min.js') }}"></script>
 
     <!-- Feather Icon JS -->
-    <script src="{{ asset('admin/js/feather.min.js') }}"></script>
+    <script src="{{ asset('common/js/feather.min.js') }}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="{{ asset('admin/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('common/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Custom JS -->
-    <script src="{{ asset('admin/js/theme-script.js') }}"></script>
-    <script src="{{ asset('admin/js/script.js') }}"></script>
+    <script src="{{ asset('common/js/theme-script.js') }}"></script>
+    <script src="{{ asset('common/js/script.js') }}"></script>
     <!-- iconify icon -->
-    <script src="{{ asset('admin/js/iconify.js') }}"></script>
+    <script src="{{ asset('common/js/iconify.js') }}"></script>
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
 
     <script>

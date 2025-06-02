@@ -288,11 +288,20 @@
                                 <p class="mb-0">Please Enter Your Details to Sign in.</p>
                             </div>
                             <div class="logform_fields">
+
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+
+                            
                                 <div class="form-group Iconinp_Group">
                                     <label class="form-label">Email Address</label>
                                     <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off" required
-                                        pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" title="Please enter a valid email">
+                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off"
+                                        required pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                                        title="Please enter a valid email">
 
                                     <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
                                     </iconify-icon>
