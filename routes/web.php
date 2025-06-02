@@ -9,6 +9,7 @@ use App\Http\Controllers\Clinic\PatientController;
 use App\Http\Controllers\Clinic\RoleController as ClinicRoleController;
 use App\Http\Controllers\Clinic\UserController as ClinicUserController;
 use App\Http\Controllers\Clinic\PharmacyController as ClinicPharmacyController;
+use App\Http\Controllers\Clinic\AuthController as ClinicAuthController;
 
 /************  */
 Route::get('/', function () {
@@ -67,6 +68,14 @@ Route::prefix('superadmin')
     });
 
 /************************ clinic panel ************/
+
+Route::get('/clinic/login', [ClinicAuthController::class, 'showLoginForm'])
+    ->name('clinic.login')
+    ->middleware('auth_redirect:clinic');
+
+Route::middleware('auth_redirect:clinic')->group(function () {
+    Route::post('clinic/login', [ClinicAuthController::class, 'login'])->name('clinic.login.submit');
+});
 
 Route::middleware('auth_redirect:clinic')->group(function () {
 // Route::middleware('auth_redirect:clinic')->group(function () {

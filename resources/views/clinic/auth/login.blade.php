@@ -8,22 +8,22 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
     <meta name="robots" content="">
-    <title>Login - Tele Health Super Admin</title>
+    <title>Login - Tele Health Clinic Admin</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/newimages/logoicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('common/img/newimages/logoicon.png') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('common/css/bootstrap.min.css') }}">
     <!-- Pe7 CSS -->
-    <link rel="stylesheet" href="assets/plugins/icons/themify/themify.css">
+    <link rel="stylesheet" href="{{ asset('common/plugins/icons/themify/themify.css') }}">
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
-    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="{{ asset('clinic/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('clinic/css/custom.css') }}">
 
     <style>
         .success-message img {
@@ -163,7 +163,7 @@
         }
 
         .login-header {
-            background-image: linear-gradient(to bottom, #e9f4fe75, #f8f6ff00), url(assets/img/newimages/Digital-Product-Hero-BG.png);
+            background-image: linear-gradient(to bottom, #e9f4fe75, #f8f6ff00), url({{ asset('admin/img/newimages/Digital-Product-Hero-BG.png') }});
             background-size: cover;
             height: 100px;
             display: flex;
@@ -238,17 +238,21 @@
             width: 100%;
             gap: 10px;
         }
-        footer.logFootr p{
-            margin-bottom:0px;
+
+        footer.logFootr p {
+            margin-bottom: 0px;
         }
-        footer.logFootr a{
+
+        footer.logFootr a {
             color: #0495fa;
         }
+
         .success-message h2 {
-    text-align: center;
-    font-size: 19px;
-    margin-bottom: 2px;
-}
+            text-align: center;
+            font-size: 19px;
+            margin-bottom: 2px;
+        }
+
         /* login page style end */
     </style>
 
@@ -257,7 +261,9 @@
 <body class="account-page">
 
     <div id="global-loader">
-        <div class="whirly-loader"> </div>
+        <div class="whirly-loader"> <img src="{{ asset('common/img/newimages/logoicon.png') }}" alt="loader">
+        </div>
+
     </div>
 
     <div class="main-wrapper">
@@ -265,11 +271,14 @@
         <div class="LoginformWrap">
 
             <div class="login-header">
-                <img src="assets/img/newimages/transparentlogo-tele.png" class="img-fluid" alt="Logo">
+                <img src="{{ asset('common/img/newimages/transparentlogo-tele.png') }}" class="img-fluid"
+                    alt="Logo">
             </div>
 
             <div class="login-body">
-                <form action="index.php">
+                <form action="{{ route('clinic.login.submit') }}" method="post" class="form needs-validation"
+                    novalidate>
+                    @csrf
                     <div class="loginformcontent">
 
                         <!-- Login Form -->
@@ -281,22 +290,34 @@
                             <div class="logform_fields">
                                 <div class="form-group Iconinp_Group">
                                     <label class="form-label">Email Address</label>
-                                    <input type="text" class="form-control ">
+                                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                        class="form-control @error('email') is-invalid @enderror" autocomplete="off" required
+                                        pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" title="Please enter a valid email">
+
                                     <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
                                     </iconify-icon>
+                                    @error('email')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group password-group Iconinp_Group">
                                     <label class="form-label">Password</label>
-                                    <input type="password" id="password" class="pass-input form-control"
-                                        placeholder="********" style="width: 100%; padding-right: 40px;" />
+                                    <input type="password" name="password" id="password"
+                                        class="pass-input form-control" placeholder="********" min="6"
+                                        style="width: 100%; padding-right: 40px;" autocomplete="new-password"
+                                        required />
                                     <iconify-icon icon="mdi:eye" id="togglePassword"></iconify-icon>
+                                    @error('password')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
 
                             </div>
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="form-check form-check-md mb-0">
-                                    <input class="form-check-input" id="remember_me" type="checkbox">
+                                    <input class="form-check-input" name="remember" id="remember_me" type="checkbox"
+                                        {{ old('remember') ? 'checked' : '' }}>
                                     <label for="remember_me" class="form-check-label mt-0">Remember Me</label>
                                 </div>
                                 <div class="text-end">
@@ -308,33 +329,6 @@
                             </div>
                         </div>
 
-                        <!-- Forgot Password Container (Initially Hidden) -->
-                        <div class="forgot_Container" style="display: none;">
-                            <div class="text-center mb-3 formtitle_login">
-                                <h2 class="mb-2">Forgot password?</h2>
-                                <p class="mb-0">If you forgot your password, we’ll email you instructions to reset it.
-                                </p>
-                            </div>
-                            <div class="logform_fields">
-                                <div class="form-group Iconinp_Group">
-                                    <label class="form-label">Email Address</label>
-                                    <input type="text" class="form-control ">
-                                    <iconify-icon icon="material-symbols:mark-email-read-outline-rounded">
-                                    </iconify-icon>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary w-100 forgotlink_send">Send Link</button>
-                            </div>
-                        </div>
-
-                        <!-- Success Message (Initially Hidden) -->
-                        <div class="success-message" style="display: none;">
-                            <img src="assets/img/newimages/successtic.gif" alt="Success">
-                            <h2>Password link sent</h2>
-                            <p>Please check your inbox for the reset link.</p>
-                            <button type="submit" class="btn back-to-login">Back to Login</button>
-                        </div>
 
                     </div>
                 </form>
@@ -355,56 +349,20 @@
     </div>
 
     <!-- jQuery -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="{{ asset('common/js/jquery-3.7.1.min.js') }}"></script>
 
     <!-- Feather Icon JS -->
-    <script src="assets/js/feather.min.js"></script>
+    <script src="{{ asset('common/js/feather.min.js') }}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('common/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Custom JS -->
-    <script src="assets/js/theme-script.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="{{ asset('common/js/theme-script.js') }}"></script>
+    <script src="{{ asset('common/js/script.js') }}"></script>
     <!-- iconify icon -->
-    <script src="assets/js/iconify.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Hide forgot password and success message initially
-            document.querySelector(".forgot_Container").style.display = "none";
-            document.querySelector(".success-message").style.display = "none";
-            // Handle Forgot Password Click
-            document.querySelector(".forgotpassword").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".loginformContainer").style.display = "none";
-                document.querySelector(".forgot_Container").style.display = "block";
-            });
-            // Handle Send Link Click
-            document.querySelector(".forgotlink_send").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".forgot_Container").style.display = "none";
-                document.querySelector(".success-message").style.display = "block";
-            });
-            // Handle Back to Login Click
-            document.querySelector(".back-to-login").addEventListener("click", function(e) {
-                e.preventDefault();
-                document.querySelector(".success-message").style.display = "none";
-                document.querySelector(".loginformContainer").style.display = "block";
-            });
-            // Toggle Password Visibility
-            document.querySelector(".toggle-password").addEventListener("click", function() {
-                let passwordInput = document.querySelector(".pass-input");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    this.setAttribute("icon", "iconamoon:eye-off-light");
-                } else {
-                    passwordInput.type = "password";
-                    this.setAttribute("icon", "iconamoon:eye-light");
-                }
-            });
-        });
-    </script>
+    <script src="{{ asset('common/js/iconify.js') }}"></script>
+    <script src="{{ asset('common/js/form-validation.js') }}"></script>
 
     <script>
         const passwordInput = document.getElementById("password");
@@ -412,7 +370,6 @@
         toggleIcon.addEventListener("click", function() {
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
             passwordInput.setAttribute("type", type);
-            // Change icon accordingly
             toggleIcon.setAttribute("icon", type === "password" ? "mdi:eye" : "mdi:eye-off");
         });
     </script>
