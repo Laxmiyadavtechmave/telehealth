@@ -70,12 +70,12 @@ Route::prefix('superadmin')
 /************************ clinic panel ************/
 
 Route::get('/clinic/login', [ClinicAuthController::class, 'showLoginForm'])
-    ->name('clinic.login')
-    ->middleware('auth_redirect:clinic');
+    ->name('clinic.login');
+    // ->middleware('auth_redirect:clinic');
 
-Route::middleware('auth_redirect:clinic')->group(function () {
+// Route::middleware('auth_redirect:clinic')->group(function () {
     Route::post('clinic/login', [ClinicAuthController::class, 'login'])->name('clinic.login.submit');
-});
+// });
 
 
     Route::prefix('clinic')

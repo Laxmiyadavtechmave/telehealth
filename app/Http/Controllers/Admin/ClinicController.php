@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\{Clinic, Schedule, Document};
-use DB;
+use Log;
+use ZipArchive;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use App\Traits\GeneratesCustomId;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\ImageController;
 use Illuminate\Support\Facades\Validator;
-use ZipArchive;
+use App\Http\Controllers\CommonController;
+use App\Models\{Clinic, Schedule, Document};
 use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Foundation\Exceptions\Renderer\Exception;
 
@@ -76,7 +81,7 @@ class ClinicController extends Controller
 
                 $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
             } catch (\Exception $e) {
-                \Log::error('Invalid date range: ' . $e->getMessage());
+                Log::error('Invalid date range: ' . $e->getMessage());
             }
         }
 

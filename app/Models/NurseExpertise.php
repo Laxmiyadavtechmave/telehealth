@@ -10,4 +10,8 @@ class NurseExpertise extends Model
         'nurse_id',
         'area_of_expertise_id',
     ];
+
+    public function expertiseName(){
+        return $this->belongsTo(AreaOfExpertise::class,'area_of_expertise_id' , 'id');
+    }
 }

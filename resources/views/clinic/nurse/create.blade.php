@@ -192,7 +192,7 @@
                                                             <label for="#">National ID</label>
                                                             <input type="text" placeholder="National ID"
                                                                 id="name" class="form-control" name="national_id"
-                                                                value = "{{ old('national_id') }}" required>
+                                                                value = "{{ old('national_id') }}">
                                                         </div>
                                                     </div>
 
@@ -366,7 +366,6 @@
                                                             <label for="#">Years of Experience</label>
                                                             <input type="number" min=1 placeholder="" id="name"
                                                                 class="form-control" name="year_of_experience"
-
                                                                 value="{{ old('year_of_experience') }}" required>
                                                         </div>
                                                     </div>
