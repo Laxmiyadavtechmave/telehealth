@@ -41,22 +41,8 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();
-
-            // Optional foreign keys (add if you have referenced tables)
-            // $table->foreign('clinic_id')->references('id')->on('clinics')->onDelete('set null');
-            // $table->foreign('nurse_id')->references('id')->on('nurses')->onDelete('set null');
-            // $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('set null');
-            // $table->foreign('role_id')->references('id')->on('roles')->onDelete('set null');
         });
 
-
-        Schema::create('nurse_images', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('nurse_id');
-            $table->foreign('nurse_id')->references('id')->on('clinics')->onDelete('cascade');
-            $table->string('img');
-            $table->timestamps();
-        });
 
         Schema::create('nurse_expertises', function (Blueprint $table) {
             $table->id();

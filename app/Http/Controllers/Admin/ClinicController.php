@@ -5,17 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Models\{Clinic, Schedule, Document};
 use DB;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Traits\GeneratesCustomId;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use ZipArchive;
 use Spatie\Permission\Models\{Role, Permission};
-use App\Models\{Clinic, ClinicSchedule,ClinicImage};
 use Illuminate\Foundation\Exceptions\Renderer\Exception;
-use App\Http\Controllers\{CommonController, ImageController};
 
 class ClinicController extends Controller
 {
@@ -252,10 +248,6 @@ class ClinicController extends Controller
                     $path = ImageController::upload($image, '/clinics/documents');
 
                     $clinic->documents()->create([
-
-                    ClinicImage::create([
-                        'clinic_id' => $clinic->id,
-
                         'img' => $path,
                     ]);
                 }
