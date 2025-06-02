@@ -564,6 +564,7 @@
 @endsection
 @push('custom_scripts')
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
+    <script src="{{ asset('common/js/password.js') }}"></script>
     <script>
         /******************************* clinic profile image ***********************/
         $(document).on("change", ".uploadProfileInput", function() {

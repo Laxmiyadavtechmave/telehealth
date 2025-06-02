@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Doctor extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name', 'email', 'img', 'password', 'gender', 'marital_status', 'phone', 'address1', 'address2', 'city', 'country', 'postal_code', 'license_no', 'valid_from', 'valid_to', 'extra', 'specilization'];
+    protected $fillable = ['doctor_id', 'name', 'email', 'img', 'clinic_id', 'password', 'gender', 'marital_status', 'phone', 'address1', 'address2', 'city', 'country', 'postal_code', 'license_no', 'valid_from', 'valid_to', 'extra', 'specilization'];
     protected $dates = ['deleted_at'];
 
     protected $casts = [
@@ -23,5 +23,15 @@ class Doctor extends Model
     public function documents()
     {
         return $this->morphMany(Document::class, 'imageable');
+    }
+
+    public function doctorExpertises()
+    {
+        return $this->hasMany(DoctorExpertise::class, 'doctor_id', 'id');
+    }
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class, 'clinic_id', 'id');
     }
 }

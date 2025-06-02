@@ -499,8 +499,7 @@
 
                                             <input type="file" id="finalImageInput" name="documents[]" multiple
                                                 hidden>
-                                            <input type="hidden" id="removed_files" name="removed_files"
-                                                hidden>
+                                            <input type="hidden" id="removed_files" name="removed_files" hidden>
 
                                             <div class="col-lg-12">
                                                 <div class="card selected">
@@ -594,6 +593,7 @@
 
 @push('custom_scripts')
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
+    <script src="{{ asset('common/js/password.js') }}"></script>
     <script>
         /******************************* clinic profile image ***********************/
         $(document).on("change", ".uploadProfileInput", function() {
@@ -1009,7 +1009,7 @@
         });
 
         // Append removed IDs and files to the form on submit
-          $('form').on('submit', function(e) {
+        $('form').on('submit', function(e) {
             const dataTransfer = new DataTransfer();
             finalImagesArray.forEach((file) => {
                 dataTransfer.items.add(file);

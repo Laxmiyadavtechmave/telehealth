@@ -201,7 +201,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Clinic</label>
                                                                 <input type="text" class="form-control"
-                                                                    value="Care Plus Clinic" readonly disabled>
+                                                                    value="{{ $pharmacy->clinic->name ?? '' }}" readonly disabled>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">

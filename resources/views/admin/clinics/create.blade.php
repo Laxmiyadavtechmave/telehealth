@@ -164,7 +164,7 @@
                                                             <label for="password">Password <span>*</span></label>
                                                             <input type="password" class="form-control password-field"
                                                                 placeholder="Enter Password here.." name="password"
-                                                                autocomplete="new-password" required>
+                                                                autocomplete="new-password" min="6" required>
                                                             <span class="toggle-password"
                                                                 style="position:absolute; top:38px; right:15px; cursor:pointer;">
                                                                 <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
@@ -518,6 +518,7 @@
 
 @push('custom_scripts')
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
+    <script src="{{ asset('common/js/password.js') }}"></script>
     <script>
         /******************************* clinic profile image ***********************/
         $(document).on("change", ".uploadProfileInput", function() {
