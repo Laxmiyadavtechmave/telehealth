@@ -14,37 +14,37 @@
     <title>@yield('title', 'Tele Health Super Admin')</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/img/newimages/logoicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('common/img/newimages/logoicon.png') }}">
 
     <!-- Theme Script js -->
     <script src="assets/js/theme-script.js" type=""></script>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/bootstrap.min.css') }}">
     <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/tabler-icons/tabler-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/tabler-icons/tabler-icons.css') }}">
     <!-- Datetimepicker CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/bootstrap-datetimepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/bootstrap-datetimepicker.min.css') }}">
 
     <!-- Daterangepikcer CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/daterangepicker/daterangepicker.css') }}">
 
     <!-- animation CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/animate.css') }}">
 
     <!-- Select2 CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/select2/css/select2.min.css') }}">
 
     <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/plugins/fontawesome/css/all.min.css') }}">
 
     <!-- Feathericon CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/feather.css') }}">
 
-    <link href="{{ asset('admin/vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet"
+    <link href="{{ asset('common/vendors/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet"
         type="text/css" />
-    <link href="{{ asset('admin/vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}"
+    <link href="{{ asset('common/vendors/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}"
         rel="stylesheet" type="text/css" />
 
     <!-- Main CSS -->
@@ -52,7 +52,7 @@
 
     <link rel="stylesheet" href="{{ asset('admin/css/custom.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('admin/css/modernstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('common/css/modernstyle.css') }}">
 
 </head>
 
