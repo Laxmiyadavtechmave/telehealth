@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('area_of_expertises', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->enum('type',['doctor','nurse']);
             $table->text('description')->nullable();
             $table->timestamps();
         });
