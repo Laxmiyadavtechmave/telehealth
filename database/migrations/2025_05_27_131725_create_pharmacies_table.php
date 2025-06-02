@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('pharmacy_id');
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('img')->nullable();
             $table->string('password');
             $table->string('license_no');
@@ -36,25 +36,6 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('pharmacy_images', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('pharmacy_id');
-            $table->foreign('pharmacy_id')->references('id')->on('pharmacies')->onDelete('cascade');
-            $table->string('img');
-            $table->timestamps();
-        });
-
-        Schema::create('pharmacy_schedules', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('pharmacy_id');
-            $table->foreign('pharmacy_id')->references('id')->on('pharmacies')->onDelete('cascade');
-            $table->enum('day', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->boolean('is_available')->default(true);
-            $table->timestamps();
-            $table->softDeletes();
-        });
     }
 
     /**
@@ -62,8 +43,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('pharmacy_schedules');
-        Schema::dropIfExists('pharmacy_images');
         Schema::dropIfExists('pharmacies');
     }
 };

@@ -83,6 +83,8 @@
                  <div class="custom-tooltip">Reports</div>
              </div>
 
+             
+
             <form method="POST" action="{{ route('superadmin.logout') }}" id="logout-form">
                  @csrf
                  <div class="custom-menu-item" onclick="document.getElementById('logout-form').submit()"

@@ -67,7 +67,10 @@ Route::prefix('superadmin')
     });
 
 /************************ clinic panel ************/
+
+Route::middleware('auth_redirect:clinic')->group(function () {
 // Route::middleware('auth_redirect:clinic')->group(function () {
+
     Route::prefix('clinic')
         ->name('clinic.')
         ->group(function () {
