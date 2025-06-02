@@ -248,10 +248,6 @@ class ClinicController extends Controller
                     $path = ImageController::upload($image, '/clinics/documents');
 
                     $clinic->documents()->create([
-
-                    ClinicImage::create([
-                        'clinic_id' => $clinic->id,
-
                         'img' => $path,
                     ]);
                 }
