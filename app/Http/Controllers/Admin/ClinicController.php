@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\{Clinic, Schedule, Document};
-use App\Http\Controllers\{CommonController, ImageController};
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -253,7 +250,12 @@ class ClinicController extends Controller
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $image) {
                     $path = ImageController::upload($image, '/clinics/documents');
+
                     $clinic->documents()->create([
+
+                    ClinicImage::create([
+                        'clinic_id' => $clinic->id,
+
                         'img' => $path,
                     ]);
                 }

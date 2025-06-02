@@ -157,7 +157,7 @@
                                     @foreach ($nurses as $nurse )
                                         <tr>
                                         <td hidden></td>
-                                        <td><a href="{{ route('clinic.nurse.show',['nurse' => $nurse->id]) }}">#NUR001</a></td>
+                                        <td><a href="{{ route('clinic.nurse.show',['nurse' => encrypt($nurse->id)]) }}">#NUR001</a></td>
                                         <td>Mille William</td>
                                         <td>Female</td>
                                         <td>+1 555-123-4567</td>
@@ -174,13 +174,13 @@
                                                 <div class="d-flex">
                                                     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                                         data-bs-toggle="tooltip" title="Edit Nurse Detail"
-                                                        href="{{ route('clinic.nurse.edit',['nurse' => $nurse->id]) }}">
+                                                        href="{{ route('clinic.nurse.edit',['nurse' => encrypt($nurse->id)]) }}">
                                                         <span class="icon"><span class="feather-icon"><iconify-icon
                                                                     icon="fluent:edit-20-regular"></iconify-icon></span></span>
                                                     </a>
                                                     <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
                                                         data-bs-toggle="tooltip" title="View Nurse Detail"
-                                                        href="{{ route('clinic.nurse.show',['nurse' => $nurse->id]) }}">
+                                                        href="{{ route('clinic.nurse.show',['nurse' => encrypt($nurse->id)]) }}">
                                                         <span class="icon"><span class="feather-icon"><iconify-icon
                                                                     icon="hugeicons:view"></iconify-icon></span></span>
                                                     </a>
