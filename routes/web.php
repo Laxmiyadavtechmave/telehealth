@@ -77,8 +77,6 @@ Route::middleware('auth_redirect:clinic')->group(function () {
     Route::post('clinic/login', [ClinicAuthController::class, 'login'])->name('clinic.login.submit');
 });
 
-Route::middleware('auth_redirect:clinic')->group(function () {
-// Route::middleware('auth_redirect:clinic')->group(function () {
 
     Route::prefix('clinic')
         ->name('clinic.')
@@ -100,4 +98,4 @@ Route::middleware('auth_redirect:clinic')->group(function () {
 
             Route::resource('role', ClinicRoleController::class);
         });
-// });
+
