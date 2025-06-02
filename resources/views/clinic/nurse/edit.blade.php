@@ -31,10 +31,10 @@
                     </div>
                 </div>
                 <div class="tablemaincard_nopaddingleftright">
-                    <form action="{{ route('clinic.nurse.update', ['nurse' => $nurse->id]) }}"
-                        class="form needs-validation" method="POST" enctype="multipart/form-data" novalidate>
+                    <form action="{{ route('clinic.nurse.update', ['nurse' => encrypt($nurse->id)]) }}" class="form needs-validation"
+                        method="POST" enctype="multipart/form-data" novalidate>
                         @csrf
-                    @method('PUT')
+                        @method('PUT')
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -84,8 +84,7 @@
                                                                                     )->exists($nurse->img)
                                                                                 ) {
                                                                                     $image =
-                                                                                        env('IMAGE_ROOT') .
-                                                                                        $nurse->img;
+                                                                                        env('IMAGE_ROOT') . $nurse->img;
                                                                                 }
 
                                                                             @endphp
@@ -102,9 +101,9 @@
                                                                                         <iconify-icon
                                                                                             icon="bytesize:upload"></iconify-icon>
                                                                                     </div>
-                                                                                    <div class="text-uppercase">
+                                                                                    {{-- <div class="text-uppercase">
                                                                                         Upload <br /> Logo Picture
-                                                                                    </div>
+                                                                                    </div> --}}
                                                                                 </div>
                                                                             </label>
                                                                         </div>
@@ -119,7 +118,7 @@
                                                                             <label for="#">Nurse Name</label>
                                                                             <input type="text" placeholder="Nurse Name"
                                                                                 id="name" class="form-control"
-                                                                                name="name" required>
+                                                                                name="name" value="{{ old('name',$nurse->name ?? '') }}" required>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-lg-6">
@@ -130,7 +129,7 @@
                                                                                 placeholder="Date of Birth (DOB)"
                                                                                 id="name"
                                                                                 class="form-control customdataPicker"
-                                                                                name="dob" value="{{ old('dob') }}"
+                                                                                name="dob" value="{{ old('dob', $nurse->dob ?? '') }}"
                                                                                 required>
                                                                         </div>
                                                                     </div>
@@ -143,13 +142,13 @@
                                                                                 <option value="" selected disabled>
                                                                                 </option>
                                                                                 <option value="Male"
-                                                                                    {{ old('gender') == 'Male' ? 'selected' : '' }}>
+                                                                                    {{ old('gender',$nurse->gender) == 'Male' ? 'selected' : '' }}>
                                                                                     Male</option>
                                                                                 <option value="Female"
-                                                                                    {{ old('gender') == 'Female' ? 'selected' : '' }}>
+                                                                                    {{ old('gender',$nurse->gender) == 'Female' ? 'selected' : '' }}>
                                                                                     Female</option>
                                                                                 <option value="Other"
-                                                                                    {{ old('gender') == 'Other' ? 'selected' : '' }}>
+                                                                                    {{ old('gender',$nurse->gender) == 'Other' ? 'selected' : '' }}>
                                                                                     Other</option>
                                                                             </select>
                                                                         </div>
@@ -165,13 +164,13 @@
 
                                                                                 </option>
                                                                                 <option value="Married"
-                                                                                    {{ old('marital_status') == 'Married' ? 'selected' : '' }}>
+                                                                                    {{ old('marital_status',$nurse->marital_status) == 'Married' ? 'selected' : '' }}>
                                                                                     Married</option>
                                                                                 <option value="Unmarried"
-                                                                                    {{ old('marital_status') == 'Unmarried' ? 'selected' : '' }}>
+                                                                                    {{ old('marital_status',$nurse->marital_status) == 'Unmarried' ? 'selected' : '' }}>
                                                                                     Unmarried</option>
                                                                                 <option value="Single"
-                                                                                    {{ old('marital_status') == 'Single' ? 'selected' : '' }}>
+                                                                                    {{ old('marital_status',$nurse->marital_status) == 'Single' ? 'selected' : '' }}>
                                                                                     Single</option>
                                                                             </select>
                                                                         </div>
@@ -194,7 +193,7 @@
                                                         <div class="form-group">
                                                             <label for="#">Email</label>
                                                             <input type="email" id="name" class="form-control"
-                                                                value="{{ old('email') }}" name="email" required
+                                                                value="{{ old('email',$nurse->email ?? '') }}" name="email" required
                                                                 autocomplete="off" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
                                                                 title="Please enter a valid email" required>
                                                         </div>
@@ -204,7 +203,7 @@
                                                             <label for="#">Password <span>*</span></label>
                                                             <input type="password" class="form-control password-field"
                                                                 placeholder="Enter Password here.." name="password"
-                                                                required>
+                                                                >
                                                             <span class="toggle-password"
                                                                 style="position:absolute; top:38px; right:15px; cursor:pointer;">
                                                                 <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
@@ -216,7 +215,7 @@
                                                             <label for="#">Phone No.</label>
                                                             <input type="text" placeholder="Phone No." id="name"
                                                                 class="form-control" name="phone"
-                                                                value="{{ request('phone') }}" maxlength="13"
+                                                                value="{{ request('phone',$nurse->phone ?? '') }}" maxlength="13"
                                                                 minlength="8"
                                                                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,13);"
                                                                 pattern="\d{8,13}" required>
@@ -227,7 +226,7 @@
                                                             <label for="#">National ID</label>
                                                             <input type="text" placeholder="National ID"
                                                                 id="name" class="form-control" name="national_id"
-                                                                value = "{{ old('national_id') }}" required>
+                                                                value = "{{ old('national_id',$nurse->national_id ?? '') }}">
                                                         </div>
                                                     </div>
 
@@ -251,7 +250,7 @@
                                                             <label for="#">Address 1</label>
                                                             <input type="text" placeholder="Address 1" id="name"
                                                                 class="form-control" name="address1"
-                                                                value="{{ old('address1') }}" required>
+                                                                value="{{ old('address1',$nurse->address1 ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3">
@@ -259,7 +258,7 @@
                                                             <label for="#">Address 2 (Optional)</label>
                                                             <input type="text" placeholder="Address 1" id="name"
                                                                 class="form-control" name="address2"
-                                                                value="{{ old('address2') }}">
+                                                                value="{{ old('address2',$nurse->address2 ?? '') }}">
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-2">
@@ -267,7 +266,7 @@
                                                             <label for="#">Town/City</label>
                                                             <input type="text" placeholder="Town/City" id="name"
                                                                 class="form-control" name="city"
-                                                                value="{{ old('city') }}" required>
+                                                                value="{{ old('city',$nurse->city ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-2">
@@ -275,7 +274,7 @@
                                                             <label for="#">Country</label>
                                                             <input type="text" placeholder="country" id="name"
                                                                 class="form-control" name="country"
-                                                                value="{{ old('country') }}" required>
+                                                                value="{{ old('country',$nurse->country ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-2">
@@ -283,7 +282,7 @@
                                                             <label for="#">Postal Code</label>
                                                             <input type="text" placeholder="Postal Code"
                                                                 id="name" class="form-control" name="postal_code"
-                                                                value="{{ old('postal_code') }}" required>
+                                                                value="{{ old('postal_code',$nurse->postal_code ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -310,7 +309,7 @@
                                                             <input type="text"
                                                                 placeholder="eg. Diploma, B.Sc Nursing, GNM, etc."
                                                                 id="name" class="form-control" name="qualification"
-                                                                value="{{ old('qualification') }}" required>
+                                                                value="{{ old('qualification',$nurse->qualification ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3">
@@ -348,7 +347,7 @@
                                                             <label for="#">License Number</label>
                                                             <input type="text" placeholder="License Number"
                                                                 id="name" class="form-control" name="license_no"
-                                                                value="{{ old('license_no') }}" required>
+                                                                value="{{ old('license_no', $nurse->license_no ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3">
@@ -356,7 +355,7 @@
                                                             <label for="#">Valid From</label>
                                                             <input type="text" placeholder="Valid From" id="name"
                                                                 class="form-control customdataPicker" name="valid_from"
-                                                                value="{{ old('valid_from') }}" required>
+                                                                value="{{ old('valid_from', $nurse->valid_from ?? '') }}" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3">
@@ -364,7 +363,7 @@
                                                             <label for="#">Valid To</label>
                                                             <input type="text" placeholder="Valid To" id="name"
                                                                 class="form-control customdataPicker" name="valid_to"
-                                                                value="{{ old('valid_to') }}" required>
+                                                                value="{{ old('valid_to', $nurse->valid_to ?? '') }}" required>
                                                         </div>
                                                     </div>
 
@@ -373,6 +372,7 @@
 
 
                                             </div>
+
                                             <div class="col-lg-6">
                                                 <div class="row">
 
@@ -387,8 +387,9 @@
                                                                 @if (count($areaExpertises) > 0)
                                                                     @foreach ($areaExpertises as $expertise)
                                                                         <option value="{{ $expertise->id }}"
-                                                                            title="{{ $expertise->description }}"
-                                                                            {{ is_array(old('area_expertise_id')) && in_array($expertise->id, old('area_expertise_id')) ? 'selected' : '' }}>
+                                                                                title="{{ $expertise->description }}"
+                                                                                {{ in_array($expertise->id, old('area_expertise_id', $nurseExpertise ?? [])) ? 'selected' : '' }}
+                                                                                >
                                                                             {{ $expertise->name }}
                                                                         </option>
                                                                     @endforeach
@@ -401,8 +402,7 @@
                                                             <label for="#">Years of Experience</label>
                                                             <input type="number" min=1 placeholder="" id="name"
                                                                 class="form-control" name="year_of_experience"
-                                                                value="year_of_experience"
-                                                                value="{{ old('year_of_experience') }}" required>
+                                                                value="{{ old('year_of_experience', $nurse->year_of_experience ?? '') }}" required>
                                                         </div>
                                                     </div>
 
@@ -411,7 +411,7 @@
                                                             <label for="#">Languages Spoken</label>
                                                             <input type="text" placeholder="eg. Hindi,English etc."
                                                                 id="name" class="form-control" name="language"
-                                                                value="{{ old('language') }}" required>
+                                                                value="{{ old('language' , $nurse->language ?? '') }}" required>
                                                         </div>
                                                     </div>
 
@@ -429,59 +429,58 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="col-lg-6">
-                                    <div class="ItemNewContainer1">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <h6 class="sectionTitle">Upload Clinic Document Images</h6>
-                                            </div>
+                                        <div class="ItemNewContainer1">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <h6 class="sectionTitle">Upload Clinic Document Images</h6>
+                                                </div>
 
-                                            <input type="file" id="finalImageInput" name="documents[]" multiple
-                                                hidden>
-                                            <input type="hidden" id="removed_files" name="removed_files"
-                                                hidden>
+                                                <input type="file" id="finalImageInput" name="documents[]" multiple
+                                                    hidden>
+                                                <input type="hidden" id="removed_files" name="removed_files" hidden>
 
-                                            <div class="col-lg-12">
-                                                <div class="card selected">
+                                                <div class="col-lg-12">
+                                                    <div class="card selected">
 
-                                                    <div class="card-body">
-                                                        <div class="adding_fildswrap multipleimage_wrap">
-                                                            <div class="image-gallery" id="imageGalleryNew"
-                                                                style="display: none;">
-                                                            </div>
-
-                                                            <!-- Add Product Gallery Images Link -->
-                                                            <div class="addgaller_action">
-                                                                <a href="#"
-                                                                    class="text-primary d-inline-flex justify-content-center addgallery_btn btnComn_add_lightbg"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#uploadModalNew"
+                                                        <div class="card-body">
+                                                            <div class="adding_fildswrap multipleimage_wrap">
+                                                                <div class="image-gallery" id="imageGalleryNew"
                                                                     style="display: none;">
-                                                                    <iconify-icon
-                                                                        icon="octicon:feed-plus-16"></iconify-icon> Add
-                                                                    Document
-                                                                    Images
-                                                                </a>
+                                                                </div>
+
+                                                                <!-- Add Product Gallery Images Link -->
+                                                                <div class="addgaller_action">
+                                                                    <a href="#"
+                                                                        class="text-primary d-inline-flex justify-content-center addgallery_btn btnComn_add_lightbg"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#uploadModalNew"
+                                                                        style="display: none;">
+                                                                        <iconify-icon
+                                                                            icon="octicon:feed-plus-16"></iconify-icon> Add
+                                                                        Document
+                                                                        Images
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
+
                                                 </div>
 
 
                                             </div>
-
-
                                         </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="FormSubmit_fix_container">
 
-                                <button type="submit" class="btn btn-primary commonUpdateButton">
-                                    <iconify-icon icon="mynaui:save"></iconify-icon> Submit & Save
-                                </button>
+                            <button type="submit" class="btn btn-primary commonUpdateButton">
+                                <iconify-icon icon="mynaui:save"></iconify-icon> Submit & Save
+                            </button>
 
 
                             <a href="{{ route('clinic.nurse.index') }}">
@@ -503,7 +502,7 @@
 
     </div>
     </div>
-        <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -952,7 +951,7 @@
         });
 
         // Append removed IDs and files to the form on submit
-          $('form').on('submit', function(e) {
+        $('form').on('submit', function(e) {
             const dataTransfer = new DataTransfer();
             finalImagesArray.forEach((file) => {
                 dataTransfer.items.add(file);
@@ -972,6 +971,6 @@
         });
     </script>
     <!-----------------------------------
-    Password Hide and show js End here
-    ------------------------------------->
+        Password Hide and show js End here
+        ------------------------------------->
 @endpush

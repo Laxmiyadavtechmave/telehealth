@@ -77,7 +77,7 @@ class ClinicController extends Controller
 
                 $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
             } catch (\Exception $e) {
-                \Log::error('Invalid date range: ' . $e->getMessage());
+                Log::error('Invalid date range: ' . $e->getMessage());
             }
         }
 

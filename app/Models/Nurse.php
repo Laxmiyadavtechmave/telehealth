@@ -21,10 +21,15 @@ class Nurse extends Model {
         'dob' => 'date',
     ];
 
-        public function documents()
+            public function documents()
     {
-        return $this->hasMany(NurseImage::class, 'nurse_id', 'id'); // or whatever your model is
+        return $this->morphMany(Document::class, 'imageable');
     }
+
+    public function expertises(){
+        return $this->hasMany(NurseExpertise::class,'nurse_id','id');
+    }
+
 
 
 }

@@ -28,8 +28,10 @@
                   <ul class="tophead_action">
                     <li>
                         <div class="Currentvendorstatus">
-                            <iconify-icon icon="f7:status"></iconify-icon> Current Status : &nbsp; <div class="badge badge-soft-success">
-                                Active</div>
+                            <iconify-icon icon="f7:status"></iconify-icon> Current Status : &nbsp; <div class="badge  {{ $nurse->satus == 'active' ? "badge-soft-success" : "badge-soft-warning" }}
+                                {{-- badge-soft-success --}}
+                                ">
+                               {{ucfirst($nurse->satus)}}</div>
 
                         </div>
                     </li>
@@ -37,20 +39,10 @@
                         <div class="enquiryDate">
                             <iconify-icon icon="ion:calendar-outline"></iconify-icon> Added On : <div
                                 class="Onboarddate">
-                                14 Dec 2024 12:24pm</div>
+                                {{ \Carbon\Carbon::parse($nurse->created_at)->format('d M Y h:ia') ?? '' }}</div>
 
                         </div>
                     </li>
-                    <!-- <li>
-                        <div class="pageheader_rightbtns" ApproveVendor>
-                            <button type="button" class="cmnPromary_btn" onclick="approveVendor()">Approve</button>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="pageheader_rightbtns rejectapproval_btn" rejectVendor>
-                            <button type="button" class="cmnPromary_btn" onclick="rejectVendor()">Reject</button>
-                        </div>
-                    </li> -->
 
                 </ul>
                     <div class="head-icons ms-2 headicon_innerpage">
@@ -72,10 +64,10 @@
                             </div>
                             <div class="doc-info-cont">
                                 <!-- <span class="badge doc-avail-badge"><i class="fa-solid fa-circle"></i>Available </span> -->
-                                <h4 class="doc-name">David Miller <img src="assets/img/newimages/badge-check.svg" alt="Img"><span class="badge doctor-role-badge"><i class="fa-solid fa-circle"></i> Sr. Nurse</span></h4>
-                                <p>08/04/1959 (64y) Female • Nurse ID : #DOC002</p>
-                                <p>Diploma, B.Sc Nursing, GNM - Maxillofacial Surgery</p>
-                                <p><strong>Areas of Expertise</strong>  : ICU, Pediatrics, Surgical ward</p>
+                                <h4 class="doc-name">{{ $nurse->name ?? '' }} <img src="{{  asset('clinic/img/newimages/badge-check.svg') }}" alt="Img"><span class="badge doctor-role-badge"><i class="fa-solid fa-circle"></i>{{ $nurse->role_id ?? '' }}</span></h4>
+                                <p>{{ $nurse->dob }} (64y) {{ $nurse->gender ?? '' }} • Nurse ID : #{{ $nurse->nurse_id ?? '' }}</p>
+                                <p>{{ $nurse->qualification ?? '' }}</p>
+                                <p><strong>Areas of Expertise</strong>  : {{ $xpertise ?? '' }}</p>
 
                             </div>
                         </div>
@@ -87,7 +79,7 @@
                                 <iconify-icon icon="ion:location-outline"></iconify-icon> 900 Oak Ridge CIR, Brighton, MI 48116
                             </div>
                             <div class="InfoDt">
-                                <iconify-icon icon="carbon:chart-relationship"></iconify-icon> Single
+                                <iconify-icon icon="carbon:chart-relationship"></iconify-icon> {{ $nurse->marital_status ?? '' }}
                             </div>
                             <div class="InfoDt">
                                 <iconify-icon icon="hugeicons:id"></iconify-icon> #NA2365KLO

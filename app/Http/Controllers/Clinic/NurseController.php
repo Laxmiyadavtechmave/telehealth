@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Clinic;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Nurse;
+use App\Models\NurseImage;
 use Illuminate\Http\Request;
 use App\Models\NurseExpertise;
 use App\Models\AreaOfExpertise;
@@ -13,9 +14,9 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CommonController;
-use App\Models\NurseImage;
 
 class NurseController extends Controller
 {
@@ -193,7 +194,7 @@ class NurseController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+
         DB::beginTransaction();
 
         try {
@@ -214,7 +215,7 @@ class NurseController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
                 'gender' => 'required|in:Male,Female,Other',
                 'marital_status' => 'required|in:Married,Unmarried,Single',
-                'national_id' => 'required|string|max:255',
+                'national_id' => 'nullable|string|max:255',
                 'qualification' => 'required|string|max:255',
                 // 'doctor_id' => 'required|exists:doctors,id',
                 // 'role_id' => 'required|exists:roles,id',
@@ -274,18 +275,19 @@ class NurseController extends Controller
                 }
             }
 
-            if ($request->hasFile('documents')) {
-                foreach ($request->file('documents') as $image) {
-                    $path = ImageController::upload($image, '/nurse/documents');
-                    NurseImage::create([
-                        'nurse_id' => $nurse->id,
-                        'img' => $path,
-                    ]);
+
+
+                if ($request->hasFile('documents')) {
+                    foreach ($request->file('documents') as $image) {
+                        $path = ImageController::upload($image, '/nurses/documents');
+                        $nurse->documents()->create([
+                            'img' => $path,
+                        ]);
+                    }
                 }
-            }
 
             DB::commit();
-            return redirect()->route('superadmin.clinic.index')->with('success', 'Nurse created successfully!');
+            return redirect()->route('clinic.index')->with('success', 'Nurse created successfully!');
 
 
         } catch (\Exception $e) {
@@ -305,9 +307,18 @@ class NurseController extends Controller
     {
 
         try {
-            $nurseId = decrypt($id);
-            $nurse = Nurse::findorfail($nurseId);
-            return view('clinic.nurse.detail',compact('nurse'));
+            $nurse = Nurse::findorfail(decrypt($id));
+            $expertise = $nurse->expertises->map(function ($nurseExpertise) {
+                return $nurseExpertise->expertiseName->name;
+            })->implode(', ');
+
+            $documents = $nurse->documents->map(function ($doc) {
+                return [
+                    'name' => basename($doc->img),
+                    'url' => env('IMAGE_ROOT') . $doc->img,
+                ];
+            });
+            return view('clinic.nurse.detail',compact('nurse','expertise','documents'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -321,10 +332,9 @@ class NurseController extends Controller
 
         try {
 
-
             $areaExpertises = AreaOfExpertise::all();
             $nurse = Nurse::findorfail(decrypt($id));
-
+            $nurseExpertise = $nurse->expertises->pluck('area_of_expertise_id')->toArray();
             $documents = $nurse->documents->map(function ($doc) {
                 return [
                     'id' => $doc->id,
@@ -332,8 +342,8 @@ class NurseController extends Controller
                     'url' => env('IMAGE_ROOT') . $doc->img,
                 ];
             });
-            // dd($documents);
-         return view('clinic.nurse.edit',compact('nurse','documents','areaExpertises'));
+
+         return view('clinic.nurse.edit',compact('nurse','documents','areaExpertises','nurseExpertise'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -342,11 +352,142 @@ class NurseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+        public function update(Request $request, string $id)
     {
-        $nurseId = decrypt($id);
-        $nurse = Nurse::findorfail($nurseId);
-        dd($nurseId);
+        // dd($request->all());
+        DB::beginTransaction();
+
+        try {
+            // Step 1: Decrypt ID and find the nurse
+            $nurse = Nurse::findOrFail(decrypt($id));
+
+            // Step 2: Validate
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'dob' => 'required|date',
+                'email' => 'required|email|unique:nurses,email,' . $nurse->id,
+                'license_no' => 'required|string|unique:nurses,license_no,' . $nurse->id . '|max:255',
+                'valid_from' => 'required|date',
+                'valid_to' => 'required|date|after:valid_from',
+                'password' => 'nullable|string|min:6',
+                'phone' => 'required',
+                'address1' => 'required|string',
+                'city' => 'required|string',
+                'country' => 'required|string',
+                'postal_code' => 'required|string',
+                'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                'gender' => 'required|in:Male,Female,Other',
+                'marital_status' => 'required|in:Married,Unmarried,Single',
+                'national_id' => 'required|string|max:255',
+                'qualification' => 'required|string|max:255',
+                // 'doctor_id' => 'nullable|exists:doctors,id',
+                // 'role_id' => 'nullable|exists:roles,id',
+                'year_of_experience' => 'required|integer|min:1',
+                'language' => 'required|string|max:255',
+                'area_expertise_id' => 'required|array',
+                'area_expertise_id.*' => 'exists:area_of_expertises,id',
+                'documents' => 'nullable|array|max:7',
+                'documents.*' => 'file|mimes:jpeg,png,jpg,pdf,doc,docx|max:5120',
+                'removed_files' => 'nullable|string', // Validate removed_files as JSON string
+            ]);
+
+            // Step 3: Update nurse attributes
+            $nurse->name = $request->name;
+            $nurse->dob = $request->dob;
+            $nurse->email = $request->email;
+            $nurse->license_no = $request->license_no;
+            $nurse->valid_from = $request->valid_from;
+            $nurse->valid_to = $request->valid_to;
+            if ($request->filled('password')) {
+                $nurse->password = Hash::make($request->password);
+            }
+            $nurse->phone = $request->phone;
+            $nurse->address1 = $request->address1;
+            $nurse->address2 = $request->address2;
+            $nurse->city = $request->city;
+            $nurse->country = $request->country;
+            $nurse->postal_code = $request->postal_code;
+            $nurse->gender = $request->gender;
+            $nurse->marital_status = $request->marital_status;
+            $nurse->national_id = $request->national_id;
+            $nurse->qualification = $request->qualification;
+            $nurse->doctor_id = $request->doctor_id;
+            $nurse->role_id = $request->role_id;
+            $nurse->year_of_experience = $request->year_of_experience;
+            $nurse->language = $request->language;
+
+            // Handle profile picture upload
+            if ($request->hasFile('profile_pic')) {
+                // Replace old profile picture if it exists
+                if ($nurse->img && Storage::exists($nurse->img)) {
+                    Storage::delete($nurse->img);
+                }
+                $nurse->img = ImageController::upload($request->file('profile_pic'), 'nurse');
+            }
+
+            $nurse->save();
+
+            // Step 4: Update expertise (add new ones without removing existing)
+            // if ($request->filled('area_expertise_id')) {
+            //     // Get existing expertise IDs for this nurse
+            //     $existingExpertiseIds = NurseExpertise::where('nurse_id', $nurse->id)
+            //         ->pluck('area_of_expertise_id')
+            //         ->toArray();
+
+            //     // Add only new expertise IDs
+            //     foreach ($request->area_expertise_id as $expertiseId) {
+            //         if (!in_array($expertiseId, $existingExpertiseIds)) {
+            //             NurseExpertise::create([
+            //                 'nurse_id' => $nurse->id,
+            //                 'area_of_expertise_id' => $expertiseId,
+            //             ]);
+            //         }
+            //     }
+            // }
+
+             if ($request->filled('area_expertise_id')) {
+                $existingExpertiseIds = NurseExpertise::where('nurse_id', $nurse->id)->delete();
+                foreach ($request->area_expertise_id as $expertiseId) {
+                    NurseExpertise::create([
+                        'nurse_id' => $nurse->id,
+                        'area_of_expertise_id' => $expertiseId,
+                    ]);
+                }
+            }
+
+            // Step 5: Handle document uploads and removals
+            // Remove documents based on removed_files
+            $removedFileIds = json_decode($request->removed_files, true);
+            if (!empty($removedFileIds)) {
+                foreach ($removedFileIds as $fileId) {
+                    $document = $nurse->documents()->find($fileId);
+                    if ($document && Storage::exists($document->img)) {
+                        Storage::delete($document->img);
+                    }
+                    $nurse->documents()->where('id', $fileId)->delete();
+                }
+            }
+
+            // Append new documents
+            if ($request->hasFile('documents')) {
+                foreach ($request->file('documents') as $image) {
+                    $path = ImageController::upload($image, '/nurses/documents');
+                    $nurse->documents()->create([
+                        'img' => $path,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('clinic.nurse.index')->with('success', 'Nurse updated successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            // dd($e->getMessage());
+            \Log::error('Error in NurseController@update: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update nurse: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
