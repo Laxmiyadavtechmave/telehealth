@@ -21,13 +21,33 @@ class Nurse extends Model {
         'dob' => 'date',
     ];
 
-            public function documents()
+
+    public function clinic(){
+        return $this->belongsTo(Clinic::class,'clinic_id','id');
+    }
+
+
+
+    public function expertises(){
+        return $this->hasMany(NurseExpertise::class,'nurse_id','id');
+    }
+
+     public function documents()
     {
         return $this->morphMany(Document::class, 'imageable');
     }
 
-    public function expertises(){
-        return $this->hasMany(NurseExpertise::class,'nurse_id','id');
+    public function getWholeAddressAttribute()
+    {
+        $parts = array_filter([
+            $this->address1,
+            $this->address2,
+            $this->city,
+            $this->postal_code,
+            $this->country
+        ]);
+
+        return implode(', ', $parts);
     }
 
 

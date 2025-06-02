@@ -426,7 +426,7 @@
 
                             </div>
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-lg-12">
                                     <div class="col-lg-6">
                                         <div class="ItemNewContainer1">
@@ -473,7 +473,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="FormSubmit_fix_container">
@@ -502,7 +502,7 @@
 
     </div>
     </div>
-    <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
+    {{-- <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -530,7 +530,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 @endsection
 

@@ -41,22 +41,7 @@
                                                 placeholder="Search by Customer Name & Id">
                                         </div>
                                     </div>
-                                    <!-- <div class="col-lg-2 col-sm-6 col-12">
-                                        <div class="input-icon position-relative">
-                                            <span class="input-icon-addon">
-                                                <iconify-icon icon="iconoir:calendar" width="15" height="15">
-                                                </iconify-icon>
-                                            </span>
-                                            <input type="text" class="form-control date-range bookingrange"
-                                                placeholder="dd/mm/yyyy - dd/mm/yyyy">
-                                        </div>
-                                    </div> -->
-                                    <!-- <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="input-blocks InputFilter">
-                                    <i data-feather="user" class="info-img"></i>
-                                    <input type="text" class="form-control" placeholder="Name/Mobile no.">
-                                </div>
-                            </div> -->
+
                                     <div class="col-lg-2 col-sm-6 col-12">
                             <div class="input-blocks">
                             <iconify-icon icon="healthicons:doctor-male-outline" class="info-img"></iconify-icon>
@@ -107,19 +92,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!--
-                    <div class="col-lg-4">
-                        <div class="rightPrFilters">
-                            <div class="input-icon mb-2 position-relative">
-                                <span class="input-icon-addon">
-                                <iconify-icon icon="iconoir:calendar" width="15" height="15"></iconify-icon>
-                                </span>
-                                <input type="text" class="form-control date-range bookingrange"
-                                    placeholder="dd/mm/yyyy - dd/mm/yyyy">
-                            </div>
 
-                        </div>
-                    </div> -->
 
                     </div>
                     <!-- /Filter -->
@@ -140,8 +113,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT001</a></td>
+                                @foreach ($patients as $patient )
+                                    <tr>
+                                <td><a href="{{ route('clinic.patient.show',encrypt($patient->id)) }}">#PAT001</a></td>
                                 <td>John Smith</td>
                                 <td>+1 555-123-4567</td>
                                 <td>john.smith@example.com</td>
@@ -154,13 +128,13 @@
                                     <div class="d-flex align-items-center ActionDropdown">
                                         <div class="d-flex">
                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
+                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="{{ route('clinic.patient.edit' ,encrypt($patient->id)) }}">
                                                 <span class="icon"><span class="feather-icon">
                                                 <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
                                                 </span></span>
                                             </a>
                                             <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
+                                                data-bs-toggle="tooltip" title="View Patient Detail" href="{{ route('clinic.patient.show',encrypt($patient->id)) }}">
                                                 <span class="icon"><span class="feather-icon">
                                                         <iconify-icon icon="hugeicons:view"></iconify-icon>
                                                     </span></span>
@@ -169,238 +143,8 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT002</a></td>
-                                <td>Mary Johnson</td>
-                                <td>+1 555-234-5678</td>
-                                <td>mary.johnson@example.com</td>
-                                <td>Dr. Michael Lee</td>
-                                <td>Neurology</td>
-                                <td>
-                                    <span class="badge bg-soft-danger" data-bs-toggle="tooltip" title="Patient is not currently active">Inactive</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT003</a></td>
-                                <td>James Williams</td>
-                                <td>+1 555-345-6789</td>
-                                <td>james.williams@example.com</td>
-                                <td>Dr. Sarah Miller</td>
-                                <td>Pediatrics</td>
-                                <td>
-                                    <span class="badge bg-soft-success" data-bs-toggle="tooltip" title="Patient is currently active">Active</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT004</a></td>
-                                <td>Kevin Martinez</td>
-                                <td>+1 555-777-8899</td>
-                                <td>kevin.martinez@example.com</td>
-                                <td>Dr. Olivia Brooks</td>
-                                <td>Orthopedics</td>
-                                <td>
-                                    <span class="badge bg-soft-danger" data-bs-toggle="tooltip" title="Patient is not currently active">Inactive</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT005</a></td>
-                                <td>Susan Green</td>
-                                <td>+1 555-101-1213</td>
-                                <td>susan.green@example.com</td>
-                                <td>Dr. Ethan Hall</td>
-                                <td>Dermatology</td>
-                                <td>
-                                    <span class="badge bg-soft-success" data-bs-toggle="tooltip" title="Patient is currently active">Active</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT006</a></td>
-                                <td>Daniel White</td>
-                                <td>+1 555-232-3434</td>
-                                <td>daniel.white@example.com</td>
-                                <td>Dr. Chloe Adams</td>
-                                <td>Urology</td>
-                                <td>
-                                    <span class="badge bg-soft-danger" data-bs-toggle="tooltip" title="Patient is not currently active">Inactive</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT007</a></td>
-                                <td>Emma Davis</td>
-                                <td>+1 555-454-5656</td>
-                                <td>emma.davis@example.com</td>
-                                <td>Dr. Nathan Scott</td>
-                                <td>Gynecology</td>
-                                <td>
-                                    <span class="badge bg-soft-success" data-bs-toggle="tooltip" title="Patient is currently active">Active</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT008</a></td>
-                                <td>Brian Turner</td>
-                                <td>+1 555-676-7878</td>
-                                <td>brian.turner@example.com</td>
-                                <td>Dr. Hannah Cooper</td>
-                                <td>ENT</td>
-                                <td>
-                                    <span class="badge bg-soft-danger" data-bs-toggle="tooltip" title="Patient is not currently active">Inactive</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><a href="patient-detail.php">#PAT009</a></td>
-                                <td>Natalie Wright</td>
-                                <td>+1 555-898-9090</td>
-                                <td>natalie.wright@example.com</td>
-                                <td>Dr. William King</td>
-                                <td>General Medicine</td>
-                                <td>
-                                    <span class="badge bg-soft-success" data-bs-toggle="tooltip" title="Patient is currently active">Active</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center ActionDropdown">
-                                        <div class="d-flex">
-                                        <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="Edit Patient Detail" href="patients-edit.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                <iconify-icon icon="fluent:edit-20-regular"></iconify-icon>
-                                                </span></span>
-                                            </a>
-                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover"
-                                                data-bs-toggle="tooltip" title="View Patient Detail" href="patient-detail.php">
-                                                <span class="icon"><span class="feather-icon">
-                                                        <iconify-icon icon="hugeicons:view"></iconify-icon>
-                                                    </span></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                @endforeach
+
 
                                 <!-- Add more patient rows as needed -->
                             </tbody>

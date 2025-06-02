@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Validator;
 class RoleController extends Controller
 {
     public function index() {
-        // if ( Role::where( 'name', "Superadmin" )->exists() ) {
-        //     $this->assignAdminPermissions();
-        // }
 
         $roles = Role::where('guard_name','clinic')->orderByDesc('created_at')->get();
         return view('clinic.role.role-permission', compact( 'roles' ) );

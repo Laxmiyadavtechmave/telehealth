@@ -46,7 +46,7 @@
 
             <!-- Tooltip Menu Item -->
             <div class="custom-menu-item">
-                <a href="{{ route('clinic.user.index') }}">
+                <a href="">
                     <div class="custom-icon">
                         <iconify-icon icon="oui:app-users-roles"></iconify-icon>
                     </div>
@@ -65,7 +65,7 @@
             </div>
 
             <div class="custom-menu-item">
-                <a href="{{ route('clinic.role.index') }}">
+                <a href="">
                     <div class="custom-icon">
                         <iconify-icon icon="hugeicons:analytics-02"></iconify-icon>
                     </div>

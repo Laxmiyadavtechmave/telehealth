@@ -35,7 +35,7 @@
                     <form action="{{ route('clinic.nurse.store') }}" class="form needs-validation" method="post"
                         enctype="multipart/form-data" novalidate>
                         @csrf
-<input type="file" id="finalImageInput" name="documents[]" multiple hidden>
+{{-- <input type="file" id="finalImageInput" name="documents[]" multiple hidden> --}}
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -68,7 +68,7 @@
                                                                                             icon="bytesize:upload"></iconify-icon>
                                                                                     </div>
                                                                                     <div class="text-uppercase">
-                                                                                        Update <br /> Profile Photo
+                                                                                        Upload <br /> Profile Photo
                                                                                     </div>
                                                                                 </div>
                                                                             </label>
@@ -389,7 +389,7 @@
                                 </div>
 
                             </div>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-lg-12">
                                     <div class="col-lg-6">
                                         <div class="ItemNewContainer1">
@@ -434,7 +434,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
 
@@ -461,7 +461,7 @@
 
     </div>
     </div>
-    <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
+    {{-- <div class="modal fade" id="uploadModalNew" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -489,7 +489,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 @push('custom_scripts')
     <!-- template icon upload js -->
