@@ -475,7 +475,7 @@
                     <div class="loaderCenter">
                         <div class="loader" id="uploadLoaderNew">
                             <!-- <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." />
-                                                                    <p>Uploading...</p> -->
+                                                                        <p>Uploading...</p> -->
                         </div>
                     </div>
 
@@ -491,6 +491,7 @@
 @endsection
 @push('custom_scripts')
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
+    <script src="{{ asset('common/js/password.js') }}"></script>
     <script>
         /******************************* clinic profile image ***********************/
         $(document).on("change", ".uploadProfileInput", function() {

@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class AreaOfExpertise extends Model
 {
-    // protected $table = 'area_of_expertises';
+    protected $fillable = ['name', 'type', 'description'];
 
-    protected $fillable = ['name', 'description'];
+    public function doctorExpertises()
+    {
+        return $this->hasMany(DoctorExpertise::class, 'expertise_id', 'id');
+    }
 }

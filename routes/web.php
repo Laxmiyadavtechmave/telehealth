@@ -60,11 +60,13 @@ Route::prefix('superadmin')
         Route::post('pharmacy/documents-download/{clinicId}', [PharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
 
         Route::get('patients', [HomeController::class, 'patients'])->name('patients');
+        
         Route::prefix('doctors')
             ->name('doctors.')
             ->group(function () {
                 Route::get('/', [HomeController::class, 'doctors'])->name('list');
                 Route::get('details', [HomeController::class, 'doctorDetail'])->name('detail');
+                Route::get('/doctor/datatable', [HomeController::class, 'doctorAjaxDatatable'])->name('ajaxDataTable');
             });
 
         Route::prefix('nurses')

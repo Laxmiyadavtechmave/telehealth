@@ -290,8 +290,8 @@ class PharmacyController extends Controller
             $pharmacy = Pharmacy::findorfail(decrypt($id));
             $extra = !empty($pharmacy->extra) ? json_decode($pharmacy->extra, true) : [];
             $clinics = Clinic::where('status', 'active')->orderBy('id', 'desc')->get();
-            $schedules = $pharmacy->schedules()->groupBy('day', 'extra');
-            $documents = $pharmacy->documents()->sortByDesc('id');
+            $schedules = $pharmacy->schedules->groupBy('day', 'extra');
+            $documents = $pharmacy->documents->sortByDesc('id');
             return view('admin.pharmacy.detail', compact('pharmacy', 'schedules', 'clinics', 'extra', 'documents'));
         } catch (Exception $e) {
             return redirect()->route('superadmin.pharmacies.index')->with('error', 'Something went wrong');
@@ -453,7 +453,7 @@ class PharmacyController extends Controller
         //
     }
 
-    public function downloadDocuments(Request $request, $id)
+     public function downloadDocuments(Request $request, $id)
     {
         $id = decrypt($id);
         $ids = json_decode($request->document_ids, true);
@@ -462,8 +462,8 @@ class PharmacyController extends Controller
             return redirect()->back()->with('error', 'Documents not selected.');
         }
 
-        $documents = PharmacyImage::whereIn('id', $ids)->get();
-        $zipFileName = 'pharmacy_documents_' . now()->format('YmdHis') . '.zip';
+        $documents = Document::whereIn('id', $ids)->get();
+        $zipFileName = 'clinic_documents_' . now()->format('YmdHis') . '.zip';
         $zipPath = storage_path("app/public/zips/{$zipFileName}");
 
         if (!file_exists(storage_path('app/public/zips'))) {

@@ -171,7 +171,7 @@ class ClinicController extends Controller
                 'valid_to' => 'required|date|after_or_equal:valid_from',
                 'password' => 'required|string|min:6', // add minimum length for security
                 'phone' => 'required|string',
-                'web_url' => 'required|url',
+                'web_url' => 'nullable|url',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -327,7 +327,7 @@ class ClinicController extends Controller
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after_or_equal:valid_from',
                 'phone' => 'required|string',
-                'web_url' => 'required|url',
+                'web_url' => 'nullable|url',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
