@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials, $request->has('remember'))) {
+        if (Auth::guard('web')->attempt($credentials, $request->has('remember'))) {
             return redirect()->intended('/superadmin/dashboard');
         }
 
@@ -33,11 +33,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+       Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('superadmin.login')->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');;
     }
 
         public function profile(Request $request)
