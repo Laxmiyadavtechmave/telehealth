@@ -60,7 +60,7 @@ Route::prefix('superadmin')
         Route::post('pharmacy/documents-download/{clinicId}', [PharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
 
         Route::get('patients', [HomeController::class, 'patients'])->name('patients');
-        
+
         Route::prefix('doctors')
             ->name('doctors.')
             ->group(function () {
@@ -100,11 +100,12 @@ Route::prefix('clinic')
     ->group(function () {
         Route::get('dashboard', [ClinicHomeController::class, 'dashboard'])->name('dashboard');
         Route::post('logout', [ClinicAuthController::class, 'logout'])->name('logout');
-        Route::resource('doctor', DoctorController::class);
+
         Route::resource('nurse', NurseController::class);
-        Route::post('nurse/upload-document',[NurseController::class,'uploadDocument'])->name('nurse.upload.document');
+        Route::get('/nurses/datatable', [NurseController::class, 'ajaxDatatable'])->name('nurse.ajaxDataTable');
+        Route::get('nurse/upload-document', [NurseController::class, 'uploadDocument'])->name('nurse.upload.document');
         Route::resource('patient', PatientController::class);
-        Route::post('nurse/upload-document',[PatientController::class,'uploadDocument'])->name('patient.upload.document');
+        Route::post('nurse/upload-document', [PatientController::class, 'uploadDocument'])->name('patient.upload.document');
 
         /*************************** pharmacy **********************/
         Route::resource('pharmacies', ClinicPharmacyController::class);
@@ -121,4 +122,10 @@ Route::prefix('clinic')
             });
 
         Route::resource('role', ClinicRoleController::class);
+
+        /******************************** doctor routes ***************/
+
+        Route::resource('doctor', DoctorController::class);
+        Route::get('/doctors/datatable', [DoctorController::class, 'ajaxDatatable'])->name('doctors.ajaxDataTable');
+        Route::post('/doctors/update-status', [DoctorController::class, 'updateStatus'])->name('doctors.updateStatus');
     });
