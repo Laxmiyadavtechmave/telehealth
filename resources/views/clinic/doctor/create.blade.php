@@ -11,7 +11,7 @@
                     <div class="my-auto ">
                         <h2 class="mb-1 flexpagetitle">
                             <div class="backbtnwrap">
-                                <a href="doctors.php">
+                                <a href="{{ route('clinic.doctor.index') }}">
                                     <iconify-icon icon="octicon:arrow-left-24"></iconify-icon>
                                 </a>
                             </div>
@@ -161,23 +161,27 @@
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="form-group position-relative">
-                                                            <label for="#">Password <span>*</span></label>
-                                                            <input type="password" class="form-control password-field"
-                                                                id="password" placeholder="Enter Password here.."
-                                                                min="6" name="password"
-                                                                autocomplete="new-password" required>
-                                                            <span class="toggle-password"
+                                                            <label for="password">Password <span>*</span></label>
+                                                            <input type="password" name="password" id="password"
+                                                                class="pass-input form-control" placeholder="********"
+                                                                min="6" style="width: 100%; padding-right: 40px;"
+                                                                autocomplete="new-password" required />
+
+                                                            <span
                                                                 style="position:absolute; top:38px; right:15px; cursor:pointer;">
-                                                                <iconify-icon icon="mdi:eye-off-outline"></iconify-icon>
+                                                                <iconify-icon icon="mdi:eye"
+                                                                    id="togglePassword"></iconify-icon>
                                                             </span>
                                                         </div>
+
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label for="#">Phone No. <span>*</span></label>
                                                             <input type="text" placeholder="Phone No." id="phone"
                                                                 class="form-control" name="phone"
-                                                                value="{{ old('phone') }}" maxlength="13" minlength="8"
+                                                                value="{{ old('phone') }}" maxlength="13"
+                                                                minlength="8"
                                                                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,13);"
                                                                 pattern="\d{8,13}" required>
                                                         </div>
@@ -312,30 +316,37 @@
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label for="#">Specialization <span>*</span></label>
+                                                            @php
+                                                                $selectedSpecIds = old('specilization');
+                                                            @endphp
+
                                                             <select name="specilization[]" class="select"
                                                                 id="specilization" multiple required>
                                                                 @if (count($specilization) > 0)
                                                                     @foreach ($specilization as $expertise)
-                                                                        <option value="{{ $expertise->id ?? '' }}"
+                                                                        <option value="{{ $expertise->id }}"
                                                                             title="{{ $expertise->description ?? '' }}"
-                                                                            {{ is_array(old('area_expertise_id')) && in_array($expertise->id, old('area_expertise_id')) ? 'selected' : '' }}>
+                                                                            {{ is_array($selectedSpecIds) && in_array($expertise->id, $selectedSpecIds) ? 'selected' : '' }}>
                                                                             {{ $expertise->name ?? '' }}
                                                                         </option>
                                                                     @endforeach
                                                                 @endif
                                                             </select>
+
                                                         </div>
                                                     </div>
 
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
-                                                            <label for="#">Years of Experience
-                                                                <span>*</span></label>
-                                                            <input type="text" placeholder="eg. 1 year"
-                                                                id="experience" name="experience" class="form-control"
+                                                            <label for="experience">
+                                                                Years of Experience <span class="text-danger">*</span>
+                                                            </label>
+                                                            <input type="number" min="1" id="experience"
+                                                                name="extra[experience]" class="form-control"
                                                                 value="{{ old('extra.experience') }}" required>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label class="form-label">Consultation Type<div
@@ -345,9 +356,7 @@
                                                                 <button class="dropbtn dropdown-toggle dropmenuBtn"
                                                                     type="button" data-bs-toggle="dropdown"
                                                                     aria-expanded="false">
-                                                                    <span class="selected-count">Select
-                                                                        Type</span>
-
+                                                                    <span class="selected-count">Select Type</span>
                                                                 </button>
                                                                 <div
                                                                     class="dropdown-menu customdropdownmenu_style available-users-dropdown">
@@ -371,7 +380,7 @@
                                                                             <div class="dropfilter_options">
                                                                                 <input type="checkbox"
                                                                                     class="individual-option form-check-input"
-                                                                                    data-type="Physical">
+                                                                                    data-type="physical">
                                                                                 Physical
                                                                             </div>
                                                                         </div>
@@ -379,7 +388,7 @@
                                                                             <div class="dropfilter_options">
                                                                                 <input type="checkbox"
                                                                                     class="individual-option form-check-input"
-                                                                                    data-type="Audio">
+                                                                                    data-type="audio">
                                                                                 Audio
                                                                             </div>
                                                                         </div>
@@ -387,7 +396,7 @@
                                                                             <div class="dropfilter_options">
                                                                                 <input type="checkbox"
                                                                                     class="individual-option form-check-input"
-                                                                                    data-type="Video">
+                                                                                    data-type="video">
                                                                                 Video
                                                                             </div>
                                                                         </div>
@@ -395,15 +404,21 @@
                                                                             <div class="dropfilter_options">
                                                                                 <input type="checkbox"
                                                                                     class="individual-option form-check-input"
-                                                                                    data-type="Chat">
+                                                                                    data-type="chat">
                                                                                 Chat
                                                                             </div>
                                                                         </div>
                                                                     </div>
+
                                                                     <p class="no-data" style="display: none;">No
                                                                         data
                                                                         found</p>
                                                                 </div>
+                                                            </div>
+
+                                                            <div class="consultation-type-error mt-1"
+                                                                style="display:none;color:#dc3545;font-size: .875em;">
+                                                                This Field is required
                                                             </div>
                                                         </div>
                                                     </div>
@@ -422,11 +437,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -530,37 +541,41 @@
                                     <h6 class="sectionTitle">Consultation Fee Management</h6>
                                     <div class="ItemNewContainer1">
                                         @foreach (['audio', 'video', 'physical', 'chat'] as $type)
-                                            <div class="consultation-fee-block" data-type="{{ $type }}"
+                                            <div class="consultation-fee-block" data-type="{{ strtolower($type) }}"
                                                 style="display: none;">
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label>Consultation Type <span>*</span></label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $type }}" readonly disabled>
+                                                {{-- <input type="hidden" name="consultation[{{ $type }}][selected]"
+                                                    value="1"> --}}
+
+                                                @if ($type !== 'chat')
+                                                    <div class="row">
+                                                        <div class="col-lg-3">
+                                                            <div class="form-group">
+                                                                <label>Consultation Type <span>*</span></label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ ucfirst($type) }}" readonly disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <div class="form-group">
+                                                                <label>Duration (Min) <span>*</span></label>
+                                                                <input type="number"
+                                                                    name="consultation[{{ $type }}][duration]"
+                                                                    class="form-control" value="30">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <div class="form-group">
+                                                                <label>Price <span>*</span></label>
+                                                                <input type="text"
+                                                                    name="consultation[{{ $type }}][price]"
+                                                                    class="form-control" value="">
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label>Duration (Min) <span>*</span></label>
-                                                        <input type="number"
-                                                            name="consultation[{{ $type }}][duration]"
-                                                            class="form-control duration-field" value="30">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <div class="form-group">
-                                                        <label>Price <span>*</span></label>
-                                                        <input type="text"
-                                                            name="consultation[{{ $type }}][price]"
-                                                            class="form-control price-field" value="">
-                                                    </div>
-                                                </div>
+                                                @endif
                                             </div>
                                         @endforeach
-
-
                                     </div>
-
                                 </div>
                             </div>
 
@@ -586,140 +601,111 @@
         </div>
 
     </div>
-    </div>
 
-
-    </div>
-    </div>
 @endsection
 @push('custom_scripts')
     <script src="{{ asset('common/js/form-validation.js') }}"></script>
     <script src="{{ asset('common/js/password.js') }}"></script>
+    <script src="{{ asset('common/js/profile-pic.js') }}"></script>
     <script>
-        /******************************* clinic profile image ***********************/
-        $(document).on("change", ".uploadProfileInput", function() {
-            const triggerInput = $(this);
-            const wrapper = triggerInput.closest(".profile-pic-wrapper");
-            const holder = triggerInput.closest(".pic-holder");
-            const pic = holder.find(".pic");
-            const currentImg = pic.attr("src");
-            const file = this.files[0];
-
-            // Remove old alerts/snackbars
-            wrapper.find('[role="alert"]').remove();
-
-            if (!file || !window.FileReader) return;
-
-            // Validate file type
-            if (!file.type.match(/^image/)) {
-                wrapper.append(
-                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>'
-                );
-                setTimeout(() => {
-                    wrapper.find('[role="alert"]').remove();
-                }, 3000);
-                return;
-            }
-
-            // Validate file size (5MB max)
-            if (file.size > 5 * 1024 * 1024) {
-                wrapper.append(
-                    '<div class="alert alert-danger d-inline-block p-2 small" role="alert">File size must be less than 5MB.</div>'
-                );
-                setTimeout(() => {
-                    wrapper.find('[role="alert"]').remove();
-                }, 3000);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                holder.addClass("uploadInProgress");
-                pic.attr("src", this.result);
-
-                const loader = $('<div class="upload-loader"></div>').html(
-                    '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
-                );
-                holder.append(loader);
-
-                setTimeout(() => {
-                    holder.removeClass("uploadInProgress");
-                    loader.remove();
-
-                    // Simulate random success/failure
-                    const random = Math.random();
-                    if (random < 0.9) {
-                        // wrapper.append(
-                        //     '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Image uploaded successfully</div>'
-                        // );
-                        // triggerInput.val("");
-                        wrapper.find(".upload-file-block").css("opacity", "0");
-
-                        setTimeout(() => {
-                            wrapper.find('[role="alert"]').remove();
-                        }, 3000);
-                    } else {
-                        pic.attr("src", currentImg);
-                        wrapper.append(
-                            '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There was an error while uploading! Please try again later.</div>'
-                        );
-                        triggerInput.val("");
-                        setTimeout(() => {
-                            wrapper.find('[role="alert"]').remove();
-                        }, 3000);
-                    }
-                }, 1500);
-            };
-
-            reader.readAsDataURL(file);
-        });
-
-
         $(document).ready(function() {
             $('.individual-option').on('change', function() {
                 let selectedTypes = [];
 
-
                 $('.individual-option').each(function() {
-                    let type = $(this).data('type');
+                    let type = $(this).data('type').toLowerCase(); // always lowercase
                     let isChecked = $(this).is(':checked');
 
-                    if (isChecked) {
-                        console.log(isChecked);
-                        selectedTypes.push($(this).data('type'));
-                    }
-
-                    if(selectedTypes.length > 0){
-                        $('.fee_management').show();
-                    }else{
-                        $('.fee_management').hide();
-                    }
-
                     let block = $('.consultation-fee-block[data-type="' + type + '"]');
-                    block.toggle(isChecked); // show/hide
+                    block.toggle(isChecked); // show/hide block
 
-                    // Clean up case-insensitive matching
-                    let formattedType = type.charAt(0).toUpperCase() + type.slice(1);
+                    const inputs = block.find('input');
 
-                    // Add/remove required
-                    if (isChecked && type !== 'chat') {
-                        block.find(`input[name="consultation[${formattedType}][duration]"]`).prop(
-                            'required', true);
-                        block.find(`input[name="consultation[${formattedType}][price]"]`).prop(
-                            'required', true);
+                    if (isChecked) {
+                        selectedTypes.push(type);
+                        inputs.prop('disabled', false);
+
+                        if (type !== 'chat') {
+                            block.find(`input[name="consultation[${type}][duration]"]`)
+                                .prop('required', true)
+                                .removeClass('is-invalid');
+
+                            block.find(`input[name="consultation[${type}][price]"]`)
+                                .prop('required', true)
+                                .removeClass('is-invalid');
+                        }
+
+                        // Add hidden selected marker if not already present
+                        if (block.find(`input[name="consultation[${type}][selected]"]`).length ===
+                            0) {
+                            block.append(
+                                `<input type="hidden" name="consultation[${type}][selected]" value="1">`
+                            );
+                        }
+
                     } else {
-                        block.find(`input[name="consultation[${formattedType}][duration]"]`).prop(
-                            'required', false);
-                        block.find(`input[name="consultation[${formattedType}][price]"]`).prop(
-                            'required', false);
+                        inputs.prop('disabled', true);
+
+                        // Remove required and invalid if unchecked
+                        block.find(`input[name="consultation[${type}][duration]"]`)
+                            .removeAttr('required')
+                            .removeClass('is-invalid');
+
+                        block.find(`input[name="consultation[${type}][price]"]`)
+                            .removeAttr('required')
+                            .removeClass('is-invalid');
+
+                        block.find(`input[name="consultation[${type}][selected]"]`).remove();
                     }
                 });
+
+                $('.fee_management').toggle(selectedTypes.length > 0);
             });
 
-            // Optional: handle "Select All"
             $('.select-all-available-users').on('change', function() {
                 $('.individual-option').prop('checked', $(this).prop('checked')).trigger('change');
             });
+
+            // Trigger on load
+            $('.available-users-search').on('keyup', function() {
+                let searchTerm = $(this).val().toLowerCase();
+                let $options = $('.Customdrpitems_container .mainoptionContainer');
+                let matched = 0;
+
+                $options.each(function() {
+                    let label = $(this).text().toLowerCase();
+                    if (label.indexOf(searchTerm) > -1) {
+                        $(this).show();
+                        matched++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                // Show/hide "No data found" message
+                $('.no-data').toggle(matched === 0);
+
+                // Show/hide "Select All" checkbox block
+                $('.sellallitemsMain').toggle(matched > 0);
+            });
+
+            // Optional: Clear search on dropdown close
+            $('.available-users-dropdown-wrapper .dropdown-toggle').on('hide.bs.dropdown', function() {
+                $('.available-users-search').val('').trigger('keyup');
+            });
+        });
+
+        $('form').on('submit', function(e) {
+            let atLeastOneSelected = $('.individual-option:checked').length > 0;
+
+            if (!atLeastOneSelected) {
+                e.preventDefault(); // stop form submission
+                $('.consultation-type-error').show();
+                $('.dropbtn').addClass('border-danger');
+            } else {
+                $('.consultation-type-error').hide();
+                $('.dropbtn').removeClass('border-danger');
+            }
         });
     </script>
     @include('admin.common.schedule-js')

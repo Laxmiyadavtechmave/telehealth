@@ -7,6 +7,7 @@ use App\Models\Nurse;
 use App\Models\NurseImage;
 use Illuminate\Http\Request;
 use App\Models\NurseExpertise;
+use App\Models\Doctor;
 use App\Models\AreaOfExpertise;
 use App\Traits\GeneratesCustomId;
 use Illuminate\Support\Facades\DB;
@@ -20,170 +21,149 @@ use App\Http\Controllers\CommonController;
 
 class NurseController extends Controller
 {
-        use GeneratesCustomId;
+    use GeneratesCustomId;
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // $user = Auth::guard('clinic')->user() ?? 1;
-        // $clinicId = $user->clinic_id ?? $user->id;
-        $nurses = Nurse::all();
-        // where('clinic_id', $clinicId)
-
-        return view('clinic.nurse.index',compact('nurses'));
         try {
-            return view('clinic.nurse.index');
+            $doctors = Doctor::where('status', 'active')->get();
+            return view('clinic.nurse.index', compact('doctors'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
     }
 
+    public function ajaxDatatable(Request $request)
+    {
+        $draw = $request->get('draw');
+        $start = $request->get('start');
+        $rowperpage = $request->get('length');
 
-    // public function ajaxDatatable(Request $request)
-    // {
-    //     $draw = $request->get('draw');
-    //     $start = $request->get('start');
-    //     $rowperpage = $request->get('length');
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $search_arr = $request->get('search');
 
-    //     $columnIndex_arr = $request->get('order');
-    //     $columnName_arr = $request->get('columns');
-    //     $search_arr = $request->get('search');
+        $columnIndex = $columnIndex_arr[0]['column'] ?? 0;
+        $columnName = $columnName_arr[$columnIndex]['data'] ?? 'name';
+        $columnSortOrder = $columnIndex_arr[0]['dir'] ?? 'asc';
+        $searchValue = $search_arr['value'] ?? '';
+        $status = $request->status;
+        $doctor_id = $request->doctor_id;
+        $daterange = $request->daterange;
+        // Whitelist of sortable fields
+        $sortableColumns = ['id', 'name', 'email', 'phone', 'license_no', 'address1', 'status', 'created_at'];
+        if (!in_array($columnName, $sortableColumns)) {
+            $columnName = 'id';
+        }
 
-    //     $columnIndex = $columnIndex_arr[0]['column'] ?? 0;
-    //     $columnName = $columnName_arr[$columnIndex]['data'] ?? 'name';
-    //     $columnSortOrder = $columnIndex_arr[0]['dir'] ?? 'asc';
-    //     $searchValue = $search_arr['value'] ?? '';
-    //     $status = $request->status;
-    //     $daterange = $request->daterange;
-    //     // Whitelist of sortable fields
-    //     $sortableColumns = ['id', 'name', 'email', 'phone', 'license_no', 'address1', 'status', 'created_at'];
-    //     if (!in_array($columnName, $sortableColumns)) {
-    //         $columnName = 'id';
-    //     }
+        // Count total records
+        $totalRecords = Nurse::count();
 
-    //     // Count total records
-    //     $totalRecords = Nurse::count();
+        // Base query
+        $query = Nurse::query();
 
-    //     // Base query
-    //     $query = Nurse::query();
+        // Apply search text
+        if (!empty($searchValue)) {
+            $query->search($searchValue);
+        }
 
-    //     // Apply search text
-    //     if (!empty($searchValue)) {
-    //         $query->search($searchValue);
-    //     }
+        // Apply status filter
+        if (!empty($doctor_id)) {
+            $query->where('doctor_id', $doctor_id);
+        }
 
-    //     // Apply status filter
-    //     if (!empty($status)) {
-    //         $query->where('status', $status);
-    //     }
+         if (!empty($status)) {
+            $query->where('status', $status);
+        }
 
-    //     // // Apply daterange filter
-    //     if (!empty($daterange)) {
-    //         try {
-    //             [$startRange, $endRange] = explode(' - ', $daterange);
+        // // Apply daterange filter
+        if (!empty($daterange)) {
+            try {
+                [$startRange, $endRange] = explode(' - ', $daterange);
 
-    //             $startDate = Carbon::createFromFormat('m/d/Y', trim($startRange))->format('Y-m-d');
-    //             $endDate = Carbon::createFromFormat('m/d/Y', trim($endRange))->format('Y-m-d');
+                $startDate = Carbon::createFromFormat('m/d/Y', trim($startRange))->format('Y-m-d');
+                $endDate = Carbon::createFromFormat('m/d/Y', trim($endRange))->format('Y-m-d');
 
-    //             $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
-    //         } catch (\Exception $e) {
-    //             \Log::error('Invalid date range: ' . $e->getMessage());
-    //         }
-    //     }
+                $query->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate);
+            } catch (\Exception $e) {
+                \Log::error('Invalid date range: ' . $e->getMessage());
+            }
+        }
 
-    //     // Count with filter
-    //     $totalRecordswithFilter = $query->count();
+        // Count with filter
+        $totalRecordswithFilter = $query->count();
 
-    //     // Fetch data
-    //     $records = $query->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
+        // Fetch data
+        $records = $query->skip($start)->take($rowperpage)->orderBy($columnName, $columnSortOrder)->get();
 
-    //     // Data formatting
-    //     $data_arr = [];
-    //     foreach ($records as $key => $row) {
-    //         $statusBg = CommonController::statusBg($row->status ?? '');
+        // Data formatting
+        $data_arr = [];
+        foreach ($records as $key => $row) {
+            $statusBg = CommonController::statusBg($row->status ?? '');
 
-    //         $address =
-    //             '  <div class="LongMesage_container">
-    //                                     <input class="refuge-collection-input tableLongMessage_Input" value="' .
-    //             implode(', ', array_filter([$row->address1 ?? '', $row->address2 ?? '', $row->city ?? '', $row->country ?? '', $row->postal_code ?? ''])) .
-    //             '" readonly>
-    //                                     <button class="view-btn tablemessageview_btn" type="button" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Click to view" data-bs-original-title="' .
-    //             implode(', ', array_filter([$row->address1 ?? '', $row->address2 ?? '', $row->city ?? '', $row->country ?? '', $row->postal_code ?? ''])) .
-    //             '">
-    //                                         <iconify-icon icon="ion:eye-outline"></iconify-icon> Read More
-    //                                     </button>
-    //                                 </div>';
+            $address =
+                '  <div class="LongMesage_container">
+                                        <input class="refuge-collection-input tableLongMessage_Input" value="' .
+                implode(', ', array_filter([$row->address1 ?? '', $row->address2 ?? '', $row->city ?? '', $row->country ?? '', $row->postal_code ?? ''])) .
+                '" readonly>
+                                        <button class="view-btn tablemessageview_btn" type="button" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Click to view" data-bs-original-title="' .
+                implode(', ', array_filter([$row->address1 ?? '', $row->address2 ?? '', $row->city ?? '', $row->country ?? '', $row->postal_code ?? ''])) .
+                '">
+                                            <iconify-icon icon="ion:eye-outline"></iconify-icon> Read More
+                                        </button>
+                                    </div>';
 
-    //         // $image = asset('common/img/logoicon.png');
-    //         // if ($row->img && Storage::disk('public')->exists($row->img)) {
-    //         //     $image = env('IMAGE_ROOT') . $row->img;
-    //         // }
+            $data_arr[] = [
+                'id' => $row->id ?? '',
+                'nurse_id' => $row->nurse_id ?? '',
+                'name' => $row->name ?? '',
+                'gender' => $row->gender ?? '',
+                'phone' => $row->phone ?? '',
+                'email' => $row->email ?? '',
+                'experience' => !empty($row->year_of_experience) ? $row->year_of_experience . ' Year' : 'N/A',
+                'doctor_id' => $row->doctor->name ?? '',
+                'created_at' => !empty($row->created_at) ? date('d M, Y', strtotime($row->created_at)) : '',
+                'status' => '<span class="badge ' . ($statusBg ?? '') . '" data-bs-toggle="tooltip" data-placement="top" data-bs-original-title="Nurse is currently ' . ($row->status ?? '') . '">' . ucfirst($row->status ?? '') . '</span>',
+                'action' =>
+                    '<div class="d-flex align-items-center ActionDropdown">
+                                        <div class="d-flex">
+                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Nurse Detail" href="' .
+                    route('clinic.nurse.edit', encrypt($row->id ?? '')) .
+                    '">
+                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
+                                            </a>
+                                            <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="View Nurse Detail" href="' .
+                    route('clinic.nurse.show', encrypt($row->id ?? '')) .
+                    '">
+                                                <span class="icon"><span class="feather-icon"><iconify-icon icon="hugeicons:view"></iconify-icon></span></span>
+                                            </a>
+                                        </div>
+                                    </div>',
+            ];
+        }
 
-    //         // $clinic =
-    //         //     '<div class="productimgname">
-    //         //                             <a href="' .
-    //         //     ($image ?? '') .
-    //         //     '" data-fancybox="gallery" class="product-img stock-img">
-    //         //                                 <img src="' .
-    //         //     ($image ?? '') .
-    //         //     '" alt="product">
-    //         //                             </a>
-    //         //                             <a href="'.(route('superadmin.clinic.show',encrypt($row->id??''))).'">' .
-    //         //     ($row->name ?? '') .
-    //         //     '</a>
-    //         //                         </div>';
+        // Response
+        $response = [
+            'draw' => intval($draw),
+            'iTotalRecords' => $totalRecords,
+            'iTotalDisplayRecords' => $totalRecordswithFilter,
+            'aaData' => $data_arr,
+        ];
 
-    //         $data_arr[] = [
-    //             'id' => $row->id ?? '',
-    //             'clinic_id' => $row->clinic_id ?? '',
-    //             'name' => $row->name ?? '',
-    //             'phone' => $row->phone ?? '',
-    //             'email' => $row->email ?? '',
-    //             'license_no' => $row->license_no ?? '',
-    //             'address1' => $address,
-    //             'total_doctors' => 7,
-    //             'created_at' => !empty($row->created_at) ? date('d M, Y', strtotime($row->created_at)) : '',
-    //             'status' => '<span class="badge ' . ($statusBg ?? '') . '" data-bs-toggle="tooltip" data-placement="top" data-bs-original-title="Clinic is currently ' . ($row->status ?? '') . '">' . ucfirst($row->status ?? '') . '</span>',
-    //             'action' =>
-    //                 '<div class="d-flex align-items-center ActionDropdown">
-    //                                     <div class="d-flex">
-    //                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="Edit Clinic Detail" href="' .
-    //                 route('superadmin.clinic.edit', encrypt($row->id ?? '')) .
-    //                 '">
-    //                                             <span class="icon"><span class="feather-icon"><iconify-icon icon="fluent:edit-20-regular"></iconify-icon></span></span>
-    //                                         </a>
-    //                                         <a class="btn btn-icon btn-flush-dark btn-rounded flush-soft-hover" data-bs-toggle="tooltip" title="View Clinic Detail" href="' .
-    //                 route('superadmin.clinic.show', encrypt($row->id ?? '')) .
-    //                 '">
-    //                                             <span class="icon"><span class="feather-icon"><iconify-icon icon="hugeicons:view"></iconify-icon></span></span>
-    //                                         </a>
-    //                                     </div>
-    //                                 </div>',
-    //         ];
-    //     }
-
-    //     // Response
-    //     $response = [
-    //         'draw' => intval($draw),
-    //         'iTotalRecords' => $totalRecords,
-    //         'iTotalDisplayRecords' => $totalRecordswithFilter,
-    //         'aaData' => $data_arr,
-    //     ];
-
-    //     return response()->json($response);
-    // }
+        return response()->json($response);
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-
         try {
             $areaExpertises = AreaOfExpertise::all();
-            return view('clinic.nurse.create',compact('areaExpertises'));
+            return view('clinic.nurse.create', compact('areaExpertises'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -194,7 +174,6 @@ class NurseController extends Controller
      */
     public function store(Request $request)
     {
-
         DB::beginTransaction();
 
         try {
@@ -235,7 +214,7 @@ class NurseController extends Controller
             $clinicId = $user->parent_id ?? $user->id;
 
             $nurse = new Nurse();
-            $nurse->clinic_id =  $clinicId;
+            $nurse->clinic_id = $clinicId;
             $nurse->nurse_id = $customId;
             $nurse->name = $request->name;
             $nurse->dob = $request->dob;
@@ -275,19 +254,17 @@ class NurseController extends Controller
                 }
             }
 
-                // if ($request->hasFile('documents')) {
-                //     foreach ($request->file('documents') as $image) {
-                //         $path = ImageController::upload($image, '/nurses/documents');
-                //         $nurse->documents()->create([
-                //             'img' => $path,
-                //         ]);
-                //     }
-                // }
+            // if ($request->hasFile('documents')) {
+            //     foreach ($request->file('documents') as $image) {
+            //         $path = ImageController::upload($image, '/nurses/documents');
+            //         $nurse->documents()->create([
+            //             'img' => $path,
+            //         ]);
+            //     }
+            // }
 
             DB::commit();
             return redirect()->route('clinic.nurse.index')->with('success', 'Nurse created successfully!');
-
-
         } catch (\Exception $e) {
             DB::rollback();
             // dd($e->getMessage());
@@ -295,20 +272,21 @@ class NurseController extends Controller
         }
     }
 
-     // //Step 6. assign role and sync permissions
-            // $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
-            // $nurse->assignRole($role->name);
+    // //Step 6. assign role and sync permissions
+    // $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
+    // $nurse->assignRole($role->name);
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-
         try {
             $nurse = Nurse::findorfail(decrypt($id));
-            $expertise = $nurse->expertises->map(function ($nurseExpertise) {
-                return $nurseExpertise->expertiseName->name;
-            })->implode(', ');
+            $expertise = $nurse->expertises
+                ->map(function ($nurseExpertise) {
+                    return $nurseExpertise->expertiseName->name;
+                })
+                ->implode(', ');
 
             $documents = $nurse->documents->map(function ($doc) {
                 return [
@@ -316,7 +294,7 @@ class NurseController extends Controller
                     'url' => env('IMAGE_ROOT') . $doc->img,
                 ];
             });
-            return view('clinic.nurse.detail',compact('nurse','expertise','documents'));
+            return view('clinic.nurse.detail', compact('nurse', 'expertise', 'documents'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -327,7 +305,6 @@ class NurseController extends Controller
      */
     public function edit(string $id)
     {
-
         try {
             $areaExpertises = AreaOfExpertise::all();
             $nurse = Nurse::findorfail(decrypt($id));
@@ -340,7 +317,7 @@ class NurseController extends Controller
             //     ];
             // });
 
-         return view('clinic.nurse.edit',compact('nurse','areaExpertises','nurseExpertise'));
+            return view('clinic.nurse.edit', compact('nurse', 'areaExpertises', 'nurseExpertise'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -350,7 +327,7 @@ class NurseController extends Controller
      * Update the specified resource in storage.
      */
 
-        public function update(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
         // dd($request->all());
         DB::beginTransaction();
@@ -426,7 +403,7 @@ class NurseController extends Controller
             $nurse->save();
 
             // Step 4: Update expertise (add new ones without removing existing)
-             if ($request->filled('area_expertise_id')) {
+            if ($request->filled('area_expertise_id')) {
                 $existingExpertiseIds = NurseExpertise::where('nurse_id', $nurse->id)->delete();
                 foreach ($request->area_expertise_id as $expertiseId) {
                     NurseExpertise::create([
@@ -461,12 +438,14 @@ class NurseController extends Controller
 
             DB::commit();
             return redirect()->route('clinic.nurse.index')->with('success', 'Nurse updated successfully!');
-
         } catch (\Exception $e) {
             DB::rollback();
             // dd($e->getMessage());
             \Log::error('Error in NurseController@update: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to update nurse: ' . $e->getMessage())->withInput();
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to update nurse: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -477,7 +456,6 @@ class NurseController extends Controller
     {
         //
     }
-
 
     public function uploadDocument(Request $request)
     {
@@ -500,13 +478,11 @@ class NurseController extends Controller
             }
 
             return redirect()->back()->with('success', 'File uploaded successfully');
-
         } catch (\Exception $e) {
             // Log error if needed: Log::error($e);
-            return redirect()->back()->with('error', 'Failed to upload document: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to upload document: ' . $e->getMessage());
         }
     }
-
-
-
-    }
+}
