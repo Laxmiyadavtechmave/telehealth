@@ -65,10 +65,7 @@
 
                             </ul>
                         </li>
-
-
                     </ul>
-
                 </div>
             </nav>
         </div>
@@ -318,7 +315,9 @@
         </li>
         <!-- /Notifications -->
 
-
+        @php
+            $user = Auth::guard('clinic')->user();
+        @endphp
         <li class="ms-3 dropdown notification-list topbar-dropdown border-left toprProfileBtn">
             <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown" role="button"
                 aria-haspopup="false" aria-expanded="false">
@@ -334,19 +333,22 @@
                 <!-- item-->
                 <div class="dropdown-header noti-title">
                     <div class="proileDrop_right">
+
+                        {{-- @dd($user) --}}
                         <div class="profileInrImagewrap">
                             <!-- <img src="http://localhost/techmave-product/public/assets/images/new-images/userdummy.png"  alt="user-image" class="rounded-circle"> -->
+
                             <div class="namerletters">RJ</div>
                         </div>
 
                         <div class="pro-user-name ms-1">
-                            <h2>Admin A</h2>
-                            <p class="user_mail_id">admin@gmail.com</p>
+                            <h2>{{ $user->name ?? '' }}</h2>
+                            <p class="user_mail_id">{{ $user->email ?? '' }}</p>
                         </div>
                     </div>
 
                 </div>
-                <a href="profile.php" class="dropdown-item notify-item">
+                <a href="{{ route('clinic.profile') }}" class="dropdown-item notify-item">
                     <iconify-icon icon="si:user-duotone"></iconify-icon><span>My Account</span>
                 </a>
 
@@ -375,8 +377,9 @@
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="profile.php">My Profile</a>
-            <a class="dropdown-item" href="signinjavascript:void(0);">Logout</a>
+            <a class="dropdown-item" href="{{ route('clinic.profile') }}">My Profile</a>
+            <a href="#" class="dropdown-item notify-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item" href="signinjavascript:void(0);">Logout</a>
         </div>
     </div>
     <!-- /Mobile Menu -->

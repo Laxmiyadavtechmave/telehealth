@@ -201,14 +201,15 @@ class PharmacyController extends Controller
             ]);
 
             $user = Auth::guard('clinic')->user();
-            $clinicId = $user->parent_id ?? $user->id;
+
             //Step 2. save clinic
             $customId = $this->generateCustomUniqueId('pharmacies', 'pharmacy_id', 'PHR-', 6);
             $pharmacy = new Pharmacy();
+            $pharmacy->clinic_id = $user->id ?? null;
             $pharmacy->pharmacy_id = $customId;
             $pharmacy->name = $request->name ?? null;
             $pharmacy->email = $request->email ?? null;
-            $pharmacy->clinic_id = $clinicId ?? null;
+
             $pharmacy->license_no = $request->license_no ?? null;
             $pharmacy->valid_from = $request->valid_from ?? null;
             $pharmacy->valid_to = $request->valid_to ?? null;

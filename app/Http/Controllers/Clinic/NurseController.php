@@ -211,10 +211,9 @@ class NurseController extends Controller
             $customId = $this->generateCustomUniqueId('nurses', 'nurse_id', 'NU-', 6);
 
             $user = Auth::guard('clinic')->user();
-            $clinicId = $user->parent_id ?? $user->id;
 
             $nurse = new Nurse();
-            $nurse->clinic_id = $clinicId;
+            $nurse->clinic_id = $user->id;
             $nurse->nurse_id = $customId;
             $nurse->name = $request->name;
             $nurse->dob = $request->dob;

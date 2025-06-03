@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AreaOfExpertiseSeeder::class,
             PermissionSeeder::class,
-            ClinicPermissionSeeder::class,
             SuperAdminSeeder::class,
         ]);
     }
