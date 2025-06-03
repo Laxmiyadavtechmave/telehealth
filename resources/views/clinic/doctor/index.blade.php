@@ -18,8 +18,8 @@
                                 <iconify-icon icon="icons8:plus"></iconify-icon> Add New Doctor
                             </a>
                             <!-- <a href="sales-return-new.php" class="btn btn-info d-flex align-items-center cmnaddbtn">
-                             <iconify-icon icon="carbon:return"></iconify-icon> Sales Return
-                            </a> -->
+                                                         <iconify-icon icon="carbon:return"></iconify-icon> Sales Return
+                                                        </a> -->
                         </div>
                         <div class="head-icons ms-2 headicon_innerpage">
                             <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -113,6 +113,7 @@
                             <table id="doctors_table" class="table nowrap w-100">
                                 <thead>
                                     <tr>
+                                        <th hidden>ID</th>
                                         <th>Doctor ID</th>
                                         <th>Doctor Name</th>
                                         <th>Mobile No.</th>
@@ -121,6 +122,7 @@
                                         <th>Experience</th>
                                         <th>Consultation Type</th>
                                         <th>Clinic Name</th>
+                                        <th>Created at</th>
                                         <th>Status</th>
                                         <th class="no-sort">Action</th>
                                     </tr>
@@ -187,14 +189,14 @@
                     searchable: false
                 },
                 {
-                    data: 'consultation_type',
-                    name: 'consultation_type',
+                    data: 'consultation',
+                    name: 'consultation',
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: 'clinic_name',
-                    name: 'clinic_name',
+                    data: 'clinic_id',
+                    name: 'clinic_id',
                     orderable: false,
                     searchable: false
                 },
@@ -220,7 +222,7 @@
 
             let table = initializeDataTable(
                 '#doctors_table',
-                '{{ route('superadmin.doctors.ajaxDataTable') }}',
+                '{{ route('clinic.doctors.ajaxDataTable') }}',
                 columns,
                 0,
                 () => {
@@ -259,6 +261,73 @@
 
                 return false; // prevent form submission
             });
+
+            $(document).on('click', '.status-option', function() {
+                let doctorId = $(this).closest('.status-dropdown').find('.status-option').data('id') || $(
+                    this).data('id');
+                let newStatus = $(this).data('status');
+                let confirmText = `Are you sure you want to mark this doctor as ${newStatus}?`;
+
+                Swal.fire({
+                    title: 'Confirm Status Change',
+                    text: confirmText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, change it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Proceed with status change
+                        $.ajax({
+                            url: '{{ route('clinic.doctors.updateStatus') }}',
+                            method: 'POST',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                id: doctorId,
+                                status: newStatus
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    table.ajax.reload();
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: response.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: response.message ||
+                                            'Failed to update status',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'An error occurred while updating the status',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endpush
