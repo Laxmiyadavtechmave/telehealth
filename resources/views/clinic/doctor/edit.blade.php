@@ -34,7 +34,9 @@
                 <div class="tablemaincard_nopaddingleftright">
                     <form id="clinicForm" action="{{ route('clinic.doctor.update', encrypt($doctor->id)) }}"
                         class="form needs-validation" method="post" enctype="multipart/form-data" novalidate>
+                        @method('patch')
                         @csrf
+
 
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
@@ -185,7 +187,7 @@
                                                                 min="6" style="width: 100%; padding-right: 40px;"
                                                                 autocomplete="new-password" />
 
-                                                            <span 
+                                                            <span
                                                                 style="position:absolute; top:38px; right:15px; cursor:pointer;">
                                                                 <iconify-icon icon="mdi:eye"
                                                                     id="togglePassword"></iconify-icon>

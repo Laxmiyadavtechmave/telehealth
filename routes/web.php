@@ -128,4 +128,5 @@ Route::prefix('clinic')
         Route::resource('doctor', DoctorController::class);
         Route::get('/doctors/datatable', [DoctorController::class, 'ajaxDatatable'])->name('doctors.ajaxDataTable');
         Route::post('/doctors/update-status', [DoctorController::class, 'updateStatus'])->name('doctors.updateStatus');
+        Route::post('doctors/upload-document/{id}', [DoctorController::class, 'uploadDocument'])->name('doctors.upload.document');
     });
