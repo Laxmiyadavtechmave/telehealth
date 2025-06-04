@@ -74,10 +74,10 @@ class PatientController extends Controller
             $customId = $this->generateCustomUniqueId('patients', 'patient_id', 'PA-', 6);
 
             $user = Auth::guard('clinic')->user();
-            $clinicId = $user->parent_id ?? $user->id;
+
 
             $patient = new Patient();
-            $patient->clinic_id =  $clinicId;
+            $patient->clinic_id =  $user->id;
             $patient->patient_id = $customId;
             $patient->name = $request->name;
             $patient->ssn = $request->ssn;

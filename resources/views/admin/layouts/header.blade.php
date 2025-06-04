@@ -60,15 +60,9 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{route('superadmin.clinic.index')}}">Clinics List</a></li>
                                 <li><a class="dropdown-item" href="{{ route('superadmin.clinic.create') }}">Add New Clinic</a></li>
-
-
                             </ul>
                         </li>
-
-
-
                     </ul>
-
                 </div>
             </nav>
         </div>

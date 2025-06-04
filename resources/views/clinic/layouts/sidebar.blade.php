@@ -24,7 +24,7 @@
                 <div class="custom-tooltip">Home</div>
             </div>
             <!-- Tooltip Menu Item -->
-            <div class="custom-menu-item">
+            {{-- <div class="custom-menu-item">
                 <a href="{{ route('clinic.dashboard') }}">
                     <div class="custom-icon">
                         <iconify-icon icon="prime:users"></iconify-icon>
@@ -62,7 +62,7 @@
 
                 <!-- Tooltip -->
                 <div class="custom-tooltip">Role & Permission Settings (RBAC)</div>
-            </div>
+            </div> --}}
 
             <div class="custom-menu-item">
                 <a href="">

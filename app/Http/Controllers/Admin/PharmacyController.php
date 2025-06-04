@@ -263,16 +263,6 @@ class PharmacyController extends Controller
                 }
             }
 
-            //Step 6. assign role and sync permissions
-            $role = Role::create(['name' => $pharmacy->pharmacy_id, 'guard_name' => 'pharmacy']);
-            $pharmacy->assignRole($pharmacy->pharmacy_id);
-
-            $pharmacyPermissions = Permission::where('guard_name', 'pharmacy')->get();
-
-            if ($pharmacyPermissions->isNotEmpty()) {
-                $role->syncPermissions($pharmacyPermissions);
-            }
-
             DB::commit();
             return redirect()->route('superadmin.pharmacies.index')->with('success', 'Pharmacy created successfully!');
         } catch (\Exception $e) {
@@ -426,15 +416,6 @@ class PharmacyController extends Controller
                         'img' => $path,
                     ]);
                 }
-            }
-
-            //Step 6. sync permissions
-            $role = Role::where('name', $pharmacy->pharmacy_id)->where('guard_name', 'pharmacy')->first();
-
-            $pharmacyPermissions = Permission::where('guard_name', 'pharmacy')->get();
-
-            if ($pharmacyPermissions->isNotEmpty()) {
-                $role->syncPermissions($pharmacyPermissions);
             }
 
             DB::commit();

@@ -101,27 +101,20 @@ Route::prefix('clinic')
         Route::get('dashboard', [ClinicHomeController::class, 'dashboard'])->name('dashboard');
         Route::post('logout', [ClinicAuthController::class, 'logout'])->name('logout');
 
+        Route::match(['get' ,'post'],'profile',[ClinicAuthController::class,'profile'])->name('profile');
+
+         /******************************** Nurse routes ***************/
         Route::resource('nurse', NurseController::class);
         Route::get('/nurses/datatable', [NurseController::class, 'ajaxDatatable'])->name('nurse.ajaxDataTable');
-        Route::get('nurse/upload-document', [NurseController::class, 'uploadDocument'])->name('nurse.upload.document');
+        Route::post('nurse/upload-document', [NurseController::class, 'uploadDocument'])->name('nurse.upload.document');
+         /******************************** Patient routes ***************/
         Route::resource('patient', PatientController::class);
-        Route::post('nurse/upload-document', [PatientController::class, 'uploadDocument'])->name('patient.upload.document');
+        Route::post('patient/upload-document', [PatientController::class, 'uploadDocument'])->name('patient.upload.document');
 
         /*************************** pharmacy **********************/
         Route::resource('pharmacies', ClinicPharmacyController::class);
         Route::get('/pharmacy/datatable', [ClinicPharmacyController::class, 'ajaxDataTable'])->name('pharmacy.ajaxDataTable');
         Route::post('pharmacy/documents-download/{clinicId}', [ClinicPharmacyController::class, 'downloadDocuments'])->name('pharmacy.downloadDocuments');
-
-        Route::prefix('user')
-            ->name('user.')
-            ->group(function () {
-                Route::get('users', [ClinicUserController::class, 'index'])->name('index');
-                Route::post('store', [ClinicUserController::class, 'store'])->name('store');
-                Route::post('update-status', [ClinicUserController::class, 'updateStatus'])->name('update-status');
-                Route::post('update', [ClinicUserController::class, 'update'])->name('update');
-            });
-
-        Route::resource('role', ClinicRoleController::class);
 
         /******************************** doctor routes ***************/
 

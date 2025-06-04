@@ -254,16 +254,6 @@ class ClinicController extends Controller
                 }
             }
 
-            //Step 6. assign role and sync permissions
-            $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
-            $clinic->assignRole($clinic->clinic_id);
-
-            $clinicPermissions = Permission::where('guard_name', 'clinic')->get();
-
-            if ($clinicPermissions->isNotEmpty()) {
-                $role->syncPermissions($clinicPermissions);
-            }
-
             DB::commit();
             return redirect()->route('superadmin.clinic.index')->with('success', 'Clinic created successfully!');
         } catch (\Exception $e) {
@@ -416,15 +406,6 @@ class ClinicController extends Controller
                         'img' => $path,
                     ]);
                 }
-            }
-
-            //Step 6. sync permissions
-            $role = Role::where('name', $clinic->clinic_id)->where('guard_name', 'clinic')->first();
-
-            $clinicPermissions = Permission::where('guard_name', 'clinic')->get();
-
-            if ($clinicPermissions->isNotEmpty()) {
-                $role->syncPermissions($clinicPermissions);
             }
 
             DB::commit();
