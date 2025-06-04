@@ -566,9 +566,10 @@
                                                         <div class="col-lg-3">
                                                             <div class="form-group">
                                                                 <label>Price <span>*</span></label>
-                                                                <input type="text"
+                                                               <input type="text"
                                                                     name="consultation[{{ $type }}][price]"
-                                                                    class="form-control" value="">
+                                                                    class="form-control"
+                                                                    value="">
                                                             </div>
                                                         </div>
                                                     </div>

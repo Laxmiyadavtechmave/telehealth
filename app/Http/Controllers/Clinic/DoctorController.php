@@ -375,8 +375,26 @@ class DoctorController extends Controller
             $extra = !empty($doctor->extra) ? json_decode($doctor->extra, true) : [];
             $specilization = AreaOfExpertise::where('type', 'doctor')->get();
             $schedules = $doctor->schedules->groupBy('day');
+            $documents = $doctor->documents->sortByDesc('id');
             $consultationFees = $doctor?->consulationTypes?->keyBy('type');
-            return view('clinic.doctor.detail', compact('specilization', 'doctor', 'extra', 'schedules'));
+
+            $dob = $extra['dob'] ?? null;
+            $age = null;
+
+            if ($dob) {
+                $dobCarbon = Carbon::parse($dob);
+                $now = Carbon::now();
+
+                if ($dobCarbon->diffInYears($now) >= 1) {
+                    $years = $dobCarbon->diffInYears($now);
+                    $age = $years . ' year' . ($years > 1 ? 's' : '');
+                } else {
+                    $days = $dobCarbon->diffInDays($now);
+                    $age = (int) $days . ' day' . ($days > 1 ? 's' : '');
+                }
+            }
+
+            return view('clinic.doctor.detail', compact('specilization', 'doctor', 'extra', 'schedules', 'consultationFees', 'age','documents'));
         } catch (\Exception $e) {
             return redirect()->route('clinic.doctor.index')->with('error', 'Something went wrong');
         }
@@ -393,7 +411,7 @@ class DoctorController extends Controller
             $specilization = AreaOfExpertise::where('type', 'doctor')->get();
             $schedules = $doctor->schedules->groupBy('day');
             $consultationFees = $doctor?->consulationTypes?->keyBy('type');
-            return view('clinic.doctor.edit', compact('specilization', 'doctor', 'extra', 'schedules'));
+            return view('clinic.doctor.edit', compact('specilization', 'doctor', 'extra', 'schedules', 'consultationFees'));
         } catch (\Exception $e) {
             return redirect()->route('clinic.doctor.index')->with('error', 'Something went wrong');
         }
@@ -413,7 +431,6 @@ class DoctorController extends Controller
                 'license_no' => 'required|string|unique:doctors,license_no,' . $id, // or adjust if license_no is not user id
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after_or_equal:valid_from',
-                'password' => 'required|string|min:6', // add minimum length for security
                 'gender' => 'required|string',
                 'phone' => 'required',
                 'address1' => 'required|string',
@@ -468,6 +485,7 @@ class DoctorController extends Controller
             $doc->save();
 
             // Step 3: Validate and store schedule
+            $doc->schedules()->delete();
             $workingHours = $request->input('working_hours', []);
             $notAvailable = $request->input('not_available', []);
 
@@ -504,25 +522,53 @@ class DoctorController extends Controller
                 ]);
             }
 
-            $consultations = $request->input('consultation', []);
+            // Handle DoctorConsultationFee
+            $submittedConsultations = $request->input('consultation', []);
+            $existingFees = $doc?->consultationTypes?->keyBy('type');
 
-            foreach ($consultations as $type => $data) {
+            // Types from form (chat/audio/video/physical)
+            $submittedTypes = array_keys($submittedConsultations);
+
+            // Delete types that are no longer selected
+            $typesToDelete = !empty($existingFees) ? $existingFees->keys()->diff($submittedTypes) : [];
+            DoctorConsultationFee::where('doctor_id', $doc->id)->whereIn('type', $typesToDelete)->delete();
+
+            // Update or Create
+            foreach ($submittedConsultations as $type => $data) {
                 if (!isset($data['selected'])) {
-                    continue; // skip unselected
+                    continue;
                 }
 
                 $typeLower = strtolower($type);
 
-                DoctorConsultationFee::create([
-                    'doctor_id' => $doc->id,
-                    'type' => $typeLower,
-                    'duration_minutes' => $typeLower !== 'chat' ? $data['duration'] ?? null : null,
-                    'price' => $typeLower !== 'chat' ? $data['price'] ?? null : null,
-                ]);
+                if (!empty($existingFees) && $existingFees->has($typeLower)) {
+                    // Update
+                    $fee = $existingFees[$typeLower];
+                    $fee->duration_minutes = $typeLower !== 'chat' ? $data['duration'] ?? null : null;
+                    $fee->price = $typeLower !== 'chat' ? $data['price'] ?? null : null;
+                    $fee->save();
+                } else {
+                    // Create new
+                    DoctorConsultationFee::create([
+                        'doctor_id' => $doc->id,
+                        'type' => $typeLower,
+                        'duration_minutes' => $typeLower !== 'chat' ? $data['duration'] ?? null : null,
+                        'price' => $typeLower !== 'chat' ? $data['price'] ?? null : null,
+                    ]);
+                }
             }
 
-            $consultations = $request->input('specilization', []);
-            foreach ($consultations as $sp) {
+            // Handle DoctorExpertise (specializations)
+            $submittedExpertiseIds = $request->input('specilization', []);
+            $existingExpertiseIds = $doc->doctorExpertises->pluck('expertise_id')->toArray();
+
+            // Delete removed
+            $toDelete = array_diff($existingExpertiseIds, $submittedExpertiseIds);
+            DoctorExpertise::where('doctor_id', $doc->id)->whereIn('expertise_id', $toDelete)->delete();
+
+            // Add new
+            $toAdd = array_diff($submittedExpertiseIds, $existingExpertiseIds);
+            foreach ($toAdd as $sp) {
                 DoctorExpertise::create([
                     'doctor_id' => $doc->id,
                     'expertise_id' => $sp,
@@ -532,7 +578,6 @@ class DoctorController extends Controller
             DB::commit();
             return redirect()->route('clinic.doctor.index')->with('success', 'Doctor updated successfully!');
         } catch (\Exception $e) {
-            // dd($e);
             DB::rollback();
             return redirect()->route('clinic.doctor.edit', $id)->with('error', $e->getMessage())->withInput();
         }
@@ -544,5 +589,30 @@ class DoctorController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function uploadDocument(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'document' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            ]);
+
+            $doctor = Doctor::findOrFail(decrypt($id));
+
+            if ($request->hasFile('document')) {
+                $path = ImageController::upload($request->file('document'), '/clinics/doctors/documents');
+                $doctor->documents()->create([
+                    'img' => $path,
+                    'title' => $request->title,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'File uploaded successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to upload document: ' . $e->getMessage());
+        }
     }
 }
