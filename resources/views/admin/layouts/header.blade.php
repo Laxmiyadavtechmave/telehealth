@@ -4,13 +4,13 @@
     <!-- Logo -->
     <div class="header-left">
         <a href="{{ route('superadmin.dashboard') }}" class="logo logo-normal">
-            <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
+            <img src="{{ asset('common/img/newimages/logoicon.png') }}" alt="">
         </a>
         <a href="{{ route('superadmin.dashboard') }}" class="logo logo-white">
-            <img src="{{ asset('admin/img/logo-white.png') }}" alt="">
+            <img src="{{ asset('common/img/logo-white.png') }}" alt="">
         </a>
         <a href="{{ route('superadmin.dashboard') }}" class="logo-small">
-            <img src="{{ asset('admin/img/newimages/logoicon.png') }}" alt="">
+            <img src="{{ asset('common/img/newimages/logoicon.png') }}" alt="">
         </a>
 
     </div>

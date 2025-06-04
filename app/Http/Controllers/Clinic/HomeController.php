@@ -19,7 +19,6 @@ class HomeController extends Controller
         $doctorCount = Doctor::where('clinic_id',$user->id)->count();
         $nurseCount = Nurse::where('clinic_id',$user->id)->count();
 
-        // dd($nursesCount);
         return view('clinic.dashboard',compact('user','patientCount','doctorCount','nurseCount'));
     }
 }

@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\{Doctor,Clinic,AreaOfExpertise};
 use Carbon\Carbon;
+use App\Models\Nurse;
+use App\Models\Patient;
+use App\Models\Pharmacy;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\{Doctor,Clinic,AreaOfExpertise};
 use App\Http\Controllers\{CommonController, ImageController};
 
 class HomeController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $clinicCount = Clinic::where('status','active')->count();
+        $patientCount = Patient::where('status','active')->count();
+        $doctorCount = Doctor::where('status','active')->count();
+        $nurseCount = Nurse::where('status','active')->count();
+        $pharmacyCount = Pharmacy::where('status','active')->count();
+
+        return view('admin.dashboard' ,compact('clinicCount','patientCount','doctorCount','nurseCount','pharmacyCount'));
     }
 
     public function patients()

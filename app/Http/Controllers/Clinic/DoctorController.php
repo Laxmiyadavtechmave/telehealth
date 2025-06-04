@@ -226,7 +226,7 @@ class DoctorController extends Controller
                 'valid_to' => 'required|date|after_or_equal:valid_from',
                 'password' => 'required|string|min:6', // add minimum length for security
                 'gender' => 'required|string',
-                'phone' => 'required',
+                'phone' => 'required|unique:doctors',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -432,7 +432,7 @@ class DoctorController extends Controller
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after_or_equal:valid_from',
                 'gender' => 'required|string',
-                'phone' => 'required',
+                'phone' => 'required|unique:doctors,phone'. $id,
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
