@@ -35,7 +35,7 @@
                     <form action="{{ route('clinic.nurse.store') }}" class="form needs-validation" method="post"
                         enctype="multipart/form-data" novalidate>
                         @csrf
-{{-- <input type="file" id="finalImageInput" name="documents[]" multiple hidden> --}}
+                                {{-- <input type="file" id="finalImageInput" name="documents[]" multiple hidden> --}}
                         <div class="ItemContainerTop no-bg">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -159,7 +159,7 @@
                                                         <div class="form-group">
                                                             <label for="#">Email</label>
                                                             <input type="email" id="name" class="form-control"
-                                                                value="{{ old('email') }}" name="email" required
+                                                                value="{{ old('email') }}" name="email"
                                                                 autocomplete="off" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
                                                                 title="Please enter a valid email" required>
                                                         </div>
@@ -278,35 +278,24 @@
                                                                 value="{{ old('qualification') }}" required>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label for="#">Select Doctor</label>
                                                             <select class="select" data-placeholder='Select Doctor'
                                                                 name="doctor_id" required>
-                                                                <option value="" selected></option>
-                                                                <option value="1">Dr. John Smith</option>
-                                                                <option value="2">Dr. Emily Johnson</option>
-                                                                <option value="3">Dr. Michael Brown</option>
-                                                                <option value="4">Dr. Sarah Davis</option>
-                                                                <option value="5">Dr. William Martinez</option>
-                                                                <option value="6">Dr. Linda Thompson</option>
-                                                                <option value="7">Dr. James Wilson</option>
-                                                                <option value="8">Dr. Olivia Taylor</option>
+
+                                                                @if(count($doctors) > 0)
+                                                                    <option value="" selected></option>
+                                                                @foreach ($doctors as $doctor )
+                                                                    <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>{{ $doctor->name }}</option>
+                                                                @endforeach
+                                                                @else
+                                                                    <option value="" selected>Add doctor</option>
+                                                                @endif
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-3">
-                                                        <div class="form-group">
-                                                            <label for="#">Role Type</label>
-                                                            <select class="select" data-placeholder='Select Role'
-                                                                name="role_id" required>
-                                                                <option value="" selected></option>
-                                                                <option value="1">Jr. Nurse</option>
-                                                                <option value="2">Sr. Nurse</option>
-                                                                <option value="3">Visiting Nurse</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+
 
                                                     <div class="col-lg-6">
                                                         <div class="form-group">

@@ -5,7 +5,7 @@
 
             <div class="d-md-flex d-block align-items-center justify-content-between pagetop_headercmn index_head">
                 <div class="my-auto mb-2 dashtopTitle">
-                    <h2 class="mb-1">Welcome Back, {{auth()->user()->name??''}} <iconify-icon icon="fluent-emoji:waving-hand"></iconify-icon>
+                <h2 class="mb-1">Welcome Back, {{auth()->guard('web')->user()->name??''}} <iconify-icon icon="fluent-emoji:waving-hand"></iconify-icon>
                     </h2>
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap ">
@@ -33,7 +33,7 @@
                                                 </span>
                                             </div>
                                             <div class="dash-widgetcontent">
-                                                <h5><span class="counters" data-count="54">54</span></h5>
+                                                <h5><span class="counters" data-count="{{ $clinicCount ?? 00 }}">{{ $clinicCount ?? 00 }}</span></h5>
                                                 <div class="Numcard_title">Total Clinics</div>
                                             </div>
                                         </div>
@@ -51,7 +51,7 @@
                                                 </span>
                                             </div>
                                             <div class="dash-widgetcontent">
-                                                <h5><span class="counters" data-count="4765">4765</span></h5>
+                                                <h5><span class="counters" data-count="{{ $patientCount ?? 00 }}">{{ $patientCount ?? 00 }}</span></h5>
                                                 <div class="Numcard_title">Total Patients</div>
                                             </div>
                                         </div>
@@ -69,7 +69,7 @@
                                                 </span>
                                             </div>
                                             <div class="dash-widgetcontent">
-                                                <h5><span class="counters" data-count="67">67</span></h5>
+                                                <h5><span class="counters" data-count="{{ $doctorCount ?? 00 }}">{{ $doctorCount ?? 00 }}</span></h5>
                                                 <div class="Numcard_title">Total Doctors</div>
                                             </div>
                                         </div>
@@ -87,7 +87,7 @@
                                                 </span>
                                             </div>
                                             <div class="dash-widgetcontent">
-                                                <h5><span class="counters" data-count="71">71</span></h5>
+                                                <h5><span class="counters" data-count="{{ $nurseCount ?? 00 }}">{{ $nurseCount ?? 00 }}</span></h5>
                                                 <div class="Numcard_title">Total Nurses</div>
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@
                                                 </span>
                                             </div>
                                             <div class="dash-widgetcontent">
-                                                <h5><span class="counters" data-count="54">54</span></h5>
+                                                <h5><span class="counters" data-count="{{ $pharmacyCount ?? 00 }}">{{ $pharmacyCount ?? 00 }}</span></h5>
                                                 <div class="Numcard_title">Total Pharmacy</div>
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                      
+
 
                                     </div>
                                     <!-- /Filter -->
@@ -363,7 +363,7 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                
+
                                             </tbody>
                                         </table>
                                     </div>

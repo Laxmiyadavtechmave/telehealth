@@ -29,7 +29,9 @@ class NurseController extends Controller
     public function index()
     {
         try {
-            $doctors = Doctor::where('status', 'active')->get();
+
+            $user = Auth::guard('clinic')->user();
+            $doctors = Doctor::where('clinic_id',$user->id)->where('status', 'active')->get();
             return view('clinic.nurse.index', compact('doctors'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
@@ -162,8 +164,11 @@ class NurseController extends Controller
     public function create()
     {
         try {
+
+            $user = Auth::guard('clinic')->user();
             $areaExpertises = AreaOfExpertise::all();
-            return view('clinic.nurse.create', compact('areaExpertises'));
+            $doctors = Doctor::where('status', 'active')->where('clinic_id',$user->id)->get();
+            return view('clinic.nurse.create', compact('areaExpertises','doctors'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -174,6 +179,7 @@ class NurseController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -186,7 +192,7 @@ class NurseController extends Controller
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after:valid_from',
                 'password' => 'required|string|min:6',
-                'phone' => 'required',
+                'phone' => 'required|unique:nurses',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -194,10 +200,9 @@ class NurseController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
                 'gender' => 'required|in:Male,Female,Other',
                 'marital_status' => 'required|in:Married,Unmarried,Single',
-                'national_id' => 'nullable|string|max:255',
+                'national_id' => 'nullable|string|unique:nurses|max:255',
                 'qualification' => 'required|string|max:255',
-                // 'doctor_id' => 'required|exists:doctors,id',
-                // 'role_id' => 'required|exists:roles,id',
+                'doctor_id' => 'required|exists:doctors,id',
                 'year_of_experience' => 'required|integer|min:1',
                 'language' => 'required|string|max:255',
                 'area_expertise_id' => 'required|array',
@@ -233,7 +238,6 @@ class NurseController extends Controller
             $nurse->national_id = $request->national_id;
             $nurse->qualification = $request->qualification;
             $nurse->doctor_id = $request->doctor_id;
-            $nurse->role_id = $request->role_id;
             $nurse->year_of_experience = $request->year_of_experience;
             $nurse->language = $request->language;
 
@@ -271,16 +275,17 @@ class NurseController extends Controller
         }
     }
 
-    // //Step 6. assign role and sync permissions
-    // $role = Role::create(['name' => $clinic->clinic_id, 'guard_name' => 'clinic']);
-    // $nurse->assignRole($role->name);
+
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         try {
-            $nurse = Nurse::findorfail(decrypt($id));
+
+            $user = Auth::guard('clinic')->user();
+
+            $nurse = Nurse::where('clinic_id',$user->id)->findorfail(decrypt($id));
             $expertise = $nurse->expertises
                 ->map(function ($nurseExpertise) {
                     return $nurseExpertise->expertiseName->name;
@@ -305,9 +310,12 @@ class NurseController extends Controller
     public function edit(string $id)
     {
         try {
+            $user = Auth::guard('clinic')->user();
             $areaExpertises = AreaOfExpertise::all();
-            $nurse = Nurse::findorfail(decrypt($id));
+            $nurse = Nurse::where('clinic_id',$user->id)->findorfail(decrypt($id));
             $nurseExpertise = $nurse->expertises->pluck('area_of_expertise_id')->toArray();
+            $doctors = Doctor::where('status', 'active')->where('clinic_id',$user->id)->get();
+
             // $documents = $nurse->documents->map(function ($doc) {
             //     return [
             //         'id' => $doc->id,
@@ -316,7 +324,7 @@ class NurseController extends Controller
             //     ];
             // });
 
-            return view('clinic.nurse.edit', compact('nurse', 'areaExpertises', 'nurseExpertise'));
+            return view('clinic.nurse.edit', compact('nurse', 'areaExpertises', 'nurseExpertise','doctors'));
         } catch (Exception $e) {
             return redirect()->route('clinic.dashboard')->with('error', 'Something went wrong');
         }
@@ -332,8 +340,11 @@ class NurseController extends Controller
         DB::beginTransaction();
 
         try {
+
+            $user = Auth::guard('clinic')->user();
+
             // Step 1: Decrypt ID and find the nurse
-            $nurse = Nurse::findOrFail(decrypt($id));
+            $nurse = Nurse::where('clinic_id',$user->id)->findOrFail(decrypt($id));
 
             // Step 2: Validate
             $request->validate([
@@ -344,7 +355,7 @@ class NurseController extends Controller
                 'valid_from' => 'required|date',
                 'valid_to' => 'required|date|after:valid_from',
                 'password' => 'nullable|string|min:6',
-                'phone' => 'required',
+                'phone' => 'required|unique:nurses,phone,'. $nurse->id,
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -352,10 +363,9 @@ class NurseController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
                 'gender' => 'required|in:Male,Female,Other',
                 'marital_status' => 'required|in:Married,Unmarried,Single',
-                'national_id' => 'required|string|max:255',
+                'national_id' => 'required|string|unique:nurses,national_id,'. $nurse->id.'|max:255',
                 'qualification' => 'required|string|max:255',
-                // 'doctor_id' => 'nullable|exists:doctors,id',
-                // 'role_id' => 'nullable|exists:roles,id',
+                'doctor_id' => 'nullable|exists:doctors,id',
                 'year_of_experience' => 'required|integer|min:1',
                 'language' => 'required|string|max:255',
                 'area_expertise_id' => 'required|array',
@@ -386,7 +396,6 @@ class NurseController extends Controller
             $nurse->national_id = $request->national_id;
             $nurse->qualification = $request->qualification;
             $nurse->doctor_id = $request->doctor_id;
-            $nurse->role_id = $request->role_id;
             $nurse->year_of_experience = $request->year_of_experience;
             $nurse->language = $request->language;
 

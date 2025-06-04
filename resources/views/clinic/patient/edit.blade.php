@@ -198,8 +198,10 @@
                                                         <div class="form-group">
                                                             <label for="#">Email</label>
                                                             <input type="email" placeholder="email" id="name"
-                                                                class="form-control" name="email"
-                                                                value="{{ old('email', $patient->email ?? '') }}" required>
+                                                                class="form-control"
+                                                                value="{{ old('email',$patient->email ?? '') }}" name="email"
+                                                                autocomplete="off" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                                                                title="Please enter a valid email" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6">

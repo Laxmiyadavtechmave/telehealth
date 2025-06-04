@@ -55,11 +55,11 @@ class PatientController extends Controller
         try {
             // Step 1: Validate
             $request->validate([
-                'ssn' => 'nullable|string',
+                'ssn' => 'nullable|string|unique:patients,ssn',
                 'name' => 'required|string|max:255',
                 'dob' => 'required|date',
-                'email' => 'required|email|unique:nurses',
-                'phone' => 'required',
+                'email' => 'required|email|unique:patients,email',
+                'phone' => 'required|unique:patients,phone',
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -161,7 +161,7 @@ class PatientController extends Controller
                 'dob' => 'required|date',
                 'ssn' => 'nullable|unique:patients,ssn,' . $patient->id,
                 'email' => 'required|email|unique:patients,email,' . $patient->id,
-                'phone' => 'required',
+                'phone' => 'required|unique:patients,phone,' . $patient->id,
                 'address1' => 'required|string',
                 'city' => 'required|string',
                 'country' => 'required|string',
@@ -169,7 +169,7 @@ class PatientController extends Controller
                 'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
                 'gender' => 'required|in:Male,Female,Other',
                 'marital_status' => 'required|in:Married,Unmarried,Single',
-                'national_id' => 'required|string|max:255',
+                'national_id' => 'required|string|max:255|unique:patients,national_id,' . $patient->id,
             ]);
 
             // Step 3: Update nurse attributes

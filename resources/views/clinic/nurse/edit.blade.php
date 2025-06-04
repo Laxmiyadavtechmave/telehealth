@@ -51,28 +51,6 @@
                                                             <div class="col-lg-3">
                                                                 <div class="image-upload-container">
                                                                     <div class="profile-pic-wrapper">
-                                                                        {{-- <div class="pic-holder">
-                                                                            <!-- uploaded pic shown here -->
-                                                                            <img id="profilePic" class="pic"
-                                                                                src="">
-
-                                                                            <Input class="uploadProfileInput" type="file"
-                                                                                name="profile_pic" id="newProfilePhoto"
-                                                                                accept="image/*" style="opacity: 0;" />
-                                                                            <label for="newProfilePhoto"
-                                                                                class="upload-file-block">
-                                                                                <div class="text-center">
-                                                                                    <div class="uploadicon_template">
-                                                                                        <iconify-icon
-                                                                                            icon="bytesize:upload"></iconify-icon>
-                                                                                    </div>
-                                                                                    <div class="text-uppercase">
-                                                                                        Update <br /> Profile Photo
-                                                                                    </div>
-                                                                                </div>
-                                                                            </label>
-                                                                        </div> --}}
-
                                                                         <div class="pic-holder">
                                                                             @php
 
@@ -101,9 +79,7 @@
                                                                                         <iconify-icon
                                                                                             icon="bytesize:upload"></iconify-icon>
                                                                                     </div>
-                                                                                    {{-- <div class="text-uppercase">
-                                                                                        Upload <br /> Logo Picture
-                                                                                    </div> --}}
+
                                                                                 </div>
                                                                             </label>
                                                                         </div>
@@ -312,35 +288,23 @@
                                                                 value="{{ old('qualification',$nurse->qualification ?? '') }}" required>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-3">
+                                                    <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label for="#">Select Doctor</label>
                                                             <select class="select" data-placeholder='Select Doctor'
                                                                 name="doctor_id" required>
-                                                                <option value="" selected></option>
-                                                                <option value="1">Dr. John Smith</option>
-                                                                <option value="2">Dr. Emily Johnson</option>
-                                                                <option value="3">Dr. Michael Brown</option>
-                                                                <option value="4">Dr. Sarah Davis</option>
-                                                                <option value="5">Dr. William Martinez</option>
-                                                                <option value="6">Dr. Linda Thompson</option>
-                                                                <option value="7">Dr. James Wilson</option>
-                                                                <option value="8">Dr. Olivia Taylor</option>
+                                                                @if(count($doctors) > 0)
+                                                                    <option value="" selected></option>
+                                                                @foreach ($doctors as $doctor )
+                                                                    <option value="{{ $doctor->id }}" {{ old('doctor_id' , $nurse->doctor_id) == $doctor->id ? 'selected' : '' }}>{{ $doctor->name }}</option>
+                                                                @endforeach
+                                                                @else
+                                                                    <option value="" selected>Add doctor</option>
+                                                                @endif
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-3">
-                                                        <div class="form-group">
-                                                            <label for="#">Role Type</label>
-                                                            <select class="select" data-placeholder='Select Role'
-                                                                name="role_id" required>
-                                                                <option value="" selected></option>
-                                                                <option value="1">Jr. Nurse</option>
-                                                                <option value="2">Sr. Nurse</option>
-                                                                <option value="3">Visiting Nurse</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+
 
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
